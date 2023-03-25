@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
     //localhost:3000/api/v1/listにGETリクエストを送信し、レスポンスを待ちます。
     //レスポンスが受信されると、response変数に代入されます。
     final response =
-        await http.get(Uri.parse('http://localhost:3000/api/v1/list'));
+        await http.get(Uri.parse('http://172.0.0.3000'));
     //await http.get(Uri.parse('http://192.168.2.111:3000/endpoint'));//192.168.2.111.3000
     //await http.get(Uri.parse('https://api.cashless.go.jp'));
 

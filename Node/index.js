@@ -14,10 +14,10 @@ const port = 3000
 
 
 // webフォルダの中身を公開する
-app.use(express.static('./Node/'));
+//app.use(express.static('./Node/'));
 
 
-app.get('/api/v1/list', (req, res) => {
+app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
