@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width" />
+    <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <title>Test-Node_web.js</title>
+    <style>
+        html {
+            background-color: rgb(240, 240, 240);
+        }
+    </style>
+    <title>ListView Sample</title>
+
+</head>
+
+<body>
+    <div id="stocks_container">
+        <h1>Flutter to Node.js</h1>
+        <div id="dey"></div>
+        <div id="responce"></div>
+    </div>
+
+
+
+
+    <script>
+
+        document.getElementById("dey").innerHTML = showDay();
+        function showDay() {
+            var d = new Date();
+            let year = d.getFullYear();
+            let month = d.getMonth() + 1;
+            let day = d.getDate();
+            let dayofweek = d.getDay();
+            a = year + "/" + month.toString() + "/" + day.toString();
+            return a;
+        };
+
+    </script>
+
+
+</body>
+
+</html>

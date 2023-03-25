@@ -1,0 +1,299 @@
+body {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+
+  background: black;
+  color: gray;
+  border-radius: 1em;
+  padding: 1em;
+  position: absolute;
+  width: 45%;
+
+  top: 50%;
+  left: 50%;
+  /*margin-right: -50%;*/
+  transform: translate(-50%, -50%)
+}
+
+#stocks_container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  /*親要素*/
+  border-radius: 0.25em;
+  position: static;
+  background: rgb(78, 78, 78);
+
+  width: 95%;
+  text-align: center;
+  font-weight: bold;
+  /*margin: 15 auto;*/
+  margin: 15px;
+  padding: 10px 5px 10px;
+  /* [上]、[左右]、[下]の順に余白を指定 */
+  /*font-size:16px;*/
+  /*line-height:small;*/
+}
+
+#average_container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  /*親要素*/
+  border-radius: 0.25em;
+
+  background: rgb(78, 78, 78);
+  height: 95px;
+  width: 95%;
+  text-align: center;
+  font-weight: bold;
+  /*margin: 15 auto;*/
+  margin: 15px;
+  padding: 10px 0px 10px;
+  /* [上]、[左右]、[下]の順に余白を指定 */
+  /*font-size:16px;*/
+  /*line-height:small;*/
+}
+
+#market-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  /*親要素*/
+  border-radius: 0.25em;
+  position: static;
+  background: rgb(78, 78, 78);
+  /*height: 105px;*/
+  /*width: 95%;*/
+  text-align: center;
+  /*font-weight: bolder;*/
+  /*margin: 15 auto;*/
+  margin: 15px;
+  /*padding: 10px 5px 10px;*/
+  /* [上]、[左右]、[下]の順に余白を指定 */
+  /*font-size:16px;*/
+  /*line-height:small;*/
+
+}
+.nk_circle {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: green;
+  text-align: center;
+  line-height: 80px;
+}
+span {
+  margin-left: 4rem;
+}
+
+.dow_circle {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: green;
+  text-align: center;
+  line-height: 80px;
+}
+.icon {
+
+  /*display: flex;*/
+  /*flex-direction: column;
+    flex-wrap: nowrap;*/
+  position: static;
+  background: black;
+  padding: 10px 0px 0px;
+  /* [上]、[左右]、[下]の順に余白を指定 */
+
+  height: 95px;
+  width: 50px;
+  font-size: 60px;
+  /*line-height:small;*/
+}
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 60px;
+  font-weight: bold;
+  color: gray;
+  padding: 10px 0px 0px;
+  /* [上]、[左右]、[下]の順に余白を指定 */
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+.Price-container {
+  /*display: flex;*/
+  flex-direction: column;
+  flex-wrap: nowrap;
+  position: static;
+  text-align: left;
+  font-weight: bold;
+  padding: 5px 5px 5px;
+  /* [上]、[左右]、[下]の順に余白を指定 */
+  font-size: 16px;
+  /*line-height:small;*/
+}
+
+#dow_std {
+  color: aqua;
+}
+
+#nk_std {
+  color:orange;
+}
+.mk_circle {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: green;
+  text-align: center;
+  line-height: 80px;
+}
+#market-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  /*親要素*/
+  border-radius: 0.25em;
+  position: static;
+  background: rgb(78, 78, 78);
+  /*height: 105px;*/
+  /*width: 95%;*/
+  text-align: center;
+  /*font-weight: bolder;*/
+  /*margin: 15 auto;*/
+  margin: 15px;
+  /*padding: 10px 5px 10px;*/
+  /* [上]、[左右]、[下]の順に余白を指定 */
+  /*font-size:16px;*/
+  /*line-height:small;*/
+
+}
+
+#marketPrice-container {
+  /*display: flex;*/
+  flex-direction: column;
+  flex-wrap: nowrap;
+  position: static;
+  text-align: left;
+  /*font-weight: bold;*/
+  padding: 5px 0px 5px;
+  /* [上]、[左右]、[下]の順に余白を指定 */
+  font-size: 16px;
+  /*line-height:small;*/
+}
+
+#Market {
+  color: gray;
+  font-size: 30px;
+  /* 文字サイズ指定 */
+}
+
+#Market-price {
+  color: orange;
+  font-size: 30px;
+  font-weight: bold;
+
+}
+
+
+#listview-container {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  border-radius: 0.25em;
+  /*親要素*/
+  border-radius: 0.25em;
+  /*position: static;*/
+  background:black;
+  height: 250px;
+  /*width: 95%;*/
+  /*text-align: left;*/
+  /*font-weight: bold;*/
+  /*margin: 0 auto;*/
+  /* [上]、[左右]、[下]の順に余白を指定 */
+  margin: 5px 10px 5px;
+  /*box-sizing: border-box;*/
+  overflow-y: auto;
+  /* 必要なときだけ縦方向のスクロールバーを表示 */
+  /*padding: 5px 5px 5px;*/
+  /* [上]、[左右]、[下]の順に余白を指定 */
+  /*font-size: 16px;*/
+  /*line-height: small;*/
+
+}
+
+
+
+.item {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  color: white;
+  font-weight: bold;
+  background: rgb(78, 78, 78);
+  border-radius: 0.25em;
+  height: 90px;
+  margin: 10px;
+ 
+}
+.Code-circle {
+  /*display: inline-block;*/
+  padding: 15px 15px 15px 1px;
+  /* [上]、[左右]、[下]の順に余白を指定 */
+  width: 50px;
+  height: 80px;
+
+ 
+}
+.Code {
+  display: inline-block;
+  width: 60px;
+  height: 60px;
+  /*position: absolute;*/
+  border-radius: 50%;
+  background: purple;
+  text-align: center;
+  line-height: 60px;
+}
+span {
+  margin-left: 4rem;
+}
+
+span1 {
+  margin-left: 1.5rem;
+}
+.Market {
+  /*display: inline-block;*/
+  /*display: flex;*/
+  flex-direction: row;
+  flex-wrap: nowrap;
+  padding: 15px 15px 15px 1px;
+  /* [上]、[左右]、[下]の順に余白を指定 */
+  width: 70%;
+}
+.Button {
+  border-radius: 5px;
+  margin: 15px;
+  padding: 20px;
+  /* [上]、[左右]、[下]の順に余白を指定 */
+  box-sizing: border-box;
+  border: 1px solid #68779a;
+  background: green;
+  cursor: pointer;
+  width: 120px;
+  height: 60px;
+  font-size: 20px;
+}
