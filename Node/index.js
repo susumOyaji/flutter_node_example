@@ -17,7 +17,7 @@ const port = 3000
 //app.use(express.static('./Node/'));
 
 
-app.get('/', (req, res) => {
+app.get('api/v1/list', (req, res) => {
   res.send('Hello World!')
 })
 
