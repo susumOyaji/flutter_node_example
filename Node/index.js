@@ -18,6 +18,7 @@ const port = 3000
 
 
 app.get('/', (req, res) => {
+  console.log(`Example app get()`)
   res.send('Hello World!')
 })
 

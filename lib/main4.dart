@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:html/parser.dart' show parse;
 
 void main() {
   runApp(const MyWidget());
@@ -33,7 +34,7 @@ class _MyWidgetState extends State<MyHomePage> {
 
   Future<void> _fetchData() async {
     final response =
-        await http.get(Uri.parse('http://localhost:3000/api/v1/list'));
+        await http.get(Uri.parse('http://localhost:3000'));
     if (response.statusCode == 200) {
       setState(() {
         _responseText = response.body;
@@ -45,6 +46,35 @@ class _MyWidgetState extends State<MyHomePage> {
     }
   }
 
+  Future<void> _fetchHtml() async {
+    // 取得先のURLを元にして、Uriオブジェクトを生成する。
+    final url = 'https://zenn.dev/';
+    final target = Uri.parse(url);
+
+    // 取得する。
+    final response = await http.get(target);
+
+    // 下の行のコメントを外すことで、返されたHTMLを出力できる。
+    // print(response.body);
+
+    // ステータスコードをチェックする。「200 OK」以外のときはその旨を表示して終了する。
+    if (response.statusCode != 200) {
+      print('ERROR: ${response.statusCode}');
+      return;
+    }
+
+    // 取得したHTMLのボディをパースする。
+    final document = parse(response.body);
+
+    // 要素を絞り込んで、結果を文字列のリストで得る。
+    final result = document.querySelectorAll('h2').map((v) => v.text).toList();
+
+    // 結果を出力する。
+    print(result);
+  }
+
+  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,7 +83,7 @@ class _MyWidgetState extends State<MyHomePage> {
       ),
       body: ListView(
         children: <Widget>[
-           Center(
+          Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[

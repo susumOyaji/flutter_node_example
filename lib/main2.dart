@@ -23,10 +23,15 @@ class MyWidget extends StatefulWidget {
   _MyWidgetState createState() => _MyWidgetState();
 }
 
+
+
 class _MyWidgetState extends State<MyWidget> {
   List<dynamic> _data = [];
 
   Future<void> fetchData() async {
+
+
+    
     final response =
         await http.get(Uri.parse('http://localhost:3000/api/v1/list'));
 
@@ -40,7 +45,7 @@ class _MyWidgetState extends State<MyWidget> {
   @override
   void initState() {
     super.initState();
-    fetchData();
+    //fetchData();
   }
 
   @override
