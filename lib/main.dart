@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:html';
 import 'dart:convert';
@@ -26,53 +27,68 @@ class UrlLaunchePage extends StatefulWidget {
 }
 
 class UrlLaunchePageFul extends State<UrlLaunchePage> {
+  String _responseText = 'Radey';
+
+
+  void fetch() async {
+    final response = await http.get(Uri.parse('http://localhost:3000')); //^DJI
+    final String json = response.body;
+
+    setState(() {
+      _responseText = json;
+    });
+  }
+
   void _opneUrl() async {
     const url = 'http://localhost:3000'; //←ここに表示させたいURLを入力する
 
-    if (await canLaunch(url)) {
-      await launch(
-        url,
-        forceSafariVC: true,
-        forceWebView: true,
-      );
-    } else {
-      throw 'このURLにはアクセスできません';
-    }
-  }
+    //if (await canLaunch(url)) {
+    //  await launch(
+    //    url,
+    //    forceSafariVC: true,
+    //    forceWebView: true,
+    //  );
 
-  void _openHtml() async {
-    final url = 'http://localhost:3000';
+    //window.open(url.toString(), '_top');
 
-    final request = await HttpRequest.request(
-      url,
-      method: 'GET',
-      responseType: 'json',
-    );
+    final response = await http.get(Uri.parse(url));
+    print(response.body);
+    setState(() {
+      _responseText = response.body;
+    });
 
-    final responseJson = request.response as Map<String, dynamic>;
-    final title = responseJson['title'] as String;
+    //} else {
+    //  throw 'このURLにはアクセスできません';
+    //}
   }
 
   @override
   void initState() {
     super.initState();
     //_opneUrl();
+    fetch();
     //window.open('http://localhost:3000'.toString(), '_top');
-    _openHtml();
   }
+  //fetch();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Url Launcher'),
-      ),
-      body: Center(
-        child: ElevatedButton(
-          child: const Text('Urlを開く'),
-          onPressed: () => _opneUrl(),
+        appBar: AppBar(
+          title: const Text('Url Launcher'),
         ),
-      ),
-    );
+        body: Center(
+            child: Column(
+          children: <Widget>[
+            //Center(
+            ElevatedButton(
+              child: const Text('UrlOpen'),
+              onPressed: () =>fetch(), //_opneUrl(),
+            ),
+
+            //),
+            Text(_responseText),
+          ],
+        )));
   }
 }

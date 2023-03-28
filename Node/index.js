@@ -7,11 +7,19 @@
 //myapp ディレクトリーで、app.js というファイルを作成して、以下のコードを追加します。
 
 
-const express = require('express')
-// expressアプリを生成する
-const app = express()
-const port = 3000
+const express = require('express');
+const cors = require('cors');
 
+// expressアプリを生成する
+const app = express();
+const port = 3000;
+app.use(cors());
+
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 
 // webフォルダの中身を公開する
 //app.use(express.static('./Node/'));
@@ -20,6 +28,7 @@ const port = 3000
 app.get('/', (req, res) => {
   console.log(`Example app get()`)
   res.send('Hello World!')
+  //res.send(JSON.stringify('Hello World!'));
 })
 
 app.listen(port, () => {
