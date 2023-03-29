@@ -29,9 +29,21 @@ class UrlLaunchePage extends StatefulWidget {
 class UrlLaunchePageFul extends State<UrlLaunchePage> {
   String _responseText = 'Radey';
 
+  EdgeInsets std_margin = const EdgeInsets.only(left: 10, top: 10, right: 10, bottom: 0);
 
   void fetch() async {
-    final response = await http.get(Uri.parse('http://localhost:3000')); //^DJI
+    const url = 'http://localhost:3000'; //←ここに表示させたいURLを入力する
+    final List<List<dynamic>> data = [
+      ["6758", 1665, 200],
+      ["6976", 300, 1801],
+      ["3436", 0, 0],
+    ];
+    final response = await http.get(Uri.parse(url).replace(queryParameters: {
+      'data': jsonEncode(data),
+    }));
+
+    //final response = await http.get(Uri.parse('http://localhost:3000')); //^DJI
+
     final String json = response.body;
 
     setState(() {
@@ -41,25 +53,27 @@ class UrlLaunchePageFul extends State<UrlLaunchePage> {
 
   void _opneUrl() async {
     const url = 'http://localhost:3000'; //←ここに表示させたいURLを入力する
+    //final params = {'id': '123', 'name': 'John Doe'};
+    final params = {
+      'myArray': [
+        [1, 2],
+        [3, 4]
+      ]
+    };
 
-    //if (await canLaunch(url)) {
-    //  await launch(
-    //    url,
-    //    forceSafariVC: true,
-    //    forceWebView: true,
-    //  );
+    final response = await http.get(Uri.http(url, '/api/data', params));
+    //final url = Uri.parse('https://example.com/path?name=value');
 
-    //window.open(url.toString(), '_top');
+    //final response = await http.get(url.replace(queryParameters: params));
+    //final response =
+    //    await http.get(Uri.parse(url).replace(queryParameters: params));
 
-    final response = await http.get(Uri.parse(url));
+    //final response = await http.get(Uri.http(url.authority, url.path, params));
+    //final response = await http.get(Uri.parse(url));
     print(response.body);
     setState(() {
       _responseText = response.body;
     });
-
-    //} else {
-    //  throw 'このURLにはアクセスできません';
-    //}
   }
 
   @override
@@ -69,9 +83,72 @@ class UrlLaunchePageFul extends State<UrlLaunchePage> {
     fetch();
     //window.open('http://localhost:3000'.toString(), '_top');
   }
-  //fetch();
 
   @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        alignment: Alignment.center,
+        child: Container(
+          width: 500,
+          height: 700,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: Colors.orange,
+          ),
+          child: Column(
+            children: <Widget>[
+              Container(
+                margin: std_margin,
+                width: 450,
+                height: 100,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.black,
+                ),
+              ),
+              Container(
+                margin: std_margin,
+                width: 450,
+                height: 100,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.black,
+                ),
+              ),
+              Container(
+                margin: std_margin,
+                width: 450,
+                height: 100,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.black,
+                ),
+              ),
+              Container(
+                margin: std_margin,
+                width: 450,
+                height: 100,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.black,
+                ),
+              ),
+              ElevatedButton(
+                child: const Text('UrlOpen'),
+                onPressed: () => fetch(), //_opneUrl(),
+              ),
+
+              //),
+              Text(_responseText),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+/*
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
@@ -83,7 +160,7 @@ class UrlLaunchePageFul extends State<UrlLaunchePage> {
             //Center(
             ElevatedButton(
               child: const Text('UrlOpen'),
-              onPressed: () =>fetch(), //_opneUrl(),
+              onPressed: () => fetch(), //_opneUrl(),
             ),
 
             //),
@@ -91,4 +168,5 @@ class UrlLaunchePageFul extends State<UrlLaunchePage> {
           ],
         )));
   }
+  */
 }

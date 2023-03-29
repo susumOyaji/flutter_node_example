@@ -13,9 +13,12 @@ const cors = require('cors');
 // expressアプリを生成する
 const app = express();
 const port = 3000;
+
+var reqArray = [];//new Array();
+
 app.use(cors());
 
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
@@ -27,9 +30,27 @@ app.use(function(req, res, next) {
 
 app.get('/', (req, res) => {
   console.log(`Example app get()`)
-  res.send('Hello World!')
+  const data = JSON.parse(req.query.data);
+  console.log(data);
+
+  const arr1 = Array.from(data);
+ 
+  console.log(arr1[0][0]);
+  console.log(arr1[1][0]);
+  console.log(arr1[2][0]);
+  console.log(arr1.length);
+
+  //const values = req.query.data;
+  //console.log(values);
+  //console.log(`Query parameters: ${JSON.stringify(req.query)}`);
+
+
+  res.send('Hello Node-World!')
   //res.send(JSON.stringify('Hello World!'));
 })
+
+
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
