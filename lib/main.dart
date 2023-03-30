@@ -54,7 +54,7 @@ class UrlLaunchePageFul extends State<UrlLaunchePage> {
     } catch (e) {
       // レスポンスがない場合の処理
        setState(() {
-        _responseText = '例外が発生しました: $e';
+        _responseText = 'Server unresponsive: $e';
       });
      
     }
