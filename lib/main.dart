@@ -23,17 +23,25 @@ class MyApp extends StatelessWidget {
 }
 
 class UrlLaunchePage extends StatefulWidget {
+  //const UrlLaunchePage({Key? key});
+
   @override
   UrlLaunchePageFul createState() => UrlLaunchePageFul();
 }
 
 class UrlLaunchePageFul extends State<UrlLaunchePage> {
-  String _responseText = 'Radey';
+  List<dynamic> _responseText = [];
+  var response = [];
 
   EdgeInsets std_margin =
       const EdgeInsets.only(left: 10, top: 10, right: 10, bottom: 0);
 
-  void fetch() async {
+
+
+
+  Future<List<dynamic>> fetch() async {
+    //final String json;
+    List<dynamic> jsonArray = [];
     const url = 'http://localhost:3000'; //←ここに表示させたいURLを入力する
 
     final List<List<dynamic>> data = [
@@ -47,49 +55,39 @@ class UrlLaunchePageFul extends State<UrlLaunchePage> {
         'data': jsonEncode(data),
       }));
 
-      final String json = response.body;
-      setState(() {
-        _responseText = json;
-      });
+      //json = response.body;
+
+      jsonArray = jsonDecode(response.body);
+
+      for (int i = 0; i < jsonArray.length; i++) {
+        print(jsonArray[i]['Code']);
+        print(jsonArray[i]['Name']);
+        print(jsonArray[i]['Price']);
+        print(jsonArray[i]['Reshio']);
+        print(jsonArray[i]['Percent']);
+        print(jsonArray[i]['Polarity']);
+      }
+
+      //setState(() {
+      //  _responseText = jsonArray;
+      //});
     } catch (e) {
       // レスポンスがない場合の処理
-       setState(() {
-        _responseText = 'Server unresponsive: $e';
-      });
-     
+      //setState(() {
+      print('Server unresponsive: $e');
+      //});
     }
-  }
-
-  void _opneUrl() async {
-    const url = 'http://localhost:3000'; //←ここに表示させたいURLを入力する
-    //final params = {'id': '123', 'name': 'John Doe'};
-    final params = {
-      'myArray': [
-        [1, 2],
-        [3, 4]
-      ]
-    };
-
-    final response = await http.get(Uri.http(url, '/api/data', params));
-    //final url = Uri.parse('https://example.com/path?name=value');
-
-    //final response = await http.get(url.replace(queryParameters: params));
-    //final response =
-    //    await http.get(Uri.parse(url).replace(queryParameters: params));
-
-    //final response = await http.get(Uri.http(url.authority, url.path, params));
-    //final response = await http.get(Uri.parse(url));
-    print(response.body);
-    setState(() {
-      _responseText = response.body;
-    });
+    return jsonArray;
   }
 
   @override
   void initState() {
     super.initState();
     //_opneUrl();
-    fetch();
+    //List<dynamic> data = fetch();
+
+    //response = fetch();
+    //print(response);
     //window.open('http://localhost:3000'.toString(), '_top');
   }
 
@@ -98,7 +96,8 @@ class UrlLaunchePageFul extends State<UrlLaunchePage> {
     return Scaffold(
       body: Container(
         alignment: Alignment.center,
-        child: Container(
+        child: 
+        Container(
           width: 600,
           height: 700,
           decoration: BoxDecoration(
@@ -239,7 +238,7 @@ class UrlLaunchePageFul extends State<UrlLaunchePage> {
               ),
 
               //),
-              Text(_responseText),
+              const Text("{_responseText[0]['Code']}"),
             ],
           ),
         ),

@@ -8,6 +8,7 @@
 
 
 const express = require('express');
+const jsdom = require('jsdom');
 const cors = require('cors');
 
 // expressアプリを生成する
@@ -15,6 +16,8 @@ const app = express();
 const port = 3000;
 
 var reqArray = [];//new Array();
+var stock = [];
+
 
 app.use(cors());
 
@@ -26,26 +29,70 @@ app.use(function (req, res, next) {
 
 // webフォルダの中身を公開する
 //app.use(express.static('./Node/'));
+const {
+  JSDOM
+} = require('jsdom')
+
+var options_dji = {
+  url: 'https://finance.yahoo.co.jp/quote/%5EDJI',
+  method: 'GET',
+  json: true
+}
+
+var options_nk = {
+  url: 'https://finance.yahoo.co.jp/quote/998407.O',
+  method: 'GET',
+  json: true
+}
+
+
+async function getdji() {
+  const dom = await JSDOM.fromURL('https://finance.yahoo.co.jp/quote/%5EDJI');
+  const body = dom.window.document.querySelector('body');
+  const spanElements = body.querySelectorAll('span');
+  const spanTexts = Array.from(spanElements).map(spanElement => spanElement.textContent);
+  return spanTexts;
+}
+
 
 
 app.get('/', (req, res) => {
+  stock = [];
+
   console.log(`Example app get()`)
   const data = JSON.parse(req.query.data);
   console.log(data);
 
   const arr1 = Array.from(data);
- 
+
   console.log(arr1[0][0]);
   console.log(arr1[1][0]);
   console.log(arr1[2][0]);
   console.log(arr1.length);
 
+
+  (async function () {
+    const resultPromise = getdji();
+    //const result = await resultPromise;
+    dji_span = await resultPromise;
+    //dji_span = result;
+    //console.log(result); // Hello, World!
+  })();
+
+  dji_polarity = dji_span[23] == null ? "-" : dji_span[23].slice(0, 1);
+  stock.push({ Code: '^DJI', Name: '^DJI1', Price: dji_span[18], Reshio: dji_span[23], Percent: dji_span[28], Polarity: dji_polarity });
+  stock.push({ Code: '^DJI', Name: '^DJI2', Price: dji_span[18], Reshio: dji_span[23], Percent: dji_span[28], Polarity: dji_polarity });
+
   //const values = req.query.data;
   //console.log(values);
   //console.log(`Query parameters: ${JSON.stringify(req.query)}`);
 
-
-  res.send('Hello Node-World!')
+  console.log(stock);
+  //console.log(stock.length);
+  // JSONを送信する
+  //res.json(todoList);
+  res.json(stock);
+  //res.send('Hello Node-World!')
   //res.send(JSON.stringify('Hello World!'));
 })
 
