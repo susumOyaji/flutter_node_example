@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:html';
 import 'dart:convert';
+import 'Clipper.dart';
 
 void main() {
   runApp(const MyApp());
@@ -29,26 +30,34 @@ class UrlLaunchePage extends StatefulWidget {
 class UrlLaunchePageFul extends State<UrlLaunchePage> {
   String _responseText = 'Radey';
 
-  EdgeInsets std_margin = const EdgeInsets.only(left: 10, top: 10, right: 10, bottom: 0);
+  EdgeInsets std_margin =
+      const EdgeInsets.only(left: 10, top: 10, right: 10, bottom: 0);
 
   void fetch() async {
     const url = 'http://localhost:3000'; //←ここに表示させたいURLを入力する
+
     final List<List<dynamic>> data = [
       ["6758", 1665, 200],
       ["6976", 300, 1801],
       ["3436", 0, 0],
     ];
-    final response = await http.get(Uri.parse(url).replace(queryParameters: {
-      'data': jsonEncode(data),
-    }));
 
-    //final response = await http.get(Uri.parse('http://localhost:3000')); //^DJI
+    try {
+      final response = await http.get(Uri.parse(url).replace(queryParameters: {
+        'data': jsonEncode(data),
+      }));
 
-    final String json = response.body;
-
-    setState(() {
-      _responseText = json;
-    });
+      final String json = response.body;
+      setState(() {
+        _responseText = json;
+      });
+    } catch (e) {
+      // レスポンスがない場合の処理
+       setState(() {
+        _responseText = '例外が発生しました: $e';
+      });
+     
+    }
   }
 
   void _opneUrl() async {
@@ -90,7 +99,7 @@ class UrlLaunchePageFul extends State<UrlLaunchePage> {
       body: Container(
         alignment: Alignment.center,
         child: Container(
-          width: 500,
+          width: 600,
           height: 700,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
@@ -98,6 +107,51 @@ class UrlLaunchePageFul extends State<UrlLaunchePage> {
           ),
           child: Column(
             children: <Widget>[
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  GestureDetector(
+                    child: ClipPath(
+                      clipper: MyCustomClipper(),
+                      child: Container(
+                          //margin: std_margin,
+                          padding: const EdgeInsets.only(
+                              top: 0.0, left: 20.0, right: 0.0, bottom: 10.0),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                Colors.white,
+                                Colors.grey.shade800,
+                              ],
+                            ),
+                            borderRadius: const BorderRadius.only(
+                              topRight: Radius.circular(10),
+                              bottomRight: Radius.circular(10),
+                            ),
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: const [
+                                  Text(
+                                    "Stocks",
+                                    style: TextStyle(
+                                      fontSize: 30.0,
+                                      color: Colors.orange,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          )),
+                    ),
+                  ),
+                ],
+              ),
+
               Container(
                 margin: std_margin,
                 width: 450,
@@ -105,6 +159,33 @@ class UrlLaunchePageFul extends State<UrlLaunchePage> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   color: Colors.black,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Text(
+                      '^DJI',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        height: 0.8,
+                        letterSpacing: 0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textDirection: TextDirection.rtl,
+                    ),
+                    Text(
+                      'Nikkei',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        height: 0.8,
+                        letterSpacing: 0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textDirection: TextDirection.rtl,
+                    ),
+                  ],
                 ),
               ),
               Container(
@@ -115,14 +196,32 @@ class UrlLaunchePageFul extends State<UrlLaunchePage> {
                   borderRadius: BorderRadius.circular(10),
                   color: Colors.black,
                 ),
-              ),
-              Container(
-                margin: std_margin,
-                width: 450,
-                height: 100,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.black,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Text(
+                      'Flutter',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        height: 0.8,
+                        letterSpacing: 0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textDirection: TextDirection.rtl,
+                    ),
+                    Text(
+                      'Web',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        height: 0.8,
+                        letterSpacing: 0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textDirection: TextDirection.rtl,
+                    ),
+                  ],
                 ),
               ),
               Container(
@@ -147,7 +246,7 @@ class UrlLaunchePageFul extends State<UrlLaunchePage> {
       ),
     );
   }
-
+}
 /*
   Widget build(BuildContext context) {
     return Scaffold(
@@ -169,4 +268,4 @@ class UrlLaunchePageFul extends State<UrlLaunchePage> {
         )));
   }
   */
-}
+//}
