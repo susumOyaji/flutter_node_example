@@ -36,9 +36,6 @@ class UrlLaunchePageFul extends State<UrlLaunchePage> {
   EdgeInsets std_margin =
       const EdgeInsets.only(left: 10, top: 10, right: 10, bottom: 0);
 
-
-
-
   Future<List<dynamic>> fetch() async {
     //final String json;
     List<dynamic> jsonArray = [];
@@ -80,24 +77,38 @@ class UrlLaunchePageFul extends State<UrlLaunchePage> {
     return jsonArray;
   }
 
+
+
+  
+
+  List<dynamic> myList = await fetch();
+
+  //Widget build(BuildContext context) async {
+  List<dynamic> dataList =  await fetch(); // fetch() の結果を待機して、List<dynamic> 型の変数に代入する
+  // dataList を使用したコード
+//}
+
+
+
+
   @override
-  void initState() {
+  void initState(){
     super.initState();
+    
     //_opneUrl();
     //List<dynamic> data = fetch();
 
     //response = fetch();
-    //print(response);
+    //print(res);
     //window.open('http://localhost:3000'.toString(), '_top');
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
     return Scaffold(
       body: Container(
         alignment: Alignment.center,
-        child: 
-        Container(
+        child: Container(
           width: 600,
           height: 700,
           decoration: BoxDecoration(
