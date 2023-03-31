@@ -304,7 +304,10 @@ class UrlLaunchePageFul extends State<UrlLaunchePage> {
                             children: [
                               TextSpan(
                                 text: _responseText[1]['Price'],
-                                style: const TextStyle(color: Colors.orange,fontSize: 30,),
+                                style: const TextStyle(
+                                  color: Colors.orange,
+                                  fontSize: 30,
+                                ),
                               ),
                             ],
                           ),
@@ -313,14 +316,15 @@ class UrlLaunchePageFul extends State<UrlLaunchePage> {
                     ),
                     Text.rich(
                       TextSpan(
-                        text: 'Profit(Gains):  \¥'+  _responseText[1]['Price'],
+                        text: 'Profit(Gains):  \¥' + _responseText[1]['Price'],
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 16,
                         ),
                         children: [
                           TextSpan(
-                            text: '   Investment:  \¥' + _responseText[1]['Reshio'],
+                            text: '   Investment:  \¥' +
+                                _responseText[1]['Reshio'],
                             style: const TextStyle(color: Colors.white),
                           ),
                         ],
