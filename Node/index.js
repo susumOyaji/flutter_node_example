@@ -54,6 +54,13 @@ async function getdji() {
   return spanTexts;
 }
 
+async function getnk() {
+  const dom = await JSDOM.fromURL('https://finance.yahoo.co.jp/quote/998407.O');
+  const body = dom.window.document.querySelector('body');
+  const spanElements = body.querySelectorAll('span');
+  const spanTexts = Array.from(spanElements).map(spanElement => spanElement.textContent);
+  return spanTexts;
+}
 
 
 app.get('/', (req, res) => {
@@ -79,9 +86,22 @@ app.get('/', (req, res) => {
     //console.log(result); // Hello, World!
   })();
 
+
+  (async function () {
+    const resultPromise = getnk();
+    //const result = await resultPromise;
+    nk_span = await resultPromise;
+    //nk_span = result;
+    //console.log(result); // Hello, World!
+  })();
+
+
+
   dji_polarity = dji_span[23] == null ? "-" : dji_span[23].slice(0, 1);
   stock.push({ Code: '^DJI', Name: '^DJI1', Price: dji_span[18], Reshio: dji_span[23], Percent: dji_span[28], Polarity: dji_polarity });
-  stock.push({ Code: '^DJI', Name: '^DJI2', Price: dji_span[18], Reshio: dji_span[23], Percent: dji_span[28], Polarity: dji_polarity });
+  
+  nk_polarity = nk_span[23] == null ? "-" : nk_span[23].slice(0, 1);
+  stock.push({ Code: 'NIKKEI', Name: 'NIKKEI', Price: nk_span[19], Reshio: nk_span[23], Percent: nk_span[29], Polarity: nk_polarity });
 
   //const values = req.query.data;
   //console.log(values);

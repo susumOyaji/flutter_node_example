@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
@@ -36,7 +38,7 @@ class UrlLaunchePageFul extends State<UrlLaunchePage> {
   EdgeInsets std_margin =
       const EdgeInsets.only(left: 10, top: 10, right: 10, bottom: 0);
 
-  Future<List<dynamic>> fetch() async {
+  void fetch() async {
     //final String json;
     List<dynamic> jsonArray = [];
     const url = 'http://localhost:3000'; //←ここに表示させたいURLを入力する
@@ -65,46 +67,39 @@ class UrlLaunchePageFul extends State<UrlLaunchePage> {
         print(jsonArray[i]['Polarity']);
       }
 
-      //setState(() {
-      //  _responseText = jsonArray;
-      //});
+      setState(() {
+        _responseText = jsonArray;
+      });
     } catch (e) {
-      // レスポンスがない場合の処理
-      //setState(() {
-      print('Server unresponsive: $e');
-      //});
+      //レスポンスがない場合の処理
+      setState(() {
+        print('Server unresponsive: $e');
+      });
     }
-    return jsonArray;
+    //return jsonArray;
   }
 
-
-
-  
-
-  List<dynamic> myList = await fetch();
+  //List<dynamic> myList = await fetch();
 
   //Widget build(BuildContext context) async {
-  List<dynamic> dataList =  await fetch(); // fetch() の結果を待機して、List<dynamic> 型の変数に代入する
+  //List<dynamic> dataList =  await fetch(); // fetch() の結果を待機して、List<dynamic> 型の変数に代入する
   // dataList を使用したコード
 //}
 
-
-
-
   @override
-  void initState(){
+  void initState() {
     super.initState();
-    
+
     //_opneUrl();
     //List<dynamic> data = fetch();
 
-    //response = fetch();
+    fetch();
     //print(res);
     //window.open('http://localhost:3000'.toString(), '_top');
   }
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         alignment: Alignment.center,
@@ -113,7 +108,7 @@ class UrlLaunchePageFul extends State<UrlLaunchePage> {
           height: 700,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: Colors.orange,
+            color: Colors.black,
           ),
           child: Column(
             children: <Widget>[
@@ -164,72 +159,172 @@ class UrlLaunchePageFul extends State<UrlLaunchePage> {
 
               Container(
                 margin: std_margin,
-                width: 450,
+                width: 550,
                 height: 100,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: Colors.black,
+                  color: Color.fromARGB(255, 56, 50, 50),
                 ),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Text(
-                      '^DJI',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        height: 0.8,
-                        letterSpacing: 0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textDirection: TextDirection.rtl,
+                  mainAxisAlignment: MainAxisAlignment.center, //上下位置
+                  crossAxisAlignment: CrossAxisAlignment.center, //左右位置
+                  children: [
+                    Wrap(
+                      spacing: 8.0,
+                      children: [
+                        CircleAvatar(
+                          maxRadius: 8.0,
+                          backgroundColor: _responseText[0]['Polarity'] == "+"
+                              ? Colors.red
+                              : Colors.green,
+                        ),
+                        Text.rich(
+                          TextSpan(
+                            text: 'Dow Price:  \$',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                            children: [
+                              TextSpan(
+                                text: _responseText[0]['Price'],
+                                style: const TextStyle(color: Colors.blue),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                    Text(
-                      'Nikkei',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        height: 0.8,
-                        letterSpacing: 0,
-                        fontWeight: FontWeight.bold,
+                    Text.rich(
+                      TextSpan(
+                        text: '\tThe day brfore ratio:  ',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                        children: [
+                          TextSpan(
+                            text: _responseText[0]['Reshio'] +
+                                "   " +
+                                _responseText[0]['Percent'],
+                            style: TextStyle(
+                                color: (_responseText[0]['Polarity'] == "+")
+                                    ? Colors.red
+                                    : Colors.green),
+                          ),
+                        ],
                       ),
-                      textDirection: TextDirection.rtl,
+                    ),
+                    Wrap(
+                      spacing: 8.0,
+                      children: [
+                        CircleAvatar(
+                          maxRadius: 8.0,
+                          backgroundColor: _responseText[1]['Polarity'] == "+"
+                              ? Colors.red
+                              : Colors.green,
+                        ),
+                        Text.rich(
+                          TextSpan(
+                            text: 'Nikkei Price:  \¥',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                            children: [
+                              TextSpan(
+                                text: _responseText[1]['Price'],
+                                style: const TextStyle(color: Colors.blue),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    Text.rich(
+                      TextSpan(
+                        text: 'The day brfore ratio:  ',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                        children: [
+                          TextSpan(
+                            text: _responseText[1]['Reshio'] +
+                                "   " +
+                                _responseText[1]['Percent'],
+                            style: TextStyle(
+                                color: (_responseText[1]['Polarity'] == "+")
+                                    ? Colors.red
+                                    : Colors.green),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
               ),
+
               Container(
                 margin: std_margin,
-                width: 450,
+                width: 550,
                 height: 100,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: Colors.black,
+                  color: Color.fromARGB(255, 56, 50, 50),
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Text(
-                      'Flutter',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        height: 0.8,
-                        letterSpacing: 0,
-                        fontWeight: FontWeight.bold,
+                  children: [
+                    const Text.rich(
+                      TextSpan(
+                        text: 'Market capitalization',
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 30,
+                        ),
                       ),
-                      textDirection: TextDirection.rtl,
                     ),
-                    Text(
-                      'Web',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        height: 0.8,
-                        letterSpacing: 0,
-                        fontWeight: FontWeight.bold,
+                    Wrap(
+                      spacing: 8.0,
+                      children: [
+                        CircleAvatar(
+                          maxRadius: 8.0,
+                          backgroundColor: _responseText[1]['Polarity'] == "+"
+                              ? Colors.orange
+                              : Colors.blue,
+                        ),
+                        Text.rich(
+                          TextSpan(
+                            text: 'Market Price:',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                            children: [
+                              TextSpan(
+                                text: _responseText[1]['Price'],
+                                style: const TextStyle(color: Colors.orange,fontSize: 30,),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    Text.rich(
+                      TextSpan(
+                        text: 'Profit(Gains):  \¥'+  _responseText[1]['Price'],
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                        children: [
+                          TextSpan(
+                            text: '   Investment:  \¥' + _responseText[1]['Reshio'],
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                        ],
                       ),
-                      textDirection: TextDirection.rtl,
                     ),
                   ],
                 ),
@@ -249,7 +344,7 @@ class UrlLaunchePageFul extends State<UrlLaunchePage> {
               ),
 
               //),
-              const Text("{_responseText[0]['Code']}"),
+              Text(_responseText[0]['Code']),
             ],
           ),
         ),
