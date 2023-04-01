@@ -38,6 +38,11 @@ class UrlLaunchePageFul extends State<UrlLaunchePage> {
   EdgeInsets std_margin =
       const EdgeInsets.only(left: 10, top: 10, right: 10, bottom: 0);
 
+
+
+
+
+
   void fetch() async {
     //final String json;
     List<dynamic> jsonArray = [];
@@ -90,6 +95,9 @@ class UrlLaunchePageFul extends State<UrlLaunchePage> {
   void initState() {
     super.initState();
     fetch();
+    //while(_responseText.isEmpty){
+    //  fetch();
+    //}
   }
 
   @override
