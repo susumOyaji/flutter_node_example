@@ -34,25 +34,22 @@ class UrlLaunchePage extends StatefulWidget {
 class UrlLaunchePageFul extends State<UrlLaunchePage> {
   List<dynamic> _responseText = [];
   var response = [];
+  List<String> codeItems = []; //codekey
+  static List<bool> percentcheng = [];
+
+  final List<List<dynamic>> data = [
+    ["6758", 1665, 200],
+    ["6976", 300, 1801],
+    ["3436", 0, 0],
+  ];
 
   EdgeInsets std_margin =
       const EdgeInsets.only(left: 10, top: 10, right: 10, bottom: 0);
-
-
-
-
-
 
   void fetch() async {
     //final String json;
     List<dynamic> jsonArray = [];
     const url = 'http://localhost:3000'; //←ここに表示させたいURLを入力する
-
-    final List<List<dynamic>> data = [
-      ["6758", 1665, 200],
-      ["6976", 300, 1801],
-      ["3436", 0, 0],
-    ];
 
     try {
       final response = await http.get(Uri.parse(url).replace(queryParameters: {
@@ -100,6 +97,163 @@ class UrlLaunchePageFul extends State<UrlLaunchePage> {
     //}
   }
 
+  //////
+  ListView listView() => ListView.builder(
+      scrollDirection: Axis.vertical,
+      itemCount: data.length, //+20,//<-- setState()
+      //gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 1),
+      itemBuilder: (BuildContext context, int index) {
+        return GestureDetector(
+          child: Container(
+              margin: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
+              padding: const EdgeInsets.all(5.0),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    //Color(0xffb43af7),
+                    //Color(0x0B52067),
+                    //Color(0xff6d2af7),
+                    Colors.black,
+                    Colors.grey.shade800,
+                  ],
+                ),
+                borderRadius: const BorderRadius.only(
+                  topRight: Radius.circular(10),
+                  bottomRight: Radius.circular(10),
+                ),
+              ),
+              child: Row(
+                  //mainAxisAlignment: MainAxisAlignment.center,
+                  //mainAxisSize: MainAxisSize.max,
+                  //crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    //Column(
+                    //mainAxisAlignment: MainAxisAlignment.start,
+                    //mainAxisSize: MainAxisSize.min,
+                    //crossAxisAlignment: CrossAxisAlignment.start,
+                    // children:<Widget>[
+                    Expanded(
+                      flex: 2,
+                      child:
+                          //Padding(
+                          //  padding: EdgeInsets.only(top: 0.0, right: 0.0, bottom: 0.0, left: 0.0),
+
+                          //child:
+                          ElevatedButton(
+                        child: Text("${_responseText[index]["Code"]}",
+                            //style: TextStyle(
+                              //fontSize: 10.0,
+                              //color: Colors.black,
+                             // fontFamily: 'NotoSansJP',
+                            //)
+                            ),
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.purple, //ボタンの背景色
+                          shape: const CircleBorder(),
+                        ),
+                        onPressed: () {
+                          //_asyncEditDialog(context, index);
+                        },
+                        onLongPress: () {
+                          //alertDialog(index);
+                        },
+                      ),
+                    ),
+
+                    //  ]
+                    // ),
+
+                    //SizedBox(width: 15.0,),
+                    Expanded(
+                      flex: 6,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        //mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "${_responseText[index]['Name']}",
+                            style: const TextStyle(
+                              fontSize: 12.0,
+                              color: Colors.grey,
+                              fontFamily: 'NoteSansJP',
+                              fontWeight: FontWeight.bold,
+                            ),
+                            strutStyle: const StrutStyle(
+                              fontSize: 10.0,
+                              height: 1.0,
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Text("Market: ${_responseText[index]['Price']}",
+                                  style: const TextStyle(
+                                      fontFamily: 'NotoSansJP',
+                                      fontSize: 12.0,
+                                      color: Colors.blue),
+                                  textAlign: TextAlign.left),
+                              Text(
+                                "Benefits: ${_responseText[index]['Price']}",
+                                style: const TextStyle(
+                                    fontFamily: 'NoteSansJP',
+                                    //fontWeight: FontWeight.bold,
+                                    fontSize: 12.0,
+                                    color: Colors.yellow),
+                              ),
+                            ],
+                          ),
+                          const Text(
+                            "Evaluation: {separation(int.parse(valuableAssetsItems[index]))}", //$$$$
+                            style: TextStyle(
+                                fontFamily: 'NoteSansJP',
+                                //fontWeight: FontWeight.bold,
+                                fontSize: 12.0,
+                                color: Colors.orange),
+                          ),
+                        ],
+                      ),
+                    ),
+                    //SizedBox(width: 50.0,),
+                    Expanded(
+                      flex: 2,
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            top: 0.0, right: 0.0, bottom: 0.0, left: 0.0),
+                        //child: //SizedBox(
+                        //height: 30.0,
+                        //width: 60.0,
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.all(0.0),
+                            primary: Colors.orange,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(2.0)),
+                            ),
+                            backgroundColor: _responseText[index]['Plaryt']
+                                ? Colors.red
+                                : Colors.green,
+                          ),
+                          child: Text(
+                            _responseText[index]['Percent'] //signalstate[index]
+                                ? '{changePriceRate[index]}%' //$$$
+                                : '{changePriceValue[index]}', //$$$
+                            style:
+                                TextStyle(fontSize: 13.0, color: Colors.black),
+                          ),
+                          onPressed: () => setState(() {
+                            percentcheng[index] = !percentcheng[index];
+                          }),
+                        ),
+                        //),
+                      ),
+                    ),
+                  ])),
+        );
+      });
+
+  ///Main Display Screen
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -372,6 +526,7 @@ class UrlLaunchePageFul extends State<UrlLaunchePage> {
                   borderRadius: BorderRadius.circular(10),
                   color: Colors.black,
                 ),
+                child: listView(), //gridView1(),
               ),
               ElevatedButton(
                 child: const Text('UrlOpen'),
@@ -387,6 +542,8 @@ class UrlLaunchePageFul extends State<UrlLaunchePage> {
     );
   }
 }
+
+
 /*
   Widget build(BuildContext context) {
     return Scaffold(
