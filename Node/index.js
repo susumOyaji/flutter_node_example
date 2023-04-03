@@ -45,6 +45,29 @@ var options_nk = {
   json: true
 }
 
+async function getany(url) {
+  const dom = await JSDOM.fromURL(url);
+  const body = dom.window.document.querySelector('body');
+  const h1Elements = body.querySelectorAll('h1');
+  const h1Texts = Array.from(h1Elements).map(h1Element => h1Element.textContent);
+
+  const spanElements = body.querySelectorAll('span');
+  const spanTexts = Array.from(spanElements).map(spanElement => spanElement.textContent);
+
+  const values = {
+      value1: h1Texts,
+      value2: spanTexts
+  };
+  return values;
+}
+
+var dji_span = [];
+var nk_span = [];
+var any_span = [];
+var any_name = [];
+
+
+
 
 async function getdji() {
   const dom = await JSDOM.fromURL('https://finance.yahoo.co.jp/quote/%5EDJI');
@@ -61,6 +84,24 @@ async function getnk() {
   const spanTexts = Array.from(spanElements).map(spanElement => spanElement.textContent);
   return spanTexts;
 }
+
+async function getany(url) {
+  const dom = await JSDOM.fromURL(url);
+  const body = dom.window.document.querySelector('body');
+  const h1Elements = body.querySelectorAll('h1');
+  const h1Texts = Array.from(h1Elements).map(h1Element => h1Element.textContent);
+
+  const spanElements = body.querySelectorAll('span');
+  const spanTexts = Array.from(spanElements).map(spanElement => spanElement.textContent);
+
+  const values = {
+      value1: h1Texts,
+      value2: spanTexts
+  };
+  return values;
+}
+
+
 
 
 app.get('/', (req, res) => {
@@ -96,12 +137,44 @@ app.get('/', (req, res) => {
   })();
 
 
+  for (let i = 0; i < data.length; i++) {
+    element = data[i][0];
+
+    (async function () {
+        url = `https://finance.yahoo.co.jp/quote/${element}.T`;
+        //console.log(url);
+        const resultPromise = getany(url);
+        any_name[i] = (await resultPromise).value1;
+        //const result = await resultPromise;
+        any_span[i] = (await resultPromise).value2;
+        //console.log(any_span);
+        //nk_span = result;
+        //console.log(result); // Hello, World!
+    })();
+}
+
+
+
+
 
   dji_polarity = dji_span[23] == null ? "-" : dji_span[23].slice(0, 1);
   stock.push({ Code: '^DJI', Name: '^DJI1', Price: dji_span[18], Reshio: dji_span[23], Percent: dji_span[28], Polarity: dji_polarity });
   
   nk_polarity = nk_span[23] == null ? "-" : nk_span[23].slice(0, 1);
   stock.push({ Code: 'NIKKEI', Name: 'NIKKEI', Price: nk_span[19], Reshio: nk_span[23], Percent: nk_span[29], Polarity: nk_polarity });
+
+
+  if (any_span[0] != null) {
+    for (let i = 0; i < data.length; i++) {
+        any_polarity = any_span[i][29] == null ? "-" : any_span[i][29].slice(0, 1);
+        stock.push({ Code: any_span[i][25], Name: any_name[i][1], Price: any_span[i][22], Reshio: any_span[i][30], Percent: any_span[i][34], Polarity: any_polarity });
+    }
+
+}
+
+
+
+
 
   //const values = req.query.data;
   //console.log(values);

@@ -35,10 +35,11 @@ class UrlLaunchePageFul extends State<UrlLaunchePage> {
   List<dynamic> _responseText = [];
   var response = [];
   List<String> codeItems = []; //codekey
+  static int itemOffset = 2;
   static List<bool> percentcheng = [];
 
   final List<List<dynamic>> data = [
-    ["6758", 1665, 200],
+    ["6758", 200, 1665],
     ["6976", 300, 1801],
     ["3436", 0, 0],
   ];
@@ -88,14 +89,129 @@ class UrlLaunchePageFul extends State<UrlLaunchePage> {
   // dataList を使用したコード
 //}
 
+  void setup() {
+    fetch();
+    _responseText.asMap().forEach((index, element) {
+      // indexやelementに対する処理
+    });
+
+    //while (_responseText.isEmpty) {
+      //fetch();
+    //}
+  }
+
   @override
   void initState() {
     super.initState();
-    fetch();
+    //fetch();
     //while(_responseText.isEmpty){
     //  fetch();
     //}
+    setup();
   }
+
+  ListView listViewsample() => ListView.builder(
+      scrollDirection: Axis.vertical,
+      itemCount: (data.length), // リストの要素数
+      itemBuilder: (BuildContext context, int index) {
+        return Container(
+          decoration: BoxDecoration(
+            color: const Color.fromARGB(255, 56, 50, 50),
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+
+          //alignment: Alignment.topCenter,
+          margin: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
+          padding: const EdgeInsets.all(5.0),
+
+          child: ListTile(
+            leading: CircleAvatar(
+              backgroundColor: Colors.purple,
+              radius: 60,
+              child: Text(
+                _responseText[index + itemOffset]['Code'],
+                style: const TextStyle(color: Colors.black),
+              ),
+            ),
+            title: Text(_responseText[index + itemOffset]['Name'],
+                style: const TextStyle(color: Colors.grey)), // タイトル
+            subtitle: Column(
+              children: [
+                Wrap(
+                  spacing: 8.0, //Wrap内アイテムの間隔
+                  children: [
+                    Text.rich(
+                      TextSpan(
+                        text:
+                            'Market price:  \¥${_responseText[index + itemOffset]['Price']}',
+                        style: const TextStyle(
+                          color: Colors.blue,
+                          fontSize: 16,
+                        ),
+                        children: const [
+                          TextSpan(
+                            text: '   Benefits:  \¥',
+                            style: TextStyle(color: Colors.yellow),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                Wrap(
+                  spacing: 8.0,
+                  children: [
+                    Text.rich(
+                      TextSpan(
+                        text: 'Evaluation:  \¥',
+                        style: const TextStyle(
+                          color: Colors.orange,
+                          fontSize: 16,
+                        ),
+                        children: [
+                          TextSpan(
+                            text: (data[index][1] *
+                                    int.parse(_responseText[index + itemOffset]
+                                            ['Price']
+                                        .split(',')
+                                        .join()))
+                                .toString(),
+                            style: const TextStyle(color: Colors.orange),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+
+            // サブタイトル
+            trailing: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                fixedSize: const Size(100, 50),
+                backgroundColor:
+                    _responseText[index + itemOffset]['Polarity'] == '+'
+                        ? Colors.red
+                        : Colors.green,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5),
+                ),
+              ),
+              child: Text(
+                _responseText[index + itemOffset]['Reshio'],
+                style: const TextStyle(color: Colors.black, fontSize: 20),
+              ),
+              onPressed: () => fetch(), //_opneUrl(),
+            ), // 右端のアイコン
+
+            onTap: () {
+              // リストアイテムがタップされたときの処理
+              print('タップされたアイテム: $index');
+            },
+          ),
+        );
+      });
 
   //////
   ListView listView() => ListView.builder(
@@ -140,13 +256,14 @@ class UrlLaunchePageFul extends State<UrlLaunchePage> {
 
                           //child:
                           ElevatedButton(
-                        child: Text("${_responseText[index]["Code"]}",
-                            //style: TextStyle(
-                              //fontSize: 10.0,
-                              //color: Colors.black,
-                             // fontFamily: 'NotoSansJP',
-                            //)
-                            ),
+                        child: Text(
+                          "${_responseText[index]["Code"]}",
+                          //style: TextStyle(
+                          //fontSize: 10.0,
+                          //color: Colors.black,
+                          // fontFamily: 'NotoSansJP',
+                          //)
+                        ),
                         style: ElevatedButton.styleFrom(
                           primary: Colors.purple, //ボタンの背景色
                           shape: const CircleBorder(),
@@ -498,16 +615,16 @@ class UrlLaunchePageFul extends State<UrlLaunchePage> {
                         ),
                         Text.rich(
                           TextSpan(
-                            text: 'Profit(Gains):  \¥' +
-                                _responseText[1]['Price'],
+                            text:
+                                'Profit(Gains):  \¥${_responseText[1]['Price']}',
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 16,
                             ),
                             children: [
                               TextSpan(
-                                text: '   Investment:  \¥' +
-                                    _responseText[1]['Reshio'],
+                                text:
+                                    '   Investment:  \¥${_responseText[1]['Reshio']}',
                                 style: const TextStyle(color: Colors.white),
                               ),
                             ],
@@ -520,13 +637,13 @@ class UrlLaunchePageFul extends State<UrlLaunchePage> {
               ),
               Container(
                 margin: std_margin,
-                width: 450,
-                height: 100,
+                width: 600,
+                height: 380,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   color: Colors.black,
                 ),
-                child: listView(), //gridView1(),
+                child: listViewsample(), //listView(), //gridView1(),
               ),
               ElevatedButton(
                 child: const Text('UrlOpen'),
@@ -534,7 +651,6 @@ class UrlLaunchePageFul extends State<UrlLaunchePage> {
               ),
 
               //),
-              Text(_responseText[0]['Code']),
             ],
           ),
         ),
