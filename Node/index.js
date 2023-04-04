@@ -55,8 +55,8 @@ async function getany(url) {
   const spanTexts = Array.from(spanElements).map(spanElement => spanElement.textContent);
 
   const values = {
-      value1: h1Texts,
-      value2: spanTexts
+    value1: h1Texts,
+    value2: spanTexts
   };
   return values;
 }
@@ -95,8 +95,8 @@ async function getany(url) {
   const spanTexts = Array.from(spanElements).map(spanElement => spanElement.textContent);
 
   const values = {
-      value1: h1Texts,
-      value2: spanTexts
+    value1: h1Texts,
+    value2: spanTexts
   };
   return values;
 }
@@ -141,36 +141,58 @@ app.get('/', (req, res) => {
     element = data[i][0];
 
     (async function () {
-        url = `https://finance.yahoo.co.jp/quote/${element}.T`;
-        //console.log(url);
-        const resultPromise = getany(url);
-        any_name[i] = (await resultPromise).value1;
-        //const result = await resultPromise;
-        any_span[i] = (await resultPromise).value2;
-        //console.log(any_span);
-        //nk_span = result;
-        //console.log(result); // Hello, World!
+      url = `https://finance.yahoo.co.jp/quote/${element}.T`;
+      //console.log(url);
+      const resultPromise = getany(url);
+      any_name[i] = (await resultPromise).value1;
+      //const result = await resultPromise;
+      any_span[i] = (await resultPromise).value2;
+      //console.log(any_span);
+      //nk_span = result;
+      //console.log(result); // Hello, World!
     })();
-}
+  }
 
 
 
 
 
-  dji_polarity = dji_span[23] == null ? "-" : dji_span[23].slice(0, 1);
+
+
+
+  if (dji_span[23] === undefined || dji_span[23] === null) {
+    // undefinedまたはnullの場合の処理
+    dji_polarity = "-";
+    dji_span[18]="---";
+  } else {
+    var dji_Firstcharacter = dji_span[23].slice(0, 1);
+    dji_polarity = (dji_Firstcharacter !== "+" && dji_Firstcharacter !== "-") ? "-" : dji_Firstcharacter;
+  }
   stock.push({ Code: '^DJI', Name: '^DJI1', Price: dji_span[18], Reshio: dji_span[23], Percent: dji_span[28], Polarity: dji_polarity });
-  
-  nk_polarity = nk_span[23] == null ? "-" : nk_span[23].slice(0, 1);
+
+
+
+
+
+
+
+  if (nk_span[23] === undefined || nk_span[23] === null) {
+    // undefinedまたはnullの場合の処理
+    nk_polarity = "-";
+  } else {
+    var nk_Firstcharacter = nk_span[23].slice(0, 1);
+    nk_polarity = (nk_Firstcharacter !== "+" && nk_Firstcharacter !== "-") ? "-" : nk_Firstcharacter;
+  }
   stock.push({ Code: 'NIKKEI', Name: 'NIKKEI', Price: nk_span[19], Reshio: nk_span[23], Percent: nk_span[29], Polarity: nk_polarity });
 
 
   if (any_span[0] != null) {
     for (let i = 0; i < data.length; i++) {
-        any_polarity = any_span[i][29] == null ? "-" : any_span[i][29].slice(0, 1);
-        stock.push({ Code: any_span[i][25], Name: any_name[i][1], Price: any_span[i][22], Reshio: any_span[i][30], Percent: any_span[i][34], Polarity: any_polarity });
+      any_polarity = any_span[i][29] != "+" ? "-" : any_span[i][29].slice(0, 1);
+      stock.push({ Code: any_span[i][25], Name: any_name[i][1], Price: any_span[i][22], Reshio: any_span[i][30], Percent: any_span[i][34], Polarity: any_polarity });
     }
 
-}
+  }
 
 
 
