@@ -16,7 +16,8 @@ const app = express();
 const port = 3000;
 
 var reqArray = [];//new Array();
-var stock = [];
+var stdstock = [];
+var anystock = [];
 
 
 app.use(cors());
@@ -106,6 +107,7 @@ async function getany(url) {
 
 app.get('/', (req, res) => {
   stock = [];
+  stdstock = [];
 
   console.log(`Example app get()`)
   const data = JSON.parse(req.query.data);
@@ -163,12 +165,12 @@ app.get('/', (req, res) => {
   if (dji_span[23] === undefined || dji_span[23] === null) {
     // undefinedまたはnullの場合の処理
     dji_polarity = "-";
-    dji_span[18]="---";
+    dji_span[18] = "---";
   } else {
     var dji_Firstcharacter = dji_span[23].slice(0, 1);
     dji_polarity = (dji_Firstcharacter !== "+" && dji_Firstcharacter !== "-") ? "-" : dji_Firstcharacter;
   }
-  stock.push({ Code: '^DJI', Name: '^DJI1', Price: dji_span[18], Reshio: dji_span[23], Percent: dji_span[28], Polarity: dji_polarity });
+  stdstock.push({ Code: '^DJI', Name: '^DJI1', Price: dji_span[18], Reshio: dji_span[23], Percent: dji_span[28], Polarity: dji_polarity });
 
 
 
@@ -183,30 +185,68 @@ app.get('/', (req, res) => {
     var nk_Firstcharacter = nk_span[23].slice(0, 1);
     nk_polarity = (nk_Firstcharacter !== "+" && nk_Firstcharacter !== "-") ? "-" : nk_Firstcharacter;
   }
-  stock.push({ Code: 'NIKKEI', Name: 'NIKKEI', Price: nk_span[19], Reshio: nk_span[23], Percent: nk_span[29], Polarity: nk_polarity });
+  stdstock.push({ Code: 'NIKKEI', Name: 'NIKKEI', Price: nk_span[19], Reshio: nk_span[23], Percent: nk_span[29], Polarity: nk_polarity });
+
+
+
+
 
 
   if (any_span[0] != null) {
     for (let i = 0; i < data.length; i++) {
       any_polarity = any_span[i][29] != "+" ? "-" : any_span[i][29].slice(0, 1);
-      stock.push({ Code: any_span[i][25], Name: any_name[i][1], Price: any_span[i][22], Reshio: any_span[i][30], Percent: any_span[i][34], Polarity: any_polarity });
+      stdstock.push({ Code: any_span[i][25], Name: any_name[i][1], Price: any_span[i][22], Reshio: any_span[i][30], Percent: any_span[i][34], Polarity: any_polarity });
     }
 
   }
 
+  /*
+  const stockdata = {
+    "stdstock": stdstock,
+    "anystock": anystock,
+    
+  };
+  */
+  /*
+  app.get('/stock', function(req, res) {
+    const stock = {
+      "item1": "apple",
+      "item2": "orange"
+    };
+    const nk = {
+      "item1": "nike",
+      "item2": "adidas"
+    };
+
+
+    const data = {
+      "stock": stock,
+      "nk": nk
+    };
+    res.json(data);
+  });
+  */
+  //この例では、stockとnkという2つのオブジェクトが定義されています。これらをdataというオブジェクトにまとめて、1つのオブジェクトとしてレスポンスしています。ブラウザで/stockエンドポイントにアクセスすると、以下のようなレスポンスが返されます。
+  /*
+  {
+    "stock": {
+      "item1": "apple",
+      "item2": "orange"
+    },
+    "nk": {
+      "item1": "nike",
+      "item2": "adidas"
+    }
+  }
+  */
 
 
 
-
-  //const values = req.query.data;
-  //console.log(values);
-  //console.log(`Query parameters: ${JSON.stringify(req.query)}`);
-
-  console.log(stock);
+  console.log(stdstock);
   //console.log(stock.length);
   // JSONを送信する
   //res.json(todoList);
-  res.json(stock);
+  res.json(stdstock);
   //res.send('Hello Node-World!')
   //res.send(JSON.stringify('Hello World!'));
 })
