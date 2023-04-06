@@ -30,13 +30,13 @@ class MyApp extends StatelessWidget {
                   child: CircularProgressIndicator(),
                 );
               }
-              print(snapshot.data);
               var res = snapshot.data;
               //final jsonData = json.decode(snapshot.data.toString());
               final stdstock = res['stdstock'];
               final anystock = res['anystock'];
               return ListView(
                 children: [
+                  
                   const ListTile(
                     title: Text('stdstock'),
                   ),
@@ -61,6 +61,7 @@ class MyApp extends StatelessWidget {
                       );
                     },
                   ),
+                  
                   const ListTile(
                     title: Text('anystock'),
                   ),
@@ -75,8 +76,9 @@ class MyApp extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(anystock[index]['Name']),
-                              //Text(stdstock[index]['Price']),
-                              //Text(stdstock[index]['Percent']),
+                              Text(anystock[index]['Price']),
+                              Text(anystock[index]['Reshio']),
+                              Text(anystock[index]['Percent']),
                             ],
                           ));
                     },
