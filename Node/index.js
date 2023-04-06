@@ -16,8 +16,8 @@ const app = express();
 const port = 3000;
 
 var reqArray = [];//new Array();
-var stdstock = [];
-var anystock = [];
+var stdstock;
+var anystock;
 
 
 app.use(cors());
@@ -108,6 +108,7 @@ async function getany(url) {
 app.get('/', (req, res) => {
   stock = [];
   stdstock = [];
+  anystock = [];
 
   console.log(`Example app get()`)
   const data = JSON.parse(req.query.data);
@@ -170,7 +171,7 @@ app.get('/', (req, res) => {
     var dji_Firstcharacter = dji_span[23].slice(0, 1);
     dji_polarity = (dji_Firstcharacter !== "+" && dji_Firstcharacter !== "-") ? "-" : dji_Firstcharacter;
   }
-  stdstock.push({ Code: '^DJI', Name: '^DJI1', Price: dji_span[18], Reshio: dji_span[23], Percent: dji_span[28], Polarity: dji_polarity });
+  stdstock.push({ "Code": "^DJI", "Name": "DJI1", "Price": dji_span[18], "Reshio": dji_span[23], "Percent": dji_span[28], "Polarity": dji_polarity });
 
 
 
@@ -185,7 +186,7 @@ app.get('/', (req, res) => {
     var nk_Firstcharacter = nk_span[23].slice(0, 1);
     nk_polarity = (nk_Firstcharacter !== "+" && nk_Firstcharacter !== "-") ? "-" : nk_Firstcharacter;
   }
-  stdstock.push({ Code: 'NIKKEI', Name: 'NIKKEI', Price: nk_span[19], Reshio: nk_span[23], Percent: nk_span[29], Polarity: nk_polarity });
+  stdstock.push({ "Code": "NIKKEI", "Name": "NIKKEI", "Price": nk_span[19], "Reshio": nk_span[23], "Percent": nk_span[29], "Polarity": nk_polarity });
 
 
 
@@ -195,18 +196,18 @@ app.get('/', (req, res) => {
   if (any_span[0] != null) {
     for (let i = 0; i < data.length; i++) {
       any_polarity = any_span[i][29] != "+" ? "-" : any_span[i][29].slice(0, 1);
-      stdstock.push({ Code: any_span[i][25], Name: any_name[i][1], Price: any_span[i][22], Reshio: any_span[i][30], Percent: any_span[i][34], Polarity: any_polarity });
+      anystock.push({ "Code": any_span[i][25], "Name": any_name[i][1], "Price": any_span[i][22], "Reshio": any_span[i][30], "Percent": any_span[i][34], "Polarity": any_polarity });
     }
 
   }
 
-  /*
-  const stockdata = {
+  
+  var stockdata = {
     "stdstock": stdstock,
     "anystock": anystock,
     
   };
-  */
+  
   /*
   app.get('/stock', function(req, res) {
     const stock = {
@@ -242,11 +243,11 @@ app.get('/', (req, res) => {
 
 
 
-  console.log(stdstock);
+  console.log(stockdata);
   //console.log(stock.length);
   // JSONを送信する
   //res.json(todoList);
-  res.json(stdstock);
+  res.json(stockdata);
   //res.send('Hello Node-World!')
   //res.send(JSON.stringify('Hello World!'));
 })
