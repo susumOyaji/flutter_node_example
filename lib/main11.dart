@@ -85,17 +85,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
   _getFormattedDate(String price, int Shares) {
     String dotnumber = price != "---" ? price.replaceAll(',', '') : "---";
-    //String removedString = dotnumber.substring(0, dotnumber.length - 3);
 
     int int_price = dotnumber != "---" ? int.parse(dotnumber) : 000;
 
     print(int_price); // 4500
-    //int integerprice = numprice.toInt(); // 3
-    //print(integerprice); // 4500
 
     int total = int_price * Shares; // 掛け算
     //setState(() {
-      //MarketCap = MarketCap + total;
+    //MarketCap = MarketCap + total;
     //});
 
     //print(MarketCap); // 4500
