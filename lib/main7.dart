@@ -19,6 +19,10 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
+
+
+  
+
   static List<List<dynamic>> data = [
     ["6758", 200, 1665],
     ["6976", 300, 1801],
