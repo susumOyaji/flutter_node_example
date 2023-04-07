@@ -31,6 +31,7 @@ class _MyHomePageState extends State<MyHomePage> {
   bool _isLoading = false;
   List stdstock = [];
   List anystock = [];
+  int MarketCap = 0;
 
   static List<List<dynamic>> data = [
     ["6758", 200, 1665],
@@ -93,8 +94,9 @@ class _MyHomePageState extends State<MyHomePage> {
     //print(integerprice); // 4500
 
     int total = int_price * Shares; // 掛け算
-
-    //MarketCap = MarketCap + total;
+    //setState(() {
+      //MarketCap = MarketCap + total;
+    //});
 
     //print(MarketCap); // 4500
     return total.toString();
