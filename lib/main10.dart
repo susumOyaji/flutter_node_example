@@ -8,11 +8,11 @@ import 'dart:convert';
 import 'Clipper.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const MyApp10());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class MyApp10 extends StatelessWidget {
+  const MyApp10({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
