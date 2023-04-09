@@ -77,16 +77,32 @@ class _MyWidgetState extends State<Stockcardweb> {
           padding: const EdgeInsets.all(5.0),
 
           child: ListTile(
-            leading: CircleAvatar(
-              backgroundColor: Colors.purple,
-              radius: 60,
-              child: Text(
-                anystock[index]['Code'],
-                style: const TextStyle(color: Colors.black),
+            leading: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+                //padding: const EdgeInsets.all(0.0),
+                fixedSize: const Size(50, 50),
+                backgroundColor: Colors.purple,
+                //primary: Colors.purple, //ボタンの背景色
+                shape: const CircleBorder(),
               ),
+              onPressed: () {
+                //_asyncEditDialog(context, index);
+              },
+              onLongPress: () {
+                //alertDialog(index);
+              },
+              child: Text("${anystock[index]["Code"]}",
+                  style: const TextStyle(
+                    fontSize: 18.0,
+                    color: Colors.black,
+                    // fontFamily: 'NotoSansJP',
+                  )),
             ),
+
             title: Text(anystock[index]['Name'],
                 style: const TextStyle(color: Colors.grey)), // タイトル
+            //contentPadding: const EdgeInsets.only(left: 0.0, right: 0.0, bottom: 8.0),
             subtitle: Column(
               children: [
                 Wrap(
@@ -101,7 +117,8 @@ class _MyWidgetState extends State<Stockcardweb> {
                         ),
                         children: [
                           TextSpan(
-                            text: '   Benefits:  ¥${anystock[index]['Price']}',
+                            text:
+                                '   Benefits:  ¥${(10000 - data[index][2]).toString()}',
                             style: const TextStyle(color: Colors.yellow),
                           ),
                         ],
@@ -135,7 +152,7 @@ class _MyWidgetState extends State<Stockcardweb> {
                 ),
               ],
             ),
-
+            
             // サブタイトル
             trailing: ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -160,6 +177,163 @@ class _MyWidgetState extends State<Stockcardweb> {
               print(anystock[index]['Reshio']);
             },
           ),
+        );
+      });
+
+  //////
+  ListView listView(dynamic anystock) => ListView.builder(
+      scrollDirection: Axis.vertical,
+      itemCount: data.length, //+20,//<-- setState()
+      //gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 1),
+      itemBuilder: (BuildContext context, int index) {
+        return GestureDetector(
+          child: Container(
+              margin: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
+              padding: const EdgeInsets.all(5.0),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    //Color(0xffb43af7),
+                    //Color(0x0B52067),
+                    //Color(0xff6d2af7),
+                    Colors.black,
+                    Colors.grey.shade800,
+                  ],
+                ),
+                borderRadius: const BorderRadius.only(
+                  topRight: Radius.circular(10),
+                  bottomRight: Radius.circular(10),
+                ),
+              ),
+              child: Row(
+                  //mainAxisAlignment: MainAxisAlignment.center,
+                  //mainAxisSize: MainAxisSize.max,
+                  //crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    //Column(
+                    //mainAxisAlignment: MainAxisAlignment.start,
+                    //mainAxisSize: MainAxisSize.min,
+                    //crossAxisAlignment: CrossAxisAlignment.start,
+                    // children:<Widget>[
+                    Expanded(
+                      flex: 2,
+                      child:
+                          //Padding(
+                          //  padding: EdgeInsets.only(top: 0.0, right: 0.0, bottom: 0.0, left: 0.0),
+
+                          //child:
+                          ElevatedButton(
+                        child: Text(
+                          "${anystock[index]["Code"]}",
+                          //style: TextStyle(
+                          //fontSize: 10.0,
+                          //color: Colors.black,
+                          // fontFamily: 'NotoSansJP',
+                          //)
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.purple, //ボタンの背景色
+                          shape: const CircleBorder(),
+                        ),
+                        onPressed: () {
+                          //_asyncEditDialog(context, index);
+                        },
+                        onLongPress: () {
+                          //alertDialog(index);
+                        },
+                      ),
+                    ),
+
+                    //  ]
+                    // ),
+
+                    //SizedBox(width: 15.0,),
+                    Expanded(
+                      flex: 6,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        //mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "${anystock[index]['Name']}",
+                            style: const TextStyle(
+                              fontSize: 12.0,
+                              color: Colors.grey,
+                              fontFamily: 'NoteSansJP',
+                              fontWeight: FontWeight.bold,
+                            ),
+                            strutStyle: const StrutStyle(
+                              fontSize: 10.0,
+                              height: 1.0,
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Text("Market: ${anystock[index]['Price']}",
+                                  style: const TextStyle(
+                                      fontFamily: 'NotoSansJP',
+                                      fontSize: 12.0,
+                                      color: Colors.blue),
+                                  textAlign: TextAlign.left),
+                              Text(
+                                "Benefits: ${anystock[index]['Price']}",
+                                style: const TextStyle(
+                                    fontFamily: 'NoteSansJP',
+                                    //fontWeight: FontWeight.bold,
+                                    fontSize: 12.0,
+                                    color: Colors.yellow),
+                              ),
+                            ],
+                          ),
+                          const Text(
+                            "Evaluation: {separation(int.parse(valuableAssetsItems[index]))}", //$$$$
+                            style: TextStyle(
+                                fontFamily: 'NoteSansJP',
+                                //fontWeight: FontWeight.bold,
+                                fontSize: 12.0,
+                                color: Colors.orange),
+                          ),
+                        ],
+                      ),
+                    ),
+                    //SizedBox(width: 50.0,),
+                    Expanded(
+                      flex: 2,
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            top: 0.0, right: 0.0, bottom: 0.0, left: 0.0),
+                        //child: //SizedBox(
+                        //height: 30.0,
+                        //width: 60.0,
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                            padding: const EdgeInsets.all(0.0),
+                            primary: Colors.orange,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(2.0)),
+                            ),
+                            backgroundColor: anystock[index]['Plaryt']
+                                ? Colors.red
+                                : Colors.green,
+                          ),
+                          child: Text(
+                            anystock[index]['Percent'] //signalstate[index]
+                                ? '{changePriceRate[index]}%' //$$$
+                                : '{changePriceValue[index]}', //$$$
+                            style: const TextStyle(
+                                fontSize: 13.0, color: Colors.black),
+                          ),
+                          onPressed: () => setState(() {
+                            //percentcheng[index] = !percentcheng[index];
+                          }),
+                        ),
+                        //),
+                      ),
+                    ),
+                  ])),
         );
       });
 

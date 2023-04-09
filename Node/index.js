@@ -196,23 +196,26 @@ app.get('/', (req, res) => {
   //const numberWithoutCommas = parseInt(numberWithCommas.replace(/,/g, ''));
   //console.log(numberWithoutCommas); // 1000000
 
-  var MarketCap;
+  var MarketCap;//時価総額
   var Shares;
-  var Totalmarketcap = 0;
+  var Totalmarketcap = 0;//総時価総額
 
   if (any_span[0] != null) {
     for (let i = 0; i < data.length; i++) {
-      MarketCap = parseInt(any_span[i][22].replace(/,/g, ''));
-      Shares = data[i][1];
-      Totalmarketcap = Totalmarketcap + (MarketCap * Shares);
+      
+      MarketCap = parseInt(any_span[i][22].replace(/,/g, ''));//カンマ削除してintに変換
 
-      any_polarity = any_span[i][29] != "+" ? "-" : any_span[i][29].slice(0, 1);
+      Shares = data[i][1];
+      Totalmarketcap = Totalmarketcap + (MarketCap * Shares);//総時価総額
+
+      any_polarity = any_span[i][29].slice(0, 1) == "-" ? "-":"+";
       anystock.push({ "Code": any_span[i][25], "Name": any_name[i][1], "Price": any_span[i][22], "Reshio": any_span[i][30], "Percent": any_span[i][34], "Polarity": any_polarity, "MarketCap": (MarketCap * Shares).toLocaleString()});
     }
 
   }
 
   totalmarketcap = Totalmarketcap.toLocaleString();
+
   var stockdata = {
     "stdstock": stdstock,
     "anystock": anystock,
