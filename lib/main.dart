@@ -118,7 +118,7 @@ class _MyWidgetState extends State<Stockcardweb> {
                         children: [
                           TextSpan(
                             text:
-                                '   Benefits:  ¥${(10000 - data[index][2]).toString()}',
+                                '   Benefits:  ¥${anystock[index]['Banefits']}',
                             style: const TextStyle(color: Colors.yellow),
                           ),
                         ],
@@ -131,18 +131,14 @@ class _MyWidgetState extends State<Stockcardweb> {
                   children: [
                     Text.rich(
                       TextSpan(
-                        text: 'Evaluation:  \¥',
+                        text: 'Evaluation:  ¥',
                         style: const TextStyle(
                           color: Colors.orange,
                           fontSize: 16,
                         ),
                         children: [
                           TextSpan(
-                            text: (data[index][1] *
-                                    int.parse(anystock[index]['Price']
-                                        .split(',')
-                                        .join()))
-                                .toString(),
+                            text: anystock[index]["Evaluation"], 
                             style: const TextStyle(color: Colors.orange),
                           ),
                         ],
@@ -152,7 +148,7 @@ class _MyWidgetState extends State<Stockcardweb> {
                 ),
               ],
             ),
-            
+
             // サブタイトル
             trailing: ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -222,17 +218,9 @@ class _MyWidgetState extends State<Stockcardweb> {
                           //  padding: EdgeInsets.only(top: 0.0, right: 0.0, bottom: 0.0, left: 0.0),
 
                           //child:
-                          ElevatedButton(
-                        child: Text(
-                          "${anystock[index]["Code"]}",
-                          //style: TextStyle(
-                          //fontSize: 10.0,
-                          //color: Colors.black,
-                          // fontFamily: 'NotoSansJP',
-                          //)
-                        ),
+                        ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.purple, //ボタンの背景色
+                          backgroundColor: Colors.purple, //ボタンの背景色
                           shape: const CircleBorder(),
                         ),
                         onPressed: () {
@@ -241,6 +229,14 @@ class _MyWidgetState extends State<Stockcardweb> {
                         onLongPress: () {
                           //alertDialog(index);
                         },
+                        child: Text(
+                          "${anystock[index]["Code"]}",
+                          //style: TextStyle(
+                          //fontSize: 10.0,
+                          //color: Colors.black,
+                          // fontFamily: 'NotoSansJP',
+                          //)
+                        ),
                       ),
                     ),
 
@@ -260,7 +256,7 @@ class _MyWidgetState extends State<Stockcardweb> {
                             style: const TextStyle(
                               fontSize: 12.0,
                               color: Colors.grey,
-                              fontFamily: 'NoteSansJP',
+                              //fontFamily: 'NoteSansJP',
                               fontWeight: FontWeight.bold,
                             ),
                             strutStyle: const StrutStyle(
@@ -278,7 +274,7 @@ class _MyWidgetState extends State<Stockcardweb> {
                                       color: Colors.blue),
                                   textAlign: TextAlign.left),
                               Text(
-                                "Benefits: ${anystock[index]['Price']}",
+                                "Benefits: ${anystock[index]['Banefits']}",
                                 style: const TextStyle(
                                     fontFamily: 'NoteSansJP',
                                     //fontWeight: FontWeight.bold,
@@ -315,14 +311,12 @@ class _MyWidgetState extends State<Stockcardweb> {
                               borderRadius:
                                   BorderRadius.all(Radius.circular(2.0)),
                             ),
-                            backgroundColor: anystock[index]['Plaryt']
+                            backgroundColor: anystock[index]['Polarity']=="+"
                                 ? Colors.red
                                 : Colors.green,
                           ),
                           child: Text(
-                            anystock[index]['Percent'] //signalstate[index]
-                                ? '{changePriceRate[index]}%' //$$$
-                                : '{changePriceValue[index]}', //$$$
+                            anystock[index]['Percent'],
                             style: const TextStyle(
                                 fontSize: 13.0, color: Colors.black),
                           ),
@@ -355,12 +349,14 @@ class _MyWidgetState extends State<Stockcardweb> {
                 //final jsonData = json.decode(snapshot.data.toString());
                 final stdstock = res['stdstock'];
                 final anystock = res['anystock'];
+                final totalUnitprice = res['totalUnitprice'];
                 final totalstock = res['totalmarketcap'];
-
+                final totalGain = res['totalGain'];
+               
                 //child:
                 return Container(
                   width: 600,
-                  height: 652,
+                  height: 550,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     color: Colors.black,
@@ -504,7 +500,7 @@ class _MyWidgetState extends State<Stockcardweb> {
                                     ),
                                     Text.rich(
                                       TextSpan(
-                                        text: 'Nikkei Price:  \¥',
+                                        text: 'Nikkei Price:  ¥',
                                         style: const TextStyle(
                                           color: Colors.white,
                                           fontSize: 16,
@@ -553,7 +549,7 @@ class _MyWidgetState extends State<Stockcardweb> {
                         height: 100,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          color: Color.fromARGB(255, 56, 50, 50),
+                          color:const Color.fromARGB(255, 56, 50, 50),
                         ),
                         child: Row(
                           children: [
@@ -608,7 +604,7 @@ class _MyWidgetState extends State<Stockcardweb> {
                                 Text.rich(
                                   TextSpan(
                                     text:
-                                        'Profit(Gains):  \¥${stdstock[1]['Price']}',
+                                        'Profit(Gains):  ¥$totalGain',
                                     style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 16,
@@ -616,7 +612,7 @@ class _MyWidgetState extends State<Stockcardweb> {
                                     children: [
                                       TextSpan(
                                         text:
-                                            '   Investment:  \¥${stdstock[1]['Reshio']}',
+                                            '   Investment:  ¥$totalUnitprice',
                                         style: const TextStyle(
                                             color: Colors.white),
                                       ),
@@ -632,18 +628,15 @@ class _MyWidgetState extends State<Stockcardweb> {
                       Container(
                         margin: std_margin,
                         width: 600,
-                        height: 380,
+                        height: 250,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.black,
+                          borderRadius: BorderRadius.circular(0),
+                          color: Colors.orange,
                         ),
-                        child: listViewsample(
+                        child: listView(
                             anystock), //listView(), //gridView1(),
                       ),
-                      ElevatedButton(
-                        child: const Text('UrlOpen'),
-                        onPressed: () => fetch(), //_opneUrl(),
-                      ),
+                  
 
                       //),
                     ],
