@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'main10.dart';
+import 'main12.dart';
 
 void main() {
   runApp(const MyApp());
@@ -26,6 +26,7 @@ class Stockcardweb extends StatefulWidget {
 }
 
 class _MyWidgetState extends State<Stockcardweb> {
+  late Future _data;
   int MarketCap = 0;
   EdgeInsets std_margin =
       const EdgeInsets.only(left: 10, top: 10, right: 10, bottom: 0);
@@ -40,6 +41,14 @@ class _MyWidgetState extends State<Stockcardweb> {
   void initState() {
     super.initState();
     // ここで初期化処理を行う
+    _data = fetch();
+  }
+
+  void _refreshData() {
+    setState(() {
+      print("_refreshData");
+      _data = fetch();
+    });
   }
 
   Future fetch() async {
@@ -138,7 +147,7 @@ class _MyWidgetState extends State<Stockcardweb> {
                         ),
                         children: [
                           TextSpan(
-                            text: anystock[index]["Evaluation"], 
+                            text: anystock[index]["Evaluation"],
                             style: const TextStyle(color: Colors.orange),
                           ),
                         ],
@@ -164,7 +173,7 @@ class _MyWidgetState extends State<Stockcardweb> {
                 anystock[index]['Reshio'],
                 style: const TextStyle(color: Colors.black, fontSize: 20),
               ),
-              onPressed: () => fetch(), //_opneUrl(),
+              onPressed: () => _refreshData(), //_opneUrl(),
             ), // 右端のアイコン
 
             onTap: () {
@@ -196,9 +205,8 @@ class _MyWidgetState extends State<Stockcardweb> {
                     Colors.grey.shade800,
                   ],
                 ),
-                borderRadius: const BorderRadius.only(
-                  topRight: Radius.circular(10),
-                  bottomRight: Radius.circular(10),
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(5),
                 ),
               ),
               child: Row(
@@ -218,8 +226,9 @@ class _MyWidgetState extends State<Stockcardweb> {
                           //  padding: EdgeInsets.only(top: 0.0, right: 0.0, bottom: 0.0, left: 0.0),
 
                           //child:
-                        ElevatedButton(
+                          ElevatedButton(
                         style: ElevatedButton.styleFrom(
+                          fixedSize: const Size(50, 50),
                           backgroundColor: Colors.purple, //ボタンの背景色
                           shape: const CircleBorder(),
                         ),
@@ -229,14 +238,12 @@ class _MyWidgetState extends State<Stockcardweb> {
                         onLongPress: () {
                           //alertDialog(index);
                         },
-                        child: Text(
-                          "${anystock[index]["Code"]}",
-                          //style: TextStyle(
-                          //fontSize: 10.0,
-                          //color: Colors.black,
-                          // fontFamily: 'NotoSansJP',
-                          //)
-                        ),
+                        child: Text("${anystock[index]["Code"]}",
+                            style: const TextStyle(
+                              fontSize: 15.0,
+                              color: Colors.black,
+                              fontFamily: 'NotoSansJP',
+                            )),
                       ),
                     ),
 
@@ -254,10 +261,10 @@ class _MyWidgetState extends State<Stockcardweb> {
                           Text(
                             "${anystock[index]['Name']}",
                             style: const TextStyle(
-                              fontSize: 12.0,
+                              fontSize: 18.0,
                               color: Colors.grey,
                               //fontFamily: 'NoteSansJP',
-                              fontWeight: FontWeight.bold,
+                              //fontWeight: FontWeight.bold,
                             ),
                             strutStyle: const StrutStyle(
                               fontSize: 10.0,
@@ -270,7 +277,7 @@ class _MyWidgetState extends State<Stockcardweb> {
                               Text("Market: ${anystock[index]['Price']}",
                                   style: const TextStyle(
                                       fontFamily: 'NotoSansJP',
-                                      fontSize: 12.0,
+                                      fontSize: 17.0,
                                       color: Colors.blue),
                                   textAlign: TextAlign.left),
                               Text(
@@ -278,17 +285,17 @@ class _MyWidgetState extends State<Stockcardweb> {
                                 style: const TextStyle(
                                     fontFamily: 'NoteSansJP',
                                     //fontWeight: FontWeight.bold,
-                                    fontSize: 12.0,
+                                    fontSize: 17.0,
                                     color: Colors.yellow),
                               ),
                             ],
                           ),
-                          const Text(
-                            "Evaluation: {separation(int.parse(valuableAssetsItems[index]))}", //$$$$
-                            style: TextStyle(
+                          Text(
+                            "Evaluation: ${anystock[index]['Evaluation']}",
+                            style: const TextStyle(
                                 fontFamily: 'NoteSansJP',
                                 //fontWeight: FontWeight.bold,
-                                fontSize: 12.0,
+                                fontSize: 17.0,
                                 color: Colors.orange),
                           ),
                         ],
@@ -300,31 +307,51 @@ class _MyWidgetState extends State<Stockcardweb> {
                       child: Padding(
                         padding: const EdgeInsets.only(
                             top: 0.0, right: 0.0, bottom: 0.0, left: 0.0),
-                        //child: //SizedBox(
-                        //height: 30.0,
-                        //width: 60.0,
-                        child: TextButton(
-                          style: TextButton.styleFrom(
-                            padding: const EdgeInsets.all(0.0),
-                            primary: Colors.orange,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(2.0)),
-                            ),
-                            backgroundColor: anystock[index]['Polarity']=="+"
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            fixedSize: const Size(100, 50),
+                            backgroundColor: anystock[index]['Polarity'] == '+'
                                 ? Colors.red
                                 : Colors.green,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
+                            ),
                           ),
                           child: Text(
-                            anystock[index]['Percent'],
+                            anystock[index]['Reshio'],
                             style: const TextStyle(
-                                fontSize: 13.0, color: Colors.black),
+                                color: Colors.black, fontSize: 20),
                           ),
-                          onPressed: () => setState(() {
-                            //percentcheng[index] = !percentcheng[index];
-                          }),
-                        ),
-                        //),
+                          onPressed: () => _refreshData(), //_opneUrl(),
+                        ), // 右端のアイコン
+
+                        /*   SizedBox(
+                          height: 30.0,
+                          width: 60.0,
+                          child: TextButton(
+                            style: TextButton.styleFrom(
+                              padding: const EdgeInsets.all(0.0),
+                              primary: Colors.orange,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(2.0)),
+                              ),
+                              backgroundColor:
+                                  anystock[index]['Polarity'] == "+"
+                                      ? Colors.red
+                                      : Colors.green,
+                              //minimumSize: const Size(30, 30),
+                            ),
+                            child: Text(
+                              anystock[index]['Reshio'],
+                              style: const TextStyle(
+                                  fontSize: 17.0, color: Colors.black),
+                            ),
+                            onPressed: () => setState(() {
+                              //percentcheng[index] = !percentcheng[index];
+                            }),
+                          ),
+                        ),*/
                       ),
                     ),
                   ])),
@@ -338,7 +365,7 @@ class _MyWidgetState extends State<Stockcardweb> {
         body: Container(
             alignment: Alignment.center,
             child: FutureBuilder(
-              future: fetch(),
+              future: _data, //fetch(),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 if (!snapshot.hasData) {
                   return const Center(
@@ -352,7 +379,7 @@ class _MyWidgetState extends State<Stockcardweb> {
                 final totalUnitprice = res['totalUnitprice'];
                 final totalstock = res['totalmarketcap'];
                 final totalGain = res['totalGain'];
-               
+
                 //child:
                 return Container(
                   width: 600,
@@ -430,7 +457,7 @@ class _MyWidgetState extends State<Stockcardweb> {
                             ),
                             Column(
                               crossAxisAlignment:
-                                  CrossAxisAlignment.center, //左右位置
+                                  CrossAxisAlignment.start, //左右位置
                               children: [
                                 Wrap(
                                   spacing: 8.0, //Wrap内アイテムの間隔
@@ -549,7 +576,7 @@ class _MyWidgetState extends State<Stockcardweb> {
                         height: 100,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          color:const Color.fromARGB(255, 56, 50, 50),
+                          color: const Color.fromARGB(255, 56, 50, 50),
                         ),
                         child: Row(
                           children: [
@@ -603,8 +630,7 @@ class _MyWidgetState extends State<Stockcardweb> {
                                 ),
                                 Text.rich(
                                   TextSpan(
-                                    text:
-                                        'Profit(Gains):  ¥$totalGain',
+                                    text: 'Profit(Gains):  ¥$totalGain',
                                     style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 16,
@@ -633,10 +659,8 @@ class _MyWidgetState extends State<Stockcardweb> {
                           borderRadius: BorderRadius.circular(0),
                           color: Colors.orange,
                         ),
-                        child: listView(
-                            anystock), //listView(), //gridView1(),
+                        child: listView(anystock), //listView(), //gridView1(),
                       ),
-                  
 
                       //),
                     ],
