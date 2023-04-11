@@ -15,6 +15,9 @@ ENV PATH="/home/codespace/flutter/bin:$PATH"
 RUN git clone https://github.com/flutter/flutter && \
     /home/codespace/flutter/bin/flutter config --enable-web
 
+
+
+
 FROM google/dart
 
 RUN apt-get update && apt-get install -y git curl unzip libglu1-mesa
