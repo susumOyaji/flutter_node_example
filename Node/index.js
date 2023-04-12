@@ -162,11 +162,13 @@ app.get('/', (req, res) => {
 
 
 
-
+  //Reshio to undefined
   if (dji_span[23] === undefined || dji_span[23] === null) {
     // undefinedまたはnullの場合の処理
     dji_polarity = "-";
     dji_span[18] = "---";
+    dji_span[23] = "---";
+    dji_span[28] = "---";
   } else {
     var dji_Firstcharacter = dji_span[23].slice(0, 1);
     dji_polarity = (dji_Firstcharacter !== "+" && dji_Firstcharacter !== "-") ? "-" : dji_Firstcharacter;
@@ -182,6 +184,9 @@ app.get('/', (req, res) => {
   if (nk_span[23] === undefined || nk_span[23] === null) {
     // undefinedまたはnullの場合の処理
     nk_polarity = "-";
+    nk_span[19] ="---";
+    nk_span[23] ="---";
+    nk_span[29] ="---";
   } else {
     var nk_Firstcharacter = nk_span[23].slice(0, 1);
     nk_polarity = (nk_Firstcharacter !== "+" && nk_Firstcharacter !== "-") ? "-" : nk_Firstcharacter;

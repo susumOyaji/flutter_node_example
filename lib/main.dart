@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'Clipper.dart';
 import 'main12.dart';
 
 void main() {
@@ -390,13 +391,17 @@ class _MyWidgetState extends State<Stockcardweb> {
                   ),
                   child: Column(
                     children: <Widget>[
+                      const SizedBox(height: 20.0,),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           GestureDetector(
                             child: ClipPath(
-                              //clipper: MyCustomClipper(),
+                              clipper: MyCustomClipper(),
                               child: Container(
+                                  //margin: std_margin,
+                                  width: 550,
+                                  height: 50,
                                   //margin: std_margin,
                                   padding: const EdgeInsets.only(
                                       top: 0.0,
@@ -504,9 +509,9 @@ class _MyWidgetState extends State<Stockcardweb> {
                                                 "   " +
                                                 stdstock[0]['Percent'],
                                             style: TextStyle(
-                                                color: (stdstock[0]
+                                                color: stdstock[0]
                                                             ['Polarity'] ==
-                                                        "+")
+                                                        "+"
                                                     ? Colors.red
                                                     : Colors.green),
                                           ),
