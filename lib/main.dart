@@ -29,6 +29,9 @@ class Stockcardweb extends StatefulWidget {
 class _MyWidgetState extends State<Stockcardweb> {
   late Future _data;
   int MarketCap = 0;
+  bool _isLoading = false;
+  String _message = '';
+
   EdgeInsets std_margin =
       const EdgeInsets.only(left: 10, top: 10, right: 10, bottom: 0);
 
@@ -54,22 +57,39 @@ class _MyWidgetState extends State<Stockcardweb> {
 
   Future fetch() async {
     //final String json;
-    List<dynamic> jsonArray = [];
+    //List<dynamic> jsonArray = [];
+
+    setState(() {
+      _isLoading = true;
+      _message = 'Loading data...';
+    });
+
     const url = 'http://localhost:3000'; //←ここに表示させたいURLを入力する
 
-    //try {
-    final response = await http.get(Uri.parse(url).replace(queryParameters: {
-      'data': jsonEncode(data),
-    }));
+    try {
+      final response = await http.get(Uri.parse(url).replace(queryParameters: {
+        'data': jsonEncode(data),
+      }));
+      setState(() {
+        _isLoading = true;
+        _message = 'Loading data...';
+      });
+      return json.decode(response.body);
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+        _message = 'Failed to load data.';
+      });
+    }
 
-    if (response.statusCode == 200) {
+    //if (response.statusCode == 200) {
       // データを取得できた場合
 
-      return json.decode(response.body);
-    } else {
+    //  return json.decode(response.body);
+    //} else {
       // エラーが発生した場合
-      throw Exception('Failed to load data');
-    }
+      //throw Exception('Failed to load data');
+    //}
   }
 
   ListView listViewsample(dynamic anystock) => ListView.builder(
@@ -368,7 +388,7 @@ class _MyWidgetState extends State<Stockcardweb> {
             child: FutureBuilder(
               future: _data, //fetch(),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
-                if (!snapshot.hasData) {
+                if (snapshot.connectionState == ConnectionState.active) {
                   return const Center(
                     child: CircularProgressIndicator(),
                   );
@@ -391,7 +411,9 @@ class _MyWidgetState extends State<Stockcardweb> {
                   ),
                   child: Column(
                     children: <Widget>[
-                      const SizedBox(height: 20.0,),
+                      const SizedBox(
+                        height: 20.0,
+                      ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
