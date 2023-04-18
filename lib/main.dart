@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'Clipper.dart';
+import 'dart:io';
+
 import 'main12.dart';
 
 void main() {
@@ -83,12 +85,12 @@ class _MyWidgetState extends State<Stockcardweb> {
     }
 
     //if (response.statusCode == 200) {
-      // データを取得できた場合
+    // データを取得できた場合
 
     //  return json.decode(response.body);
     //} else {
-      // エラーが発生した場合
-      //throw Exception('Failed to load data');
+    // エラーが発生した場合
+    //throw Exception('Failed to load data');
     //}
   }
 
@@ -398,9 +400,9 @@ class _MyWidgetState extends State<Stockcardweb> {
                 final stdstock = res['stdstock'];
                 final anystock = res['anystock'];
                 final totalUnitprice = res['totalUnitprice'];
-                final totalstock = res['totalmarketcap'];
+                final totalmarketcap = res['totalmarketcap'];
                 final totalGain = res['totalGain'];
-
+                final totalPolarity = res['totalpolarity'];
                 //child:
                 return Container(
                   width: 600,
@@ -631,7 +633,7 @@ class _MyWidgetState extends State<Stockcardweb> {
                                     CircleAvatar(
                                       maxRadius: 8.0,
                                       backgroundColor:
-                                          stdstock[1]['Polarity'] == "+"
+                                          totalPolarity == "+"
                                               ? Colors.orange
                                               : Colors.blue,
                                     ),
@@ -644,7 +646,7 @@ class _MyWidgetState extends State<Stockcardweb> {
                                         ),
                                         children: [
                                           TextSpan(
-                                            text: totalstock,
+                                            text: totalmarketcap,
                                             style: const TextStyle(
                                               color: Colors.orange,
                                               fontSize: 30,

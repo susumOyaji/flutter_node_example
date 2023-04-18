@@ -184,9 +184,9 @@ app.get('/', (req, res) => {
   if (nk_span[23] === undefined || nk_span[23] === null) {
     // undefinedまたはnullの場合の処理
     nk_polarity = "-";
-    nk_span[19] ="---";
-    nk_span[23] ="---";
-    nk_span[29] ="---";
+    nk_span[19] = "---";
+    nk_span[23] = "---";
+    nk_span[29] = "---";
   } else {
     var nk_Firstcharacter = nk_span[23].slice(0, 1);
     nk_polarity = (nk_Firstcharacter !== "+" && nk_Firstcharacter !== "-") ? "-" : nk_Firstcharacter;
@@ -207,6 +207,7 @@ app.get('/', (req, res) => {
   var Shares;//株数
   var TotalUnitprice = 0;
   var Totalmarketcap = 0;//総時価総額
+  var any_polarity;
 
   if (any_span[0] != null) {
     for (let i = 0; i < data.length; i++) {
@@ -238,6 +239,9 @@ app.get('/', (req, res) => {
     }
 
   }
+
+
+  any_polarity = (Totalmarketcap - TotalUnitprice) > 0 ? "+" : "-";
   var totalGain = (Totalmarketcap - TotalUnitprice).toLocaleString();
   totalUnitprice = TotalUnitprice.toLocaleString();
   totalmarketcap = Totalmarketcap.toLocaleString();
@@ -247,7 +251,8 @@ app.get('/', (req, res) => {
     "anystock": anystock,
     "totalmarketcap": totalmarketcap,
     "totalUnitprice": totalUnitprice,
-    "totalGain": totalGain
+    "totalGain": totalGain,
+    "totalpolarity": any_polarity
   };
 
   /*
