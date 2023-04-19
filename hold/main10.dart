@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:html';
 import 'dart:convert';
-import 'Clipper.dart';
+import 'package:flutter_node_example/Clipper.dart';
 
 void main() {
   runApp(const MyApp10());

@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'Clipper.dart';
 import 'dart:io';
 
-import 'main12.dart';
+//import 'main12.dart';
 
 void main() {
   runApp(const MyApp());
@@ -390,7 +390,7 @@ class _MyWidgetState extends State<Stockcardweb> {
             child: FutureBuilder(
               future: _data, //fetch(),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
-                if (snapshot.connectionState == ConnectionState.active) {
+                if (!snapshot.hasData) {
                   return const Center(
                     child: CircularProgressIndicator(),
                   );

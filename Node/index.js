@@ -241,10 +241,11 @@ app.get('/', (req, res) => {
   }
 
 
-  any_polarity = (Totalmarketcap - TotalUnitprice) > 0 ? "+" : "-";
+ 
   var totalGain = (Totalmarketcap - TotalUnitprice).toLocaleString();
   totalUnitprice = TotalUnitprice.toLocaleString();
   totalmarketcap = Totalmarketcap.toLocaleString();
+  any_polarity = (Totalmarketcap - TotalUnitprice) > 0 ? "+" : "-";
 
   var stockdata = {
     "stdstock": stdstock,
