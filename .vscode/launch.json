@@ -4,11 +4,22 @@
     // 詳細情報は次を確認してください: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+        
+        {
+            "type": "vscode-edge-devtools.debug",
+            "request": "launch",
+            "name": "Launch Microsoft Edge and open the Edge DevTools",
+            "url": "http://localhost:8080",
+            "webRoot": "${workspaceFolder}"
+        },
         {
             "name": "3000flutter_node_example",
             "request": "launch",
             "type": "dart",
-            "args": ["--web-port", "3000"]
+            "args": [
+                "--web-port",
+                "3000"
+            ]
         },
         {
             "name": "flutter_node_example",

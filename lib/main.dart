@@ -406,7 +406,7 @@ class _MyWidgetState extends State<Stockcardweb> {
                 //child:
                 return Container(
                   width: 600,
-                  height: 550,
+                  height: 650,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     color: Colors.black,
@@ -471,9 +471,19 @@ class _MyWidgetState extends State<Stockcardweb> {
 
                       Container(
                         margin: std_margin,
+                        padding: const EdgeInsets.only(top: 10.0),
                         width: 550,
-                        height: 100,
+                        height: 90,
                         decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              //Color(0xffb43af7),
+                              //Color(0x0B52067),
+                              //Color(0xff6d2af7),
+                              Colors.black,
+                              Colors.grey.shade800,
+                            ],
+                          ),
                           borderRadius: BorderRadius.circular(10),
                           color: const Color.fromARGB(255, 56, 50, 50),
                         ),
@@ -572,27 +582,33 @@ class _MyWidgetState extends State<Stockcardweb> {
                                     ),
                                   ],
                                 ),
-                                Text.rich(
-                                  TextSpan(
-                                    text: 'The day brfore ratio:  ',
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16,
-                                    ),
-                                    children: [
+                                Wrap(
+                                  children: [
+                                    const SizedBox(width: 50),
+                                    Text.rich(
                                       TextSpan(
-                                        text: stdstock[1]['Reshio'] +
-                                            "   " +
-                                            stdstock[1]['Percent'],
-                                        style: TextStyle(
-                                            color:
-                                                (stdstock[1]['Polarity'] == "+")
+                                        text: 'The day brfore ratio:  ',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                        ),
+                                        children: [
+                                          TextSpan(
+                                            text: stdstock[1]['Reshio'] +
+                                                "   " +
+                                                stdstock[1]['Percent'],
+                                            style: TextStyle(
+                                                color: (stdstock[1]
+                                                            ['Polarity'] ==
+                                                        "+")
                                                     ? Colors.red
                                                     : Colors.green),
+                                          ),
+                                        ],
                                       ),
-                                    ],
-                                  ),
-                                ),
+                                    ),
+                                  ],
+                                )
                               ],
                             ),
                           ],
@@ -604,6 +620,15 @@ class _MyWidgetState extends State<Stockcardweb> {
                         width: 550,
                         height: 100,
                         decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              //Color(0xffb43af7),
+                              //Color(0x0B52067),
+                              //Color(0xff6d2af7),
+                              Colors.black,
+                              Colors.grey.shade800,
+                            ],
+                          ),
                           borderRadius: BorderRadius.circular(10),
                           color: const Color.fromARGB(255, 56, 50, 50),
                         ),
@@ -632,10 +657,9 @@ class _MyWidgetState extends State<Stockcardweb> {
                                   children: [
                                     CircleAvatar(
                                       maxRadius: 8.0,
-                                      backgroundColor:
-                                          totalPolarity == "+"
-                                              ? Colors.orange
-                                              : Colors.blue,
+                                      backgroundColor: totalPolarity == "+"
+                                          ? Colors.orange
+                                          : Colors.blue,
                                     ),
                                     Text.rich(
                                       TextSpan(
@@ -685,12 +709,21 @@ class _MyWidgetState extends State<Stockcardweb> {
                         width: 600,
                         height: 250,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(0),
-                          color: Colors.orange,
+                          borderRadius: BorderRadius.circular(5),
+                          color: Colors.black,
                         ),
                         child: listView(anystock), //listView(), //gridView1(),
                       ),
-
+                      Container(
+                        margin: std_margin,
+                        width: 600,
+                        height: 35,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: Colors.blue,
+                        ),
+                        child: Text("$_message   $_isLoading"),
+                      ),
                       //),
                     ],
                   ),

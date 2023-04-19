@@ -1,0 +1,5 @@
+    {
+        "key": "ctrl+shift+alt+p",
+        "command": "workbench.action.tasks.runTask",
+        "args":"echo"
+    }
