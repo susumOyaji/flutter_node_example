@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       //画面右上の赤いバーナーを消す
       debugShowCheckedModeBanner: false,
       home: Stockcardweb(),
@@ -25,13 +25,14 @@ class MyApp extends StatelessWidget {
 }
 
 class Stockcardweb extends StatefulWidget {
+   const Stockcardweb({Key? key}) : super(key: key);
   @override
   _MyWidgetState createState() => _MyWidgetState();
 }
 
 class _MyWidgetState extends State<Stockcardweb> {
   late Future _data;
-  int MarketCap = 0;
+  //int MarketCap = 0;
   bool _isLoading = false;
   String _message = '';
 
@@ -49,7 +50,7 @@ class _MyWidgetState extends State<Stockcardweb> {
     super.initState();
 
     // ここで初期化処理を行う
-    runCommand();
+    //runCommand();
     _data = fetch();
   }
 
@@ -772,83 +773,3 @@ class _MyWidgetState extends State<Stockcardweb> {
             )));
   }
 }
-
-/*
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('JSON Data'),
-        ),
-        body: Center(
-          child: FutureBuilder(
-              future: fetch(),
-              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                if (!snapshot.hasData) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-                var res = snapshot.data;
-                //final jsonData = json.decode(snapshot.data.toString());
-                final stdstock = res['stdstock'];
-                final anystock = res['anystock'];
-                final totalstock = res['totalmarketcap'];
-
-                return ListView(
-                  children: [
-                    const ListTile(
-                      title: Text('stdstock'),
-                    ),
-                    ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: stdstock.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return ListTile(
-                          title: Text(stdstock[index]['Code']),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(stdstock[index]['Name']),
-                              Text(stdstock[index]['Price']),
-                              Text(stdstock[index]['Reshio']),
-                              Text(stdstock[index]['Percent']),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                    ListTile(
-                      title: Text(totalstock),
-                    ),
-                    ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: anystock.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return ListTile(
-                            title: Text(anystock[index]['Code']),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(anystock[index]['Name']),
-                                Text(anystock[index]['Price']),
-                                Text(anystock[index]['Reshio']),
-                                Text(anystock[index]['Percent']),
-                                Text(anystock[index]['MarketCap']),
-                              ],
-                            ));
-                      },
-                    ),
-                  ],
-                );
-              }),
-        ),
-      ),
-    );
-  }
-}
-*/
