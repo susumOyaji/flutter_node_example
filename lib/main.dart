@@ -4,9 +4,10 @@ import 'package:http/http.dart' as http;
 import 'Clipper.dart';
 import 'dart:io';
 
-//import 'main12.dart';
+import 'main99.dart';
 
-void main() {
+void main() async {
+  //main99();
   runApp(const MyApp());
 }
 
@@ -46,7 +47,9 @@ class _MyWidgetState extends State<Stockcardweb> {
   @override
   void initState() {
     super.initState();
+
     // ここで初期化処理を行う
+    runCommand();
     _data = fetch();
   }
 
@@ -55,6 +58,11 @@ class _MyWidgetState extends State<Stockcardweb> {
       print("_refreshData");
       _data = fetch();
     });
+  }
+
+  void runCommand() async {
+    var result = await Process.run('node', ['Node/index.js']);
+    print(result.stdout);
   }
 
   Future fetch() async {
@@ -256,6 +264,7 @@ class _MyWidgetState extends State<Stockcardweb> {
                           shape: const CircleBorder(),
                         ),
                         onPressed: () {
+                          runCommand();
                           //_asyncEditDialog(context, index);
                         },
                         onLongPress: () {
@@ -725,6 +734,37 @@ class _MyWidgetState extends State<Stockcardweb> {
                         child: Text("$_message   $_isLoading"),
                       ),
                       //),
+                      Positioned(
+                        right: 5.0,
+                        top: 10.0,
+                        child: ClipOval(
+                          child: Material(
+                            color: Colors.orange, // button color
+                            child: InkWell(
+                              splashColor: Colors.red, // inkwell color
+                              child: const SizedBox(
+                                  width: 45,
+                                  height: 45,
+                                  child: Icon(Icons.autorenew)),
+                              onTap: () {
+                                //reload();
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        right: 5.0,
+                        bottom: 35.0,
+                        child: IconButton(
+                          icon: const Icon(Icons.grain),
+                          color: Colors.blueGrey,
+                          iconSize: 40,
+                          onPressed: () {
+                            // _asyncInputDialog(context);
+                          },
+                        ),
+                      ),
                     ],
                   ),
                 );
