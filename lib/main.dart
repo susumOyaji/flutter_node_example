@@ -4,11 +4,11 @@ import 'package:http/http.dart' as http;
 import 'Clipper.dart';
 import 'dart:io';
 
-import 'main99.dart';
+import 'tv.dart';
 
 void main() async {
   //main99();
-  runApp(const MyApp());
+  runApp(const MyAppTv());
 }
 
 class MyApp extends StatelessWidget {
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
 }
 
 class Stockcardweb extends StatefulWidget {
-   const Stockcardweb({Key? key}) : super(key: key);
+  const Stockcardweb({Key? key}) : super(key: key);
   @override
   _MyWidgetState createState() => _MyWidgetState();
 }
@@ -357,34 +357,6 @@ class _MyWidgetState extends State<Stockcardweb> {
                           ),
                           onPressed: () => _refreshData(), //_opneUrl(),
                         ), // 右端のアイコン
-
-                        /*   SizedBox(
-                          height: 30.0,
-                          width: 60.0,
-                          child: TextButton(
-                            style: TextButton.styleFrom(
-                              padding: const EdgeInsets.all(0.0),
-                              primary: Colors.orange,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(2.0)),
-                              ),
-                              backgroundColor:
-                                  anystock[index]['Polarity'] == "+"
-                                      ? Colors.red
-                                      : Colors.green,
-                              //minimumSize: const Size(30, 30),
-                            ),
-                            child: Text(
-                              anystock[index]['Reshio'],
-                              style: const TextStyle(
-                                  fontSize: 17.0, color: Colors.black),
-                            ),
-                            onPressed: () => setState(() {
-                              //percentcheng[index] = !percentcheng[index];
-                            }),
-                          ),
-                        ),*/
                       ),
                     ),
                   ])),
@@ -394,382 +366,388 @@ class _MyWidgetState extends State<Stockcardweb> {
   ///Main Display Screen
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: Container(
-            alignment: Alignment.center,
-            child: FutureBuilder(
-              future: _data, //fetch(),
-              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                if (!snapshot.hasData) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-                var res = snapshot.data;
-                //final jsonData = json.decode(snapshot.data.toString());
-                final stdstock = res['stdstock'];
-                final anystock = res['anystock'];
-                final totalUnitprice = res['totalUnitprice'];
-                final totalmarketcap = res['totalmarketcap'];
-                final totalGain = res['totalGain'];
-                final totalPolarity = res['totalpolarity'];
-                //child:
-                return Container(
-                  width: 600,
-                  height: 650,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.black,
-                  ),
-                  child: Column(
-                    children: <Widget>[
-                      const SizedBox(
-                        height: 20.0,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          GestureDetector(
-                            child: ClipPath(
-                              clipper: MyCustomClipper(),
-                              child: Container(
-                                  //margin: std_margin,
-                                  width: 550,
-                                  height: 50,
-                                  //margin: std_margin,
-                                  padding: const EdgeInsets.only(
-                                      top: 0.0,
-                                      left: 20.0,
-                                      right: 0.0,
-                                      bottom: 10.0),
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      colors: [
-                                        Colors.white,
-                                        Colors.grey.shade800,
-                                      ],
-                                    ),
-                                    borderRadius: const BorderRadius.only(
-                                      topRight: Radius.circular(10),
-                                      bottomRight: Radius.circular(10),
-                                    ),
-                                  ),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: <Widget>[
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: const [
-                                          Text(
-                                            "Stocks",
-                                            style: TextStyle(
-                                              fontSize: 30.0,
-                                              color: Colors.orange,
-                                              fontWeight: FontWeight.bold,
+    return MaterialApp(
+        title: 'Flutter Stack Demo',
+        home: Scaffold(
+            body: Container(
+                alignment: Alignment.center,
+                child: FutureBuilder(
+                  future: _data, //fetch(),
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    if (!snapshot.hasData) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                    var res = snapshot.data;
+                    //final jsonData = json.decode(snapshot.data.toString());
+                    final stdstock = res['stdstock'];
+                    final anystock = res['anystock'];
+                    final totalUnitprice = res['totalUnitprice'];
+                    final totalmarketcap = res['totalmarketcap'];
+                    final totalGain = res['totalGain'];
+                    final totalPolarity = res['totalpolarity'];
+                    //child:
+                    return Stack(
+                      children: <Widget>[
+                        Container(
+                          width: 600,
+                          height: 600,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.black,
+                          ),
+                          child: Column(
+                            children: <Widget>[
+                              const SizedBox(
+                                height: 20.0,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  GestureDetector(
+                                    child: ClipPath(
+                                      clipper: MyCustomClipper(),
+                                      child: Container(
+                                          //margin: std_margin,
+                                          width: 550,
+                                          height: 60,
+                                          //margin: std_margin,
+                                          padding: const EdgeInsets.only(
+                                              top: 0.0,
+                                              left: 20.0,
+                                              right: 0.0,
+                                              bottom: 10.0),
+                                          decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                              colors: [
+                                                Colors.white,
+                                                Colors.grey.shade800,
+                                              ],
+                                            ),
+                                            borderRadius:
+                                                const BorderRadius.only(
+                                              topRight: Radius.circular(10),
+                                              bottomRight: Radius.circular(10),
                                             ),
                                           ),
-                                        ],
-                                      ),
-                                    ],
-                                  )),
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      Container(
-                        margin: std_margin,
-                        padding: const EdgeInsets.only(top: 10.0),
-                        width: 550,
-                        height: 90,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              //Color(0xffb43af7),
-                              //Color(0x0B52067),
-                              //Color(0xff6d2af7),
-                              Colors.black,
-                              Colors.grey.shade800,
-                            ],
-                          ),
-                          borderRadius: BorderRadius.circular(10),
-                          color: const Color.fromARGB(255, 56, 50, 50),
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.trending_up,
-                              size: 60,
-                              color: Colors.grey,
-                            ),
-                            Column(
-                              crossAxisAlignment:
-                                  CrossAxisAlignment.start, //左右位置
-                              children: [
-                                Wrap(
-                                  spacing: 8.0, //Wrap内アイテムの間隔
-                                  children: [
-                                    CircleAvatar(
-                                      maxRadius: 8.0,
-                                      backgroundColor:
-                                          stdstock[0]['Polarity'] == "+"
-                                              ? Colors.red
-                                              : Colors.green,
-                                    ),
-                                    Text.rich(
-                                      TextSpan(
-                                        text: 'Dow Price:  \$',
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                        ),
-                                        children: [
-                                          TextSpan(
-                                            text: stdstock[0]['Price'],
-                                            style: const TextStyle(
-                                                color: Colors.blue),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Wrap(
-                                  //spacing: 5.0,
-                                  children: [
-                                    const SizedBox(width: 50), //////
-                                    Text.rich(
-                                      TextSpan(
-                                        text: 'The day brfore ratio:  ',
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                        ),
-                                        children: [
-                                          TextSpan(
-                                            text: stdstock[0]['Reshio'] +
-                                                "   " +
-                                                stdstock[0]['Percent'],
-                                            style: TextStyle(
-                                                color: stdstock[0]
-                                                            ['Polarity'] ==
-                                                        "+"
-                                                    ? Colors.red
-                                                    : Colors.green),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Wrap(
-                                  spacing: 8.0,
-                                  children: [
-                                    CircleAvatar(
-                                      maxRadius: 8.0,
-                                      backgroundColor:
-                                          stdstock[1]['Polarity'] == "+"
-                                              ? Colors.red
-                                              : Colors.green,
-                                    ),
-                                    Text.rich(
-                                      TextSpan(
-                                        text: 'Nikkei Price:  ¥',
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                        ),
-                                        children: [
-                                          TextSpan(
-                                            text: stdstock[1]['Price'],
-                                            style: const TextStyle(
-                                                color: Colors.blue),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Wrap(
-                                  children: [
-                                    const SizedBox(width: 50),
-                                    Text.rich(
-                                      TextSpan(
-                                        text: 'The day brfore ratio:  ',
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                        ),
-                                        children: [
-                                          TextSpan(
-                                            text: stdstock[1]['Reshio'] +
-                                                "   " +
-                                                stdstock[1]['Percent'],
-                                            style: TextStyle(
-                                                color: (stdstock[1]
-                                                            ['Polarity'] ==
-                                                        "+")
-                                                    ? Colors.red
-                                                    : Colors.green),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      Container(
-                        margin: std_margin,
-                        width: 550,
-                        height: 100,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              //Color(0xffb43af7),
-                              //Color(0x0B52067),
-                              //Color(0xff6d2af7),
-                              Colors.black,
-                              Colors.grey.shade800,
-                            ],
-                          ),
-                          borderRadius: BorderRadius.circular(10),
-                          color: const Color.fromARGB(255, 56, 50, 50),
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.currency_yen,
-                              //Icons.attach_money,
-                              size: 60,
-                              color: Colors.grey,
-                            ),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Text.rich(
-                                  TextSpan(
-                                    text: 'Market capitalization',
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 30,
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: <Widget>[
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    "Stocks      $_message   $_isLoading",
+                                                    style: const TextStyle(
+                                                      fontSize: 30.0,
+                                                      color: Colors.orange,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          )),
                                     ),
                                   ),
+                                ],
+                              ),
+
+                              Container(
+                                margin: std_margin,
+                                padding: const EdgeInsets.only(top: 10.0),
+                                width: 550,
+                                height: 90,
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      //Color(0xffb43af7),
+                                      //Color(0x0B52067),
+                                      //Color(0xff6d2af7),
+                                      Colors.black,
+                                      Colors.grey.shade800,
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: const Color.fromARGB(255, 56, 50, 50),
                                 ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
+                                child: Row(
                                   children: [
-                                    CircleAvatar(
-                                      maxRadius: 8.0,
-                                      backgroundColor: totalPolarity == "+"
-                                          ? Colors.orange
-                                          : Colors.blue,
+                                    const Icon(
+                                      Icons.trending_up,
+                                      size: 60,
+                                      color: Colors.grey,
                                     ),
-                                    Text.rich(
-                                      TextSpan(
-                                        text: 'Market Price:',
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start, //左右位置
+                                      children: [
+                                        Wrap(
+                                          spacing: 8.0, //Wrap内アイテムの間隔
+                                          children: [
+                                            CircleAvatar(
+                                              maxRadius: 8.0,
+                                              backgroundColor:
+                                                  stdstock[0]['Polarity'] == "+"
+                                                      ? Colors.red
+                                                      : Colors.green,
+                                            ),
+                                            Text.rich(
+                                              TextSpan(
+                                                text: 'Dow Price:  \$',
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                ),
+                                                children: [
+                                                  TextSpan(
+                                                    text: stdstock[0]['Price'],
+                                                    style: const TextStyle(
+                                                        color: Colors.blue),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        children: [
+                                        Wrap(
+                                          //spacing: 5.0,
+                                          children: [
+                                            const SizedBox(width: 50), //////
+                                            Text.rich(
+                                              TextSpan(
+                                                text: 'The day brfore ratio:  ',
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                ),
+                                                children: [
+                                                  TextSpan(
+                                                    text: stdstock[0]
+                                                            ['Reshio'] +
+                                                        "   " +
+                                                        stdstock[0]['Percent'],
+                                                    style: TextStyle(
+                                                        color: stdstock[0][
+                                                                    'Polarity'] ==
+                                                                "+"
+                                                            ? Colors.red
+                                                            : Colors.green),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Wrap(
+                                          spacing: 8.0,
+                                          children: [
+                                            CircleAvatar(
+                                              maxRadius: 8.0,
+                                              backgroundColor:
+                                                  stdstock[1]['Polarity'] == "+"
+                                                      ? Colors.red
+                                                      : Colors.green,
+                                            ),
+                                            Text.rich(
+                                              TextSpan(
+                                                text: 'Nikkei Price:  ¥',
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                ),
+                                                children: [
+                                                  TextSpan(
+                                                    text: stdstock[1]['Price'],
+                                                    style: const TextStyle(
+                                                        color: Colors.blue),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Wrap(
+                                          children: [
+                                            const SizedBox(width: 50),
+                                            Text.rich(
+                                              TextSpan(
+                                                text: 'The day brfore ratio:  ',
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                ),
+                                                children: [
+                                                  TextSpan(
+                                                    text: stdstock[1]
+                                                            ['Reshio'] +
+                                                        "   " +
+                                                        stdstock[1]['Percent'],
+                                                    style: TextStyle(
+                                                        color: (stdstock[1][
+                                                                    'Polarity'] ==
+                                                                "+")
+                                                            ? Colors.red
+                                                            : Colors.green),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              Container(
+                                margin: std_margin,
+                                width: 550,
+                                height: 100,
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      //Color(0xffb43af7),
+                                      //Color(0x0B52067),
+                                      //Color(0xff6d2af7),
+                                      Colors.black,
+                                      Colors.grey.shade800,
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: const Color.fromARGB(255, 56, 50, 50),
+                                ),
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.currency_yen,
+                                      //Icons.attach_money,
+                                      size: 60,
+                                      color: Colors.grey,
+                                    ),
+                                    Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        const Text.rich(
                                           TextSpan(
-                                            text: totalmarketcap,
-                                            style: const TextStyle(
-                                              color: Colors.orange,
+                                            text: 'Market capitalization',
+                                            style: TextStyle(
+                                              color: Colors.grey,
                                               fontSize: 30,
                                             ),
                                           ),
-                                        ],
-                                      ),
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            CircleAvatar(
+                                              maxRadius: 8.0,
+                                              backgroundColor:
+                                                  totalPolarity == "+"
+                                                      ? Colors.orange
+                                                      : Colors.blue,
+                                            ),
+                                            Text.rich(
+                                              TextSpan(
+                                                text: 'Market Price:',
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                ),
+                                                children: [
+                                                  TextSpan(
+                                                    text: totalmarketcap,
+                                                    style: const TextStyle(
+                                                      color: Colors.orange,
+                                                      fontSize: 30,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Text.rich(
+                                          TextSpan(
+                                            text: 'Profit(Gains):  ¥$totalGain',
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 16,
+                                            ),
+                                            children: [
+                                              TextSpan(
+                                                text:
+                                                    '   Investment:  ¥$totalUnitprice',
+                                                style: const TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
-                                Text.rich(
-                                  TextSpan(
-                                    text: 'Profit(Gains):  ¥$totalGain',
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16,
-                                    ),
-                                    children: [
-                                      TextSpan(
-                                        text:
-                                            '   Investment:  ¥$totalUnitprice',
-                                        style: const TextStyle(
-                                            color: Colors.white),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
+                              ),
 
-                      Container(
-                        margin: std_margin,
-                        width: 600,
-                        height: 250,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          color: Colors.black,
+                              Container(
+                                margin: std_margin,
+                                width: 600,
+                                height: 250,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: Colors.black,
+                                ),
+                                child: listView(
+                                    anystock), //listView(), //gridView1(),
+                              ),
+
+                              //),
+                            ],
+                          ),
                         ),
-                        child: listView(anystock), //listView(), //gridView1(),
-                      ),
-                      Container(
-                        margin: std_margin,
-                        width: 600,
-                        height: 35,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          color: Colors.blue,
-                        ),
-                        child: Text("$_message   $_isLoading"),
-                      ),
-                      //),
-                      Positioned(
-                        right: 5.0,
-                        top: 10.0,
-                        child: ClipOval(
-                          child: Material(
-                            color: Colors.orange, // button color
-                            child: InkWell(
-                              splashColor: Colors.red, // inkwell color
-                              child: const SizedBox(
-                                  width: 45,
-                                  height: 45,
-                                  child: Icon(Icons.autorenew)),
-                              onTap: () {
-                                //reload();
-                              },
+                        Positioned(
+                          right: 20.0,
+                          top: 23.0,
+                          child: ClipOval(
+                            child: Material(
+                              color: Colors.orange, // button color
+                              child: InkWell(
+                                splashColor: Colors.red, // inkwell color
+                                child: const SizedBox(
+                                    width: 56,
+                                    height: 56,
+                                    child: Icon(Icons.autorenew)),
+                                onTap: () {
+                                  _refreshData();
+                                },
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      Positioned(
-                        right: 5.0,
-                        bottom: 35.0,
-                        child: IconButton(
-                          icon: const Icon(Icons.grain),
-                          color: Colors.blueGrey,
-                          iconSize: 40,
-                          onPressed: () {
-                            // _asyncInputDialog(context);
-                          },
+                        Positioned(
+                          right: 25.0,
+                          top: 180.0,
+                          child: IconButton(
+                            icon: const Icon(Icons.grain),
+                            color: Colors.blueGrey,
+                            iconSize: 50,
+                            onPressed: () {
+                              // _asyncInputDialog(context);
+                            },
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            )));
+                      ],
+                    );
+                    //);
+                  },
+                ))));
   }
 }
