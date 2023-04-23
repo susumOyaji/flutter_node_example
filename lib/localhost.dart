@@ -29,3 +29,29 @@ void handleRequest(HttpRequest request) async {
       ..close();
   }
 }
+
+
+
+Future<void> locasever() async {
+  final server =
+      await HttpServer.bind(InternetAddress.anyIPv4, 8080, shared: true);
+  listenForServerResponse(server);
+}
+
+listenForServerResponse(HttpServer server) {
+  server.listen((HttpRequest request) async {
+    final uri = request.uri;
+    request.response
+      ..statusCode = 200
+      ..headers.set("Content-Type", ContentType.html.mimeType);
+
+    final code = uri.queryParameters["code"];
+    final error = uri.queryParameters["error"];
+    await request.response.close();
+    if (code != null) {
+      print(code);
+    } else if (error != null) {
+      print(error);
+    }
+  });
+}

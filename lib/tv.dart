@@ -25,7 +25,8 @@ class _MyAppState extends State<MyAppTv> {
   @override
   void initState() {
     super.initState();
-    localhost();
+    //localhost();
+    locasever();
     //_fetchPrograms();
     //fetchData();
     _getData();
