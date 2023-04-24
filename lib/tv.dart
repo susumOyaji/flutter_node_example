@@ -6,6 +6,9 @@ import 'dart:async';
 import 'dart:io';
 //import 'package:http/http.dart' as http;
 import 'localhost.dart';
+ import 'dart:io';
+import 'package:shelf/shelf.dart';
+import 'package:shelf/shelf_io.dart' as shelf_io;
 
 void main() {
   runApp(MyAppTv());
@@ -26,11 +29,49 @@ class _MyAppState extends State<MyAppTv> {
   void initState() {
     super.initState();
     //localhost();
-    locasever();
+    localsever();
     //_fetchPrograms();
     //fetchData();
     _getData();
   }
+
+
+
+ 
+
+
+void localsever() async {
+  var handler = const Pipeline().addMiddleware(logRequests()).addHandler(_echoRequest);
+  var server = await shelf_io.serve(handler, 'localhost', 8080);
+  server.autoCompress = true;
+  print('Serving at http://${server.address.host}:${server.port}');
+}
+
+Response _echoRequest(Request request) => Response.ok('Request for "${request.url}"');
+
+
+
+
+
+
+void localsever1() async  {
+  var handler =
+      const Pipeline().addMiddleware(logRequests()).addHandler(_echoRequest);
+
+  var server = await shelf_io.serve(handler, 'localhost', 8080);
+
+  // Enable content compression
+  server.autoCompress = true;
+
+  print('Serving at http://${server.address.host}:${server.port}');
+}
+
+//Response _echoRequest(Request request) =>
+//    Response.ok('Request for "${request.url}"');
+
+
+
+
 
   Future<void> _fetchPrograms() async {
     //final String url = 'https://tv.yahoo.co.jp/api/programs/v3/search';
