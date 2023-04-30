@@ -16,7 +16,6 @@ class MyApp1 extends StatelessWidget {
     ["3436", 0, 0],
   ];
 
-  
   Future fetchData() async {
     //localhost:3000/api/v1/listにGETリクエストを送信し、レスポンスを待ちます。
     //レスポンスが受信されると、response変数に代入されます。
