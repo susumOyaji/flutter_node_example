@@ -3,13 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'Clipper.dart';
 import 'dart:io';
+import 'main1.dart';
+import 'main7.dart';
 
 
 
 
 void main() async {
   //main99();
-  runApp(const MyApp());
+  runApp(const MyApp1());
 }
 
 class MyApp extends StatelessWidget {

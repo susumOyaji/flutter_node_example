@@ -13,11 +13,11 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 void main() {
-  runApp(const MyApp());
+  runApp(const MyApp7());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class MyApp7 extends StatelessWidget {
+  const MyApp7({Key? key}) : super(key: key);
 
 
 
@@ -38,12 +38,12 @@ class MyApp extends StatelessWidget {
           title: const Text('Flutter FutureBuilder Demo'),
         ),
         body: FutureBuilder(
-          future: fetch(), //fetchData(),
+          future: fetch(),// fetchData(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.hasData) {
               // データがある場合
               var data1 = snapshot.data;
-              //final jsonData = json.decode(snapshot.data);
+              final jsonData = json.decode(snapshot.data);
               final stdstock = data1['stdstock'];
               final anystock = data1['anystock'];
               //print(data['stdstock'][1]);
@@ -59,10 +59,10 @@ class MyApp extends StatelessWidget {
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(stdstock[index]['Name']),
-                            Text(stdstock[index]['Price']),
-                            Text(stdstock[index]['Reshio']),
-                            Text(stdstock[index]['Percent']),
+                            //Text(stdstock[index]['Name']),
+                            //Text(stdstock[index]['Price']),
+                            //Text(stdstock[index]['Reshio']),
+                            //Text(stdstock[index]['Percent']),
                             //Text(_getFormattedDate('1,000.00')),
                           ],
                         ),
@@ -74,14 +74,14 @@ class MyApp extends StatelessWidget {
                     itemBuilder: (BuildContext context, int index) {
                       // 初期値の設定
                       return ListTile(
-                        title: Text(anystock[index]['Code']),
+                        title: Text("anystock[index]['Code']"),
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(anystock[index]['Name']),
-                            Text(anystock[index]['Price']),
-                            Text(anystock[index]['Reshio']),
-                            Text(anystock[index]['Percent']),
+                            //Text(anystock[index]['Name']),
+                            //Text(anystock[index]['Price']),
+                            //Text(anystock[index]['Reshio']),
+                            //Text(anystock[index]['Percent']),
                             //Text(_getFormattedDate('1,000.00')),
                           ],
                         ),
@@ -103,9 +103,9 @@ class MyApp extends StatelessWidget {
   }
 
   // 非同期処理でデータを取得する関数
-  Future<List<dynamic>> fetchData() async {
+  Future fetchData() async {
     final response =
-        await http.get(Uri.parse('https://jsonplaceholder.typicode.com/users'));
+        await http.get(Uri.parse('http://localhost:3000'));
 
     if (response.statusCode == 200) {
       // データを取得できた場合
