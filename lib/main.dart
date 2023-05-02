@@ -78,7 +78,7 @@ class _MyWidgetState extends State<Stockcardweb> {
       _message = 'Loading data...';
     });
 
-    const url = 'http://localhost:3000'; //←ここに表示させたいURLを入力する
+    const url = 'http://localhost:3000/api/v1/list'; //←ここに表示させたいURLを入力する
 
     try {
       final response = await http.get(Uri.parse(url).replace(queryParameters: {

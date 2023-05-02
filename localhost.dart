@@ -3,18 +3,20 @@ import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
 import 'package:shelf_cors_headers/shelf_cors_headers.dart';
 import 'package:shelf_router/shelf_router.dart';
-
-
-
+import 'package:http/http.dart' as http;
+import 'package:html/parser.dart' as parser;
 
 void main() async {
-  var handler = const Pipeline()
-      .addMiddleware(corsHeaders())
-      .addHandler(_appRouter);
+  var handler =
+      const Pipeline().addMiddleware(corsHeaders()).addHandler(_appRouter);
 
   var server = await serve(handler, 'localhost', 3000);
   print('Serving at http://${server.address.host}:${server.port}');
 }
+
+// YahooトップページのURL
+const yahooUrl = 'https://www.yahoo.com/';
+ const url = 'https://finance.yahoo.co.jp/quote/6758.T';
 
 Future<Response> _appRouter(Request request) {
   final app = Router();
@@ -34,6 +36,35 @@ Future<Response> _appRouter(Request request) {
 
     var body = jsonEncode(users);
     return Response.ok(body, headers: {'Content-Type': 'application/json'});
+  });
+
+  app.get('/scrape', (Request request) async {
+    // GETリクエストを送信してレスポンスを取得
+    final response = await http.get(Uri.parse(url));
+
+    // レスポンスのHTMLテキストを取得
+    final htmlText = response.body;
+
+    // JSON形式のレスポンスを返す
+    return Response.ok(htmlText, headers: {'content-type': 'text/html'});
+  });
+
+  app.get('/html', (Request request) async {
+   
+    final url = Uri.parse(yahooUrl);
+    final response = await http.get(url);
+    final document = parser.parse(response.body);
+ print('Response:  $document');
+    final headlines = document.querySelectorAll('.js-stream-content li');
+    for (var headline in headlines) {
+      final title = headline.querySelector('h3')?.text;
+      final summary = headline.querySelector('p')?.text;
+      final url = headline.querySelector('a')?.attributes['href'];
+
+      if (title != null && url != null) {
+        print('$title: $summary\n$url\n');
+      }
+    }
   });
 
   // Handle POST request for /users.

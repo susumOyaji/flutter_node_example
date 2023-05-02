@@ -1,0 +1,143 @@
+import 'dart:io';
+import 'dart:convert';
+
+import 'package:shelf/shelf.dart';
+import 'package:shelf/shelf_io.dart';
+import 'package:shelf_router/shelf_router.dart';
+import 'package:http/http.dart' as http;
+import 'package:html/parser.dart' as parser;
+
+Future<String> getdji() async {
+  //const dom = await JSDOM.fromURL('https://finance.yahoo.co.jp/quote/998407.O');
+  const url = 'https://finance.yahoo.co.jp/quote/%5EDJI';
+
+  final response = await http.get(Uri.parse(url));
+
+  final body = parser.parse(response.body);
+
+  final spanElements = body.querySelectorAll('span');
+  final spanTexts =
+      spanElements.map((spanElement) => spanElement.text).toList();
+
+  String Polarity = spanTexts[26][0] == '-' ? '-' : '+';
+
+  final jsonString =
+      '{"Code":"^DJI","Name": "^DJI", "Price": "${spanTexts[16]}","Reshio": "${spanTexts[20]}","Percent": "${spanTexts[26]}","Polarity": "$Polarity"}';
+
+  return jsonString;
+}
+
+Future<String> getnk() async {
+  //const dom = await JSDOM.fromURL('https://finance.yahoo.co.jp/quote/998407.O');
+  const url = 'https://finance.yahoo.co.jp/quote/998407.O';
+
+  final response = await http.get(Uri.parse(url));
+
+  final body = parser.parse(response.body);
+
+  final spanElements = body.querySelectorAll('span');
+  final spanTexts =
+      spanElements.map((spanElement) => spanElement.text).toList();
+
+  String Polarity = spanTexts[28][0] == '-' ? '-' : '+';
+
+  final jsonString =
+      '{"Code":"NIKKEI","Name": "NIKKEI", "Price": "${spanTexts[18]}","Reshio": "${spanTexts[22]}","Percent": "${spanTexts[28]}","Polarity": "$Polarity"}';
+
+  return jsonString;
+}
+
+Future<String> getAny(String code) async {
+  //final String baseUrl = 'https://finance.yahoo.co.jp/quote/';
+  final url = 'https://finance.yahoo.co.jp/quote/$code.T';
+
+  final response = await http.get(Uri.parse(url));
+
+  final body = parser.parse(response.body);
+
+  final h1Elements = body.querySelectorAll('h1');
+  final h1Texts = h1Elements.map((h1Element) => h1Element.text).toList();
+
+  final spanElements = body.querySelectorAll('span');
+  final spanTexts =
+      spanElements.map((spanElement) => spanElement.text).toList();
+
+  String Polarity = spanTexts[28][0] == '-' ? '-' : '+';
+
+  final jsonString =
+      '{"Code":"$code","Name": "${h1Texts[1]}", "Price": "${spanTexts[21]}","Reshio": "${spanTexts[29]}","Percent": "${spanTexts[33]}","Polarity": "$Polarity"}';
+
+  return jsonString;
+}
+
+// Configure routes.
+final _router = Router()
+  ..get('/api/v1/usr', _rootHandler)
+  ..get('/api/v1/list', getStockData)
+  ..get('/echo/<message>', _echoHandler);
+
+Future<Response> getStockData(Request req) async {
+  final List<String> stdcode = ['6758', '6976', '6701'];
+  final List<String> stdstock = [];
+  var result = '';
+
+  result = await getdji();
+  stdstock.add(result);
+
+  result = await getnk();
+  stdstock.add(result);
+
+  for (int i = 0; i < stdcode.length; i++) {
+    final String code = stdcode[i];
+    result = await getAny(code);
+    stdstock.add(result);
+  }
+
+  print(stdstock);
+  return Response.ok(stdstock);
+}
+
+Future<Response> _rootHandler(Request req) async {
+  List<String> stdstock = [];
+  final url = Uri.parse('https://finance.yahoo.co.jp/quote/6976.T');
+  final response = await http.get(url);
+  final body = parser.parse(response.body);
+
+  //final main = body.querySelectorAll('main');
+  final h1Elements = body.querySelectorAll('h1');
+  final h1Texts = h1Elements.map((h1Element) => h1Element.text).toList();
+
+  final spanElements = body.querySelectorAll('span');
+  final spanTexts =
+      spanElements.map((spanElement) => spanElement.text).toList();
+
+  String Polarity = spanTexts[33][0] == '-' ? '-' : '+';
+
+  final jsonString =
+      '{"Code":"6758","Name": "${h1Texts[1]}", "Price": "${spanTexts[21]}","Reshio": "${spanTexts[29]}","Percent": "${spanTexts[33]}","Polarity": "$Polarity"}';
+  final jsonData = jsonDecode(jsonString);
+  stdstock.add(jsonString);
+
+  print(jsonData);
+  return Response.ok(jsonData);
+
+  //return Response.ok('Hello, World!\n');
+}
+
+Response _echoHandler(Request request) {
+  final message = request.params['message'];
+  return Response.ok('$message\n');
+}
+
+void main(List<String> args) async {
+  // Use any available host or container IP (usually `0.0.0.0`).
+  final ip = InternetAddress.anyIPv4;
+
+  // Configure a pipeline that logs requests.
+  final handler = Pipeline().addMiddleware(logRequests()).addHandler(_router);
+
+  // For running in containers, we respect the PORT environment variable.
+  final port = int.parse(Platform.environment['PORT'] ?? '3000');
+  final server = await serve(handler, ip, port);
+  print('Server listening on port ${server.port}');
+}

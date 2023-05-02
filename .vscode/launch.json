@@ -4,6 +4,13 @@
     // 詳細情報は次を確認してください: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+
+        {
+            "name": "Dart: Debug Current File",
+            "type": "dart",
+            "request": "launch",
+            "program": "${file}"
+          },
         
         {
             "type": "vscode-edge-devtools.debug",
