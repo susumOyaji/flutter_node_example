@@ -33,10 +33,10 @@ class MyApp1 extends StatelessWidget {
   }
 
   Future fetchList() async {
-    var response =
+  final response =
         await http.get(Uri.parse('http://localhost:3000/api/v1/list'));
     if (response.statusCode == 200) {
-      return response.body;
+      return jsonDecode(response.body);
     } else {
       throw Exception('Failed to load list');
     }
@@ -47,9 +47,9 @@ class MyApp1 extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         body: FutureBuilder(
-          future: fetchData(),
+          future: fetchList(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if (snapshot.hasData) {
+            if (!snapshot.hasData) {
               return const Center(
                 child: CircularProgressIndicator(),
               );

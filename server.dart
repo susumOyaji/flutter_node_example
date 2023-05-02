@@ -21,8 +21,14 @@ Future<Map<String, String>> getdji() async {
 
   String Polarity = spanTexts[26][0] == '-' ? '-' : '+';
 
-  Map<String, String> mapString =
-      {"Code":"^DJI","Name": "^DJI", "Price": "${spanTexts[16]}","Reshio": "${spanTexts[20]}","Percent": "${spanTexts[26]}","Polarity": "$Polarity"};
+  Map<String, String> mapString = {
+    "Code": "^DJI",
+    "Name": "^DJI",
+    "Price": spanTexts[16],
+    "Reshio": spanTexts[20],
+    "Percent": spanTexts[26],
+    "Polarity": Polarity
+  };
 
   return mapString;
 }
@@ -41,8 +47,14 @@ Future<Map<String, String>> getnk() async {
 
   String Polarity = spanTexts[28][0] == '-' ? '-' : '+';
 
-   Map<String, String> mapString =
-      {"Code":"NIKKEI","Name": "NIKKEI", "Price": "${spanTexts[18]}","Reshio": "${spanTexts[22]}","Percent": "${spanTexts[28]}","Polarity": "$Polarity"};
+  Map<String, String> mapString = {
+    "Code": "NIKKEI",
+    "Name": "NIKKEI",
+    "Price": spanTexts[18],
+    "Reshio": spanTexts[22],
+    "Percent": spanTexts[28],
+    "Polarity": Polarity
+  };
 
   return mapString;
 }
@@ -65,12 +77,12 @@ Future<Map<String, String>> getAny(String code) async {
   String Polarity = spanTexts[28][0] == '-' ? '-' : '+';
 
   Map<String, String> mapString = {
-    "Code": "$code",
-    "Name": "${h1Texts[1]}",
-    "Price": "${spanTexts[21]}",
-    "Reshio": "${spanTexts[29]}",
-    "Percent": "${spanTexts[33]}",
-    "Polarity": "$Polarity"
+    "Code": code,
+    "Name": h1Texts[1],
+    "Price": spanTexts[21],
+    "Reshio": spanTexts[29],
+    "Percent": spanTexts[33],
+    "Polarity": Polarity
   };
 
   return mapString;
@@ -99,8 +111,11 @@ Future<Response> getStockData(Request req) async {
     stdstock.add(result);
   }
 
-  print(stdstock);
-  return Response.ok(jsonEncode(stdstock));
+  final jsonResponse = jsonEncode(stdstock);
+  print(jsonResponse);
+  return Response.ok(jsonResponse,
+      headers: {'Content-Type': 'application/json'});
+  //return Response.ok(jsonEncode(stdstock));
 }
 
 Future<Response> _rootHandler(Request req) async {
