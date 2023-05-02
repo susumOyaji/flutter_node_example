@@ -7,7 +7,7 @@ import 'package:shelf_router/shelf_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as parser;
 
-Future<String> getdji() async {
+Future<Map<String, String>> getdji() async {
   //const dom = await JSDOM.fromURL('https://finance.yahoo.co.jp/quote/998407.O');
   const url = 'https://finance.yahoo.co.jp/quote/%5EDJI';
 
@@ -21,13 +21,13 @@ Future<String> getdji() async {
 
   String Polarity = spanTexts[26][0] == '-' ? '-' : '+';
 
-  final jsonString =
-      '{"Code":"^DJI","Name": "^DJI", "Price": "${spanTexts[16]}","Reshio": "${spanTexts[20]}","Percent": "${spanTexts[26]}","Polarity": "$Polarity"}';
+  Map<String, String> mapString =
+      {"Code":"^DJI","Name": "^DJI", "Price": "${spanTexts[16]}","Reshio": "${spanTexts[20]}","Percent": "${spanTexts[26]}","Polarity": "$Polarity"};
 
-  return jsonString;
+  return mapString;
 }
 
-Future<String> getnk() async {
+Future<Map<String, String>> getnk() async {
   //const dom = await JSDOM.fromURL('https://finance.yahoo.co.jp/quote/998407.O');
   const url = 'https://finance.yahoo.co.jp/quote/998407.O';
 
@@ -41,13 +41,13 @@ Future<String> getnk() async {
 
   String Polarity = spanTexts[28][0] == '-' ? '-' : '+';
 
-  final jsonString =
-      '{"Code":"NIKKEI","Name": "NIKKEI", "Price": "${spanTexts[18]}","Reshio": "${spanTexts[22]}","Percent": "${spanTexts[28]}","Polarity": "$Polarity"}';
+   Map<String, String> mapString =
+      {"Code":"NIKKEI","Name": "NIKKEI", "Price": "${spanTexts[18]}","Reshio": "${spanTexts[22]}","Percent": "${spanTexts[28]}","Polarity": "$Polarity"};
 
-  return jsonString;
+  return mapString;
 }
 
-Future<String> getAny(String code) async {
+Future<Map<String, String>> getAny(String code) async {
   //final String baseUrl = 'https://finance.yahoo.co.jp/quote/';
   final url = 'https://finance.yahoo.co.jp/quote/$code.T';
 
@@ -64,10 +64,16 @@ Future<String> getAny(String code) async {
 
   String Polarity = spanTexts[28][0] == '-' ? '-' : '+';
 
-  final jsonString =
-      '{"Code":"$code","Name": "${h1Texts[1]}", "Price": "${spanTexts[21]}","Reshio": "${spanTexts[29]}","Percent": "${spanTexts[33]}","Polarity": "$Polarity"}';
+  Map<String, String> mapString = {
+    "Code": "$code",
+    "Name": "${h1Texts[1]}",
+    "Price": "${spanTexts[21]}",
+    "Reshio": "${spanTexts[29]}",
+    "Percent": "${spanTexts[33]}",
+    "Polarity": "$Polarity"
+  };
 
-  return jsonString;
+  return mapString;
 }
 
 // Configure routes.
@@ -78,8 +84,8 @@ final _router = Router()
 
 Future<Response> getStockData(Request req) async {
   final List<String> stdcode = ['6758', '6976', '6701'];
-  final List<String> stdstock = [];
-  var result = '';
+  final List<Map<String, String>> stdstock = [];
+  Map<String, String> result;
 
   result = await getdji();
   stdstock.add(result);
@@ -94,7 +100,7 @@ Future<Response> getStockData(Request req) async {
   }
 
   print(stdstock);
-  return Response.ok(stdstock);
+  return Response.ok(jsonEncode(stdstock));
 }
 
 Future<Response> _rootHandler(Request req) async {
