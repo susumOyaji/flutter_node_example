@@ -116,7 +116,7 @@ Future<Response> getStockData(Request req) async {
   //return Response.ok(jsonResponse,
   //    headers: {'Content-Type': 'application/json'});
 
-  return Response.ok(json.encode(stdcode), headers: {
+  return Response.ok(json.encode(stdstock), headers: {
   'Content-Type': 'application/json',
 });
 
