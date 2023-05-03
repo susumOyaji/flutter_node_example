@@ -4,14 +4,11 @@ import 'package:http/http.dart' as http;
 import 'Clipper.dart';
 import 'dart:io';
 import 'main1.dart';
-import 'main7.dart';
-
-
-
+import 'main99.dart';
 
 void main() async {
   //main99();
-  runApp(const MyApp1());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -54,19 +51,46 @@ class _MyWidgetState extends State<Stockcardweb> {
 
     // ここで初期化処理を行う
     //runCommand();
-    _data = fetch();
+    _data = makeRequest();
+    //_data = fetch();
   }
 
   void _refreshData() {
     setState(() {
       print("_refreshData");
-      _data = fetch();
+      _data = makeRequest();
+      //_data = fetch();
     });
   }
 
   void runCommand() async {
     var result = await Process.run('node', ['Node/index.js']);
     print(result.stdout);
+  }
+
+  Future makeRequest() async {
+    setState(() {
+      _isLoading = true;
+      _message = 'Loading data...';
+    });
+    const url = 'http://localhost:3000/api/v1/list'; //←ここに表示させたいURLを入力する
+    try {
+      final response = await http.get(Uri.parse(url).replace(queryParameters: {
+        'data': jsonEncode(data),
+      }));
+      
+      setState(() {
+        _isLoading = true;
+        _message = 'Loading data...';
+      });
+      return json.decode(response.body);
+    } catch (e) {
+      print(e);
+      setState(() {
+        _isLoading = false;
+        _message = 'Failed to load data.';
+      });
+    }
   }
 
   Future fetch() async {
@@ -78,7 +102,7 @@ class _MyWidgetState extends State<Stockcardweb> {
       _message = 'Loading data...';
     });
 
-    const url = 'http://localhost:3000/api/v1/list'; //←ここに表示させたいURLを入力する
+    const url = 'http://localhost:3000'; //←ここに表示させたいURLを入力する
 
     try {
       final response = await http.get(Uri.parse(url).replace(queryParameters: {
@@ -90,6 +114,7 @@ class _MyWidgetState extends State<Stockcardweb> {
       });
       return json.decode(response.body);
     } catch (e) {
+      print(e);
       setState(() {
         _isLoading = false;
         _message = 'Failed to load data.';

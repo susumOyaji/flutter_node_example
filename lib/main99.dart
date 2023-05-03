@@ -1,23 +1,17 @@
 import 'dart:io';
+import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:http/http.dart' as http;
 
 void main() async {
-  // ローカルサーバーを起動
-  //final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8080).then((server){
-  //  print('Listening on localhost:${server.port}');
-  //});
-  //await Future.delayed(Duration.zero);
-
-  runApp(MyApp());
-
-  // アプリが終了したらサーバーも停止する
-  //await server.close(force: true);
+  runApp(MyApp99());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp99 extends StatelessWidget {
+  const MyApp99({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -37,31 +31,42 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   String _response = '';
-
+  //late Future _response;
   @override
   void initState() {
     super.initState();
-    localhost();
+    makeRequest();
     // ここで初期化処理を行う
     //runCommand();
   }
 
-  Future localhost() async {
-    final server = await HttpServer.bind('localhost', 8080);
-    print('Server started on port: ${server.port}');
+  Future<List> makeRequest() async {
+    try {
+      final response =
+          await http.get(Uri.parse('http://localhost:3000/api/v1/list'));
 
-    await for (HttpRequest request in server) {
-      handleRequest(request);
+      if (response.statusCode == 200) {
+        // OK
+        final data = json.decode(response.body);
+        setState(() {
+          _response = data;
+          //response.body;
+        });
+        print(data);
+        return data;
+      } else if (response.statusCode == 404) {
+        // Not Found
+        print('404 Not Found');
+        return [];
+      } else {
+        // エラーの場合はその他のステータスコードが返される
+        print('Error: ${response.statusCode}');
+        return [];
+      }
+    } catch (e) {
+      print(e);
+      return [];
     }
-  }
-
-  void handleRequest(HttpRequest request) {
-    print('Received request: ${request.method} ${request.uri.path}');
-
-    request.response
-      ..headers.contentType = ContentType('text', 'plain', charset: 'utf-8')
-      ..write('Hello, World!')
-      ..close();
   }
 
   Future<void> _fetchData() async {
@@ -83,11 +88,11 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed: _fetchData,
+              onPressed: makeRequest,
               child: Text('Fetch Data'),
             ),
             SizedBox(height: 20),
-            Text(_response),
+            Text(_response.toString()),
           ],
         ),
       ),
