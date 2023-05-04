@@ -90,7 +90,7 @@ Future<Map<String, String>> getAny(String code) async {
 
 // Configure routes.
 final _router = Router()
-  ..get('/api/v1/usr', _rootHandler)
+  ..get('/api/v1/user', _rootHandler)
   ..get('/api/v1/list', getStockData)
   ..get('/echo/<message>', _echoHandler);
 
@@ -113,14 +113,10 @@ Future<Response> getStockData(Request req) async {
 
   final jsonResponse = jsonEncode(stdstock);
   print(jsonResponse);
+
   //return Response.ok(jsonResponse,
   //    headers: {'Content-Type': 'application/json'});
-
-  return Response.ok(json.encode(stdstock), headers: {
-  'Content-Type': 'application/json',
-});
-
-  //return Response.ok(jsonEncode(stdstock));
+  return Response.ok("oooookkkk");
 }
 
 Future<Response> _rootHandler(Request req) async {
@@ -139,17 +135,42 @@ Future<Response> _rootHandler(Request req) async {
 
   String Polarity = spanTexts[33][0] == '-' ? '-' : '+';
 
-  final jsonString =
-      '{"Code":"6758","Name": "${h1Texts[1]}", "Price": "${spanTexts[21]}","Reshio": "${spanTexts[29]}","Percent": "${spanTexts[33]}","Polarity": "$Polarity"}';
-  final jsonData = jsonDecode(jsonString);
-  stdstock.add(jsonString);
+  List<Map<String, dynamic>> jsonString = [
+    {
+      "Code": "6758",
+      "Name": "${h1Texts[1]}",
+      "Price": "${spanTexts[21]}",
+      "Reshio": "${spanTexts[29]}",
+      "Percent": "${spanTexts[33]}",
+      "Polarity": "$Polarity"
+    }
+  ];
+  final jsonData = jsonEncode(jsonString);
+  stdstock.add(jsonData);
 
   print(jsonData);
-  return Response.ok(jsonData);
+  return Response.ok(jsonData, headers: {'Content-Type': 'application/json'});
+  //return Response.ok(jsonData);
 
   //return Response.ok('Hello, World!\n');
 }
 
+/*
+Response _rootcode(HttpRequest request) {
+  // リスト形式の株式データ
+  List<Map<String, dynamic>> stocks = [
+    {'Code': '1234', 'Name': 'Apple Inc.', 'Price': 100.0},
+    {'Code': '5678', 'Name': 'Microsoft Corporation', 'Price': 200.0},
+    {'Code': '9012', 'Name': 'Amazon.com, Inc.', 'Price': 300.0},
+  ];
+
+  // JSON形式に変換してレスポンスを返す
+  request.response.statusCode = 200;
+  request.response.headers.set('Content-Type', 'application/json');
+  request.response.write(jsonEncode(stocks));
+  request.response.close();
+}
+*/
 Response _echoHandler(Request request) {
   final message = request.params['message'];
   return Response.ok('$message\n');
