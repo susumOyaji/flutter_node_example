@@ -8,7 +8,7 @@ import 'main100.dart';
 
 void main() async {
   //main99();
-  runApp(const MyApp100());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -51,15 +51,16 @@ class _MyWidgetState extends State<Stockcardweb> {
 
     // ここで初期化処理を行う
     //runCommand();
-    _data = makeRequest();
-    //_data = fetch();
+    //_data = getData();
+    _data = fetch();
   }
 
   void _refreshData() {
     setState(() {
       print("_refreshData");
-      _data = makeRequest();
-      //_data = fetch();
+      //_data = makeRequest();
+      //_data = getData();
+      _data = fetch();
     });
   }
 
@@ -68,32 +69,20 @@ class _MyWidgetState extends State<Stockcardweb> {
     print(result.stdout);
   }
 
-  Future makeRequest() async {
-    setState(() {
-      _isLoading = true;
-      _message = 'Loading data...';
-    });
-    const url = 'http://localhost:3000/api/v1/list'; //←ここに表示させたいURLを入力する
-    try {
-      final response = await http.get(Uri.parse(url).replace(queryParameters: {
-        'data': jsonEncode(data),
-      }));
-      
-      setState(() {
-        _isLoading = true;
-        _message = 'Loading data...';
-      });
-      return json.decode(response.body);
-    } catch (e) {
-      print(e);
-      setState(() {
-        _isLoading = false;
-        _message = 'Failed to load data.';
-      });
+  Future<dynamic> getData() async {
+    //final response = await http.get(Uri.parse('https://raw.githubusercontent.com/dev-yakuza/users/master/api.json'));
+    final response = await http.get(Uri.parse('http://localhost:3000/api/v1/user'));
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      print(data);
+      //_data= data;
+      return data;
+    } else {
+      print('Failed to fetch data. Error code: ${response.statusCode}');
     }
   }
 
-  Future fetch() async {
+  Future<dynamic> fetch() async {
     //final String json;
     //List<dynamic> jsonArray = [];
 
@@ -102,7 +91,7 @@ class _MyWidgetState extends State<Stockcardweb> {
       _message = 'Loading data...';
     });
 
-    const url = 'http://localhost:3000'; //←ここに表示させたいURLを入力する
+    const url = 'http://localhost:3000/api/v1/list'; //←ここに表示させたいURLを入力する
 
     try {
       final response = await http.get(Uri.parse(url).replace(queryParameters: {
@@ -400,7 +389,7 @@ class _MyWidgetState extends State<Stockcardweb> {
             body: Container(
                 alignment: Alignment.center,
                 child: FutureBuilder(
-                  future: _data, //fetch(),
+                  future: _data,
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                     if (!snapshot.hasData) {
                       return const Center(
@@ -409,12 +398,12 @@ class _MyWidgetState extends State<Stockcardweb> {
                     }
                     var res = snapshot.data;
                     //final jsonData = json.decode(snapshot.data.toString());
-                    final stdstock = res['stdstock'];
-                    final anystock = res['anystock'];
-                    final totalUnitprice = res['totalUnitprice'];
-                    final totalmarketcap = res['totalmarketcap'];
-                    final totalGain = res['totalGain'];
-                    final totalPolarity = res['totalpolarity'];
+                    final stdstock = res[0]['Code'];
+                    final anystock = res[0]['Name'];
+                    final totalUnitprice = res[0]['Price'];
+                    final totalmarketcap = res[0]['Reshio'];
+                    final totalGain = res[0]['Percent'];
+                    final totalPolarity = res[0]['Polarity'];
                     //child:
                     return Stack(
                       children: <Widget>[
