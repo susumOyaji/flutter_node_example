@@ -105,27 +105,47 @@ final _router = Router()
 
 Future<Response> getStockData(Request req) async {
   final List<String> stdcode = ['6758', '6976', '6701'];
-  final List<Map<String, String>> stdstock = [];
+  final Map<String, String> stdstock ={};
+  final Map<String, String> anystock={};
+  List<Map<String, String>> stdList = [];
+  List<Map<String, String>> anyList = [];
+ 
   Map<String, String> result;
 
   result = await getdji();
-  stdstock.add(result);
+  stdList.add(result);
 
   result = await getnk();
-  stdstock.add(result);
+  stdList.add(result);
 
   for (int i = 0; i < stdcode.length; i++) {
     final String code = stdcode[i];
     result = await getAny(code);
 
-    stdstock.add(result);
+    anyList.add(result);
   }
-  final jsonData = const JsonEncoder.withIndent("").convert(stdstock);
-  //final jsonResponse = jsonEncode(stdstock);
-  print(jsonData);
+  final stdjsonData = const JsonEncoder.withIndent("").convert(stdList);
+  //print(stdjsonData);
 
-  return Response.ok(jsonData,headers: {'Content-Type': 'application/json'});
+  final anyjsonData = const JsonEncoder.withIndent("").convert(anyList);
+ 
+
+
+ var data = {
+    'stdData': stdList,
+    'anyData': anyList,
+  };
+
+  //var jsonData = json.encode(data);
+  final jsonData = const JsonEncoder.withIndent("").convert(data);
+  print(jsonData);
+  return Response.ok(jsonData, headers: {'Content-Type': 'application/json'});
+
  }
+
+
+
+
 
 Future<Response> _rootHandler(Request req) async {
   List<Map<String, String>> stdstock = [];

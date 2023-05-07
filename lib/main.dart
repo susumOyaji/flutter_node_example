@@ -73,10 +73,10 @@ class _MyWidgetState extends State<Stockcardweb> {
     //final response = await http.get(Uri.parse('https://raw.githubusercontent.com/dev-yakuza/users/master/api.json'));
     final response = await http.get(Uri.parse('http://localhost:3000/api/v1/user'));
     if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      print(data);
+      final dataget = json.decode(response.body);
+      print(dataget);
       //_data= data;
-      return data;
+      return dataget;
     } else {
       print('Failed to fetch data. Error code: ${response.statusCode}');
     }
@@ -397,12 +397,13 @@ class _MyWidgetState extends State<Stockcardweb> {
                       );
                     }
                     var res = snapshot.data;
-                    //final jsonData = json.decode(snapshot.data.toString());
-                    //final stdstock = res[0]['Code'];
-                    final anystock = res[0]['Name'];
-                    //final totalUnitprice = res[0]['Price'];
-                    //final totalmarketcap = res[0]['Reshio'];
-                    //final totalGain = res[0]['Percent'];
+                    //final Map<String, dynamic> res = jsonDecode(snapshot.data!.body);
+                    //final res = json.decode(snapshot.data.toString());
+                    final stdstock = res[0]["stdData"];
+                    final anystock = res[1]['anyData'];
+                    final totalUnitprice = res[1]['anyData'];
+                    final totalmarketcap = res[1]['anyData'];
+                    final totalGain = res[1]['anyData'];
                     //final totalPolarity = res[0]['Polarity'];
                     //child:
                     return Stack(
@@ -544,12 +545,12 @@ class _MyWidgetState extends State<Stockcardweb> {
                                                 ),
                                                 children: [
                                                   TextSpan(
-                                                    text: res[0]
+                                                    text: stdstock[0]
                                                             ['Reshio'] +
                                                         "   " +
-                                                        res[0]['Percent'],
+                                                        stdstock[0]['Percent'],
                                                     style: TextStyle(
-                                                        color: res[0][
+                                                        color: stdstock[0][
                                                                     'Polarity'] ==
                                                                 "+"
                                                             ? Colors.red
@@ -566,7 +567,7 @@ class _MyWidgetState extends State<Stockcardweb> {
                                             CircleAvatar(
                                               maxRadius: 8.0,
                                               backgroundColor:
-                                                  res[1]['Polarity'] == "+"
+                                                  stdstock[1]['Polarity'] == "+"
                                                       ? Colors.red
                                                       : Colors.green,
                                             ),
@@ -579,7 +580,7 @@ class _MyWidgetState extends State<Stockcardweb> {
                                                 ),
                                                 children: [
                                                   TextSpan(
-                                                    text: res[1]['Price'],
+                                                    text: stdstock[1]['Price'],
                                                     style: const TextStyle(
                                                         color: Colors.blue),
                                                   ),
@@ -600,12 +601,12 @@ class _MyWidgetState extends State<Stockcardweb> {
                                                 ),
                                                 children: [
                                                   TextSpan(
-                                                    text: res[1]
+                                                    text: stdstock[1]
                                                             ['Reshio'] +
                                                         "   " +
-                                                        res[1]['Percent'],
+                                                        stdstock[1]['Percent'],
                                                     style: TextStyle(
-                                                        color: (res[1][
+                                                        color: (stdstock[1][
                                                                     'Polarity'] ==
                                                                 "+")
                                                             ? Colors.red
@@ -667,7 +668,7 @@ class _MyWidgetState extends State<Stockcardweb> {
                                             CircleAvatar(
                                               maxRadius: 8.0,
                                               backgroundColor:
-                                                  res[0]["Polarity"] == "+"
+                                                  stdstock[0]["Polarity"] == "+"
                                                       ? Colors.orange
                                                       : Colors.blue,
                                             ),
