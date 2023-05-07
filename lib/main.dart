@@ -5,10 +5,11 @@ import 'Clipper.dart';
 import 'dart:io';
 import 'main1.dart';
 import 'main100.dart';
+import 'mainGPT.dart';
 
 void main() async {
   //main99();
-  runApp(const MyApp());
+  runApp(const MyAppGPT());
 }
 
 class MyApp extends StatelessWidget {
