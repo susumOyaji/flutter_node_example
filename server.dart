@@ -121,9 +121,10 @@ Future<Response> getStockData(Request req) async {
   for (int i = 0; i < stdcode.length; i++) {
     final String code = stdcode[i];
     result = await getAny(code);
-
+   
     anyList.add(result);
   }
+
   final stdjsonData = const JsonEncoder.withIndent("").convert(stdList);
   //print(stdjsonData);
 
@@ -131,7 +132,7 @@ Future<Response> getStockData(Request req) async {
  
 
 
- var data = {
+ Map<String, List<Map<String, String>>> data = {
     'stdData': stdList,
     'anyData': anyList,
   };

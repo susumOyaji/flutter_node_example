@@ -399,11 +399,11 @@ class _MyWidgetState extends State<Stockcardweb> {
                     var res = snapshot.data;
                     //final Map<String, dynamic> res = jsonDecode(snapshot.data!.body);
                     //final res = json.decode(snapshot.data.toString());
-                    final stdstock = res[0]["stdData"];
-                    final anystock = res[1]['anyData'];
-                    final totalUnitprice = res[1]['anyData'];
-                    final totalmarketcap = res[1]['anyData'];
-                    final totalGain = res[1]['anyData'];
+                    final stdstock = res["stdData"];
+                    final anystock = res['anyData'];
+                    final totalUnitprice = res['anyData'];
+                    final totalmarketcap = res['anyData'];
+                    final totalGain = res['anyData'];
                     //final totalPolarity = res[0]['Polarity'];
                     //child:
                     return Stack(
