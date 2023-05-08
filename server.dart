@@ -104,6 +104,8 @@ final _router = Router()
 
 
 Future<Response> getStockData(Request req) async {
+  //final code = req.uri.queryParameters['code'];
+
   final List<String> stdcode = ['6758', '6976', '6701'];
   final Map<String, String> stdstock ={};
   final Map<String, String> anystock={};

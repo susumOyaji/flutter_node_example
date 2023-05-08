@@ -6,6 +6,7 @@ import 'dart:io';
 import 'main1.dart';
 import 'main100.dart';
 import 'mainGPT.dart';
+import 'dart:async';
 
 void main() async {
   //main99();
@@ -32,6 +33,7 @@ class Stockcardweb extends StatefulWidget {
 }
 
 class _MyWidgetState extends State<Stockcardweb> {
+ // dynamic _data;
   late Future _data;
   //int MarketCap = 0;
   bool _isLoading = false;
@@ -72,7 +74,8 @@ class _MyWidgetState extends State<Stockcardweb> {
 
   Future<dynamic> getData() async {
     //final response = await http.get(Uri.parse('https://raw.githubusercontent.com/dev-yakuza/users/master/api.json'));
-    final response = await http.get(Uri.parse('http://localhost:3000/api/v1/user'));
+    final response =
+        await http.get(Uri.parse('http://localhost:3000/api/v1/user'));
     if (response.statusCode == 200) {
       final dataget = json.decode(response.body);
       print(dataget);
@@ -83,7 +86,7 @@ class _MyWidgetState extends State<Stockcardweb> {
     }
   }
 
-  Future<dynamic> fetch() async {
+  Future  fetch() async {
     //final String json;
     //List<dynamic> jsonArray = [];
 
