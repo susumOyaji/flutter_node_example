@@ -50,23 +50,41 @@ class _MyHomePageState extends State<MyHomePage> {
     ["3436", 0, 0],
   ];
 
-  List<Map<String, dynamic,dynamic>> data1 = [
-    {code: 6758, quantity: 200, price: 1665},
-    {code: 6976, quantity: 300, price: 1801},
-    {code: 3436, quantity: 0, price: 0}
-  ];
+  Map<String, dynamic> data3 = {
+    '6758': {'value1': 200, 'value2': 1665},
+    '6976': {'value1': 300, 'value2': 1801},
+    '3436': {'value1': 0, 'value2': 0}
+  };
+
+  Map<String, dynamic> data1 = {'code': '6758'};
+  //{'code': 6976, 'quantity': 300, 'price': 1801},
+  //{'code': 3436, 'quantity': 0, 'price': 0};
+  Map<String, dynamic> data2 = {
+    'key1': '6758',
+    'key2': '200',
+    'key3': '1665',
+    'key4': '6976',
+    'key5': '300',
+    'key6': '1801',
+    'key7': '3436',
+    'key8': '0',
+    'key9': '0',
+  };
+  Map<String, dynamic> data4 = {'key3': 'value3', 'key4': 'value4'};
+
+  //final mergedData = {...data2, ...data3};
 
   Future<List<StockData>>? _futureStockData;
   List anystock = [];
   List stdstock = [];
 
   Future<List<StockData>> _fetchStockData() async {
-    final response =
-        await http.get(Uri.parse('http://localhost:3000/api/v1/list'));
+    //final response =
+    //   await http.get(Uri.parse('http://localhost:3000/api/v1/list'));
 
     const url = 'http://localhost:3000/api/v1/list'; //←ここに表示させたいURLを入力する
-    final response1 =
-        await http.get(Uri.parse(url).replace(queryParameters: data));
+    final response =
+        await http.get(Uri.parse(url).replace(queryParameters: data2));
 
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body);

@@ -65,7 +65,8 @@ Future<Map<String, String>> getnk() async {
   return mapString;
 }
 
-Future<Map<String, String>> getAny(String code) async {
+Future<Map<String, String>> getAny(
+    String code, String holding, String price) async {
   //final String baseUrl = 'https://finance.yahoo.co.jp/quote/';
   final url = 'https://finance.yahoo.co.jp/quote/$code.T';
 
@@ -82,14 +83,26 @@ Future<Map<String, String>> getAny(String code) async {
 
   String Polarity = spanTexts[28][0] == '-' ? '-' : '+';
 
+  int int_holding = int.parse(holding);
+  int int_price = int.parse(price);
+  int asset = int_holding + int_price;
+  String Asset = asset.toString();
+
   Map<String, String> mapString = {
     "Code": code,
     "Name": h1Texts[1],
     "Price": spanTexts[21],
     "Reshio": spanTexts[29],
     "Percent": spanTexts[33],
-    "Polarity": Polarity
+    "Polarity": Polarity,
+    "Asset": Asset
   };
+
+  return mapString;
+}
+
+Future<Map<String, String>> getAsset(String code) async {
+  Map<String, String> mapString = {};
 
   return mapString;
 }
@@ -100,18 +113,31 @@ final _router = Router()
   ..get('/api/v1/list', getStockData)
   ..get('/echo/<message>', _echoHandler);
 
-
-
-
 Future<Response> getStockData(Request req) async {
-  //final code = req.uri.queryParameters['code'];
+  // クエリパラメータを取得する
+  final queryParameters = req.url.queryParameters;
 
-  final List<String> stdcode = ['6758', '6976', '6701'];
-  final Map<String, String> stdstock ={};
-  final Map<String, String> anystock={};
+  List<dynamic> values = queryParameters.values.toList();
+
+  List<List<dynamic>> anycode = [];
+  for (var i = 0; i < values.length; i += 3) {
+    anycode.add(values.sublist(i, i + 3));
+  }
+
+  print(anycode);
+  print(anycode[0][0]); // ['John', 30, 'New York']
+  print(queryParameters);
+
+  //final List<String> stdcode = ['6758', '6976', '6701'];
+  //final Map<String, String> stdstock = {};
+  //final Map<String, String> anystock = {};
   List<Map<String, String>> stdList = [];
   List<Map<String, String>> anyList = [];
- 
+  List<Map<String, String>> assetList = [];
+  String code;
+  String holding;
+  String pice;
+
   Map<String, String> result;
 
   result = await getdji();
@@ -120,21 +146,21 @@ Future<Response> getStockData(Request req) async {
   result = await getnk();
   stdList.add(result);
 
-  for (int i = 0; i < stdcode.length; i++) {
-    final String code = stdcode[i];
-    result = await getAny(code);
-   
+  for (int i = 0; i < anycode.length; i++) {
+    code = anycode[i][0];
+    holding = anycode[i][1];
+    pice = anycode[i][2];
+    result = await getAny(code, holding, pice);
+
     anyList.add(result);
   }
 
-  final stdjsonData = const JsonEncoder.withIndent("").convert(stdList);
+  //final stdjsonData = const JsonEncoder.withIndent("").convert(stdList);
   //print(stdjsonData);
 
-  final anyjsonData = const JsonEncoder.withIndent("").convert(anyList);
- 
+  //final anyjsonData = const JsonEncoder.withIndent("").convert(anyList);
 
-
- Map<String, List<Map<String, String>>> data = {
+  Map<String, List<Map<String, String>>> data = {
     'stdData': stdList,
     'anyData': anyList,
   };
@@ -143,12 +169,7 @@ Future<Response> getStockData(Request req) async {
   final jsonData = const JsonEncoder.withIndent("").convert(data);
   print(jsonData);
   return Response.ok(jsonData, headers: {'Content-Type': 'application/json'});
-
- }
-
-
-
-
+}
 
 Future<Response> _rootHandler(Request req) async {
   List<Map<String, String>> stdstock = [];
@@ -210,16 +231,12 @@ Response _echoHandler(Request request) {
   return Response.ok('$message\n');
 }
 
-
-
-
 void main(List<String> args) async {
-
-
   // Use any available host or container IP (usually `0.0.0.0`).
   final ip = InternetAddress.anyIPv4;
 
-  final handler = const Pipeline().addMiddleware(corsHeaders()).addHandler(_router);
+  final handler =
+      const Pipeline().addMiddleware(corsHeaders()).addHandler(_router);
   // Configure a pipeline that logs requests.
   //final handler = Pipeline().addMiddleware(logRequests()).addHandler(_router);
 
@@ -228,8 +245,3 @@ void main(List<String> args) async {
   final server = await serve(handler, ip, port);
   print('Server listening on port ${server.port}');
 }
-
-
-
-
-
