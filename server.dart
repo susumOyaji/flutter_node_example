@@ -136,7 +136,7 @@ Future<Response> getStockData(Request req) async {
 
   List<Map<String, String>> stdList = [];
   List<Map<String, String>> anyList = [];
-  List<Map<String, String>> assetList = [];
+  //List<Map<String, String>> assetList = [];
   String code;
   String holding;
   String pice;
