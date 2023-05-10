@@ -117,7 +117,8 @@ Future<Map<String, String>> getAsset(String code) async {
 final _router = Router()
   ..get('/api/v1/user', _rootHandler)
   ..get('/api/v1/list', getStockData)
-  ..get('/echo/<message>', _echoHandler);
+  ..get('/echo/<message>', _echoHandler)
+  ..get('/api/v1/tv', getSchedule);
 
 Future<Response> getStockData(Request req) async {
   // クエリパラメータを取得する
@@ -166,6 +167,14 @@ Future<Response> getStockData(Request req) async {
   print(jsonData);
   return Response.ok(jsonData, headers: {'Content-Type': 'application/json'});
 }
+
+Future<Response> getSchedule(Request request) async {
+  
+   final message = request.params['message'];
+  return Response.ok('$message\n');
+
+}
+
 
 Future<Response> _rootHandler(Request req) async {
   List<Map<String, String>> stdstock = [];

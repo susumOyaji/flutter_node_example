@@ -168,9 +168,6 @@ class _MyHomePageState extends State<_MyHomePage> {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              //Color(0xffb43af7),
-              //Color(0x0B52067),
-              //Color(0xff6d2af7),
               Colors.black,
               Colors.grey.shade800,
             ],
@@ -182,7 +179,6 @@ class _MyHomePageState extends State<_MyHomePage> {
           children: [
             const Icon(
               Icons.currency_yen,
-              //Icons.attach_money,
               size: 60,
               color: Colors.grey,
             ),
@@ -247,6 +243,118 @@ class _MyHomePageState extends State<_MyHomePage> {
         ),
       );
 
+  ListView listViewsample(dynamic anystock) => ListView.builder(
+      scrollDirection: Axis.vertical,
+      itemCount: (anystock.length), // リストの要素数
+      itemBuilder: (BuildContext context, int index) {
+        return Container(
+          decoration: BoxDecoration(
+            color: const Color.fromARGB(255, 56, 50, 50),
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+
+          //alignment: Alignment.topCenter,
+          margin: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
+          padding: const EdgeInsets.all(5.0),
+
+          child: ListTile(
+            leading: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+                //padding: const EdgeInsets.all(0.0),
+                fixedSize: const Size(50, 50),
+                backgroundColor: Colors.purple,
+                //primary: Colors.purple, //ボタンの背景色
+                shape: const CircleBorder(),
+              ),
+              onPressed: () {
+                //_asyncEditDialog(context, index);
+              },
+              onLongPress: () {
+                //alertDialog(index);
+              },
+              child: Text("${anystock[index].code}",
+                  style: const TextStyle(
+                    fontSize: 18.0,
+                    color: Colors.black,
+                    // fontFamily: 'NotoSansJP',
+                  )),
+            ),
+
+            title: Text(anystock[index].name,
+                style: const TextStyle(color: Colors.grey)), // タイトル
+            //contentPadding: const EdgeInsets.only(left: 0.0, right: 0.0, bottom: 8.0),
+            subtitle: Column(
+              children: [
+                Wrap(
+                  spacing: 8.0, //Wrap内アイテムの間隔
+                  children: [
+                    Text.rich(
+                      TextSpan(
+                        text: 'Market price:  ¥${anystock[index].price}',
+                        style: const TextStyle(
+                          color: Colors.blue,
+                          fontSize: 16,
+                        ),
+                        children: [
+                          TextSpan(
+                            text: '   Benefits:  ¥${anystock[index].banefits}',
+                            style: const TextStyle(color: Colors.yellow),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                Wrap(
+                  spacing: 8.0,
+                  children: [
+                    Text.rich(
+                      TextSpan(
+                        text: 'Evaluation:  ¥',
+                        style: const TextStyle(
+                          color: Colors.orange,
+                          fontSize: 16,
+                        ),
+                        children: [
+                          TextSpan(
+                            text: anystock[index].evaluation,
+                            style: const TextStyle(color: Colors.orange),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+
+            // サブタイトル
+            trailing: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                fixedSize: const Size(100, 50),
+                backgroundColor:
+                    anystock[index].polarity == '+' ? Colors.red : Colors.green,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5),
+                ),
+              ),
+              child: Text(
+                anystock[index].reshio,
+                style: const TextStyle(color: Colors.black, fontSize: 20),
+              ),
+              onPressed: () => _refreshData(), //_opneUrl(),
+            ), // 右端のアイコン
+
+            onTap: () {
+              // リストアイテムがタップされたときの処理
+              print('タップされたアイテム: $index');
+              print(anystock[index].reshio);
+            },
+          ),
+        );
+      });
+
   ListView listView(dynamic anystock) => ListView.builder(
       scrollDirection: Axis.vertical,
       itemCount: anystock.length, //+20,//<-- setState()
@@ -272,6 +380,8 @@ class _MyHomePageState extends State<_MyHomePage> {
                   flex: 2,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 0, vertical: 0),
                       fixedSize: const Size(50, 50),
                       backgroundColor: Colors.purple, //ボタンの背景色
                       shape: const CircleBorder(),
@@ -398,7 +508,7 @@ class _MyHomePageState extends State<_MyHomePage> {
             return Stack(
               children: <Widget>[
                 Container(
-                  width: 600,
+                  width: 650,
                   height: 600,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
