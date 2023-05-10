@@ -1,20 +1,15 @@
 import 'dart:io';
 import 'dart:convert';
-//import 'dart:convert' as convert;
 
+import 'package:intl/intl.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
 import 'package:shelf_router/shelf_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as parser;
-//import 'package:shelf/shelf.dart' as shelf;
-//import 'package:shelf/shelf_io.dart' as io;
-//import 'package:shelf_cors/shelf_cors.dart';
-//import 'package:shelf/shelf.dart';
 import 'package:shelf_cors_headers/shelf_cors_headers.dart';
 
 Future<Map<String, String>> getdji() async {
-  //const dom = await JSDOM.fromURL('https://finance.yahoo.co.jp/quote/998407.O');
   const url = 'https://finance.yahoo.co.jp/quote/%5EDJI';
 
   final response = await http.get(Uri.parse(url));
@@ -33,14 +28,15 @@ Future<Map<String, String>> getdji() async {
     "Price": spanTexts[16],
     "Reshio": spanTexts[20],
     "Percent": spanTexts[26],
-    "Polarity": Polarity
+    "Polarity": Polarity,
+    "Banefits": "Unused",
+    "Evaluation": "Unused"
   };
 
   return mapString;
 }
 
 Future<Map<String, String>> getnk() async {
-  //const dom = await JSDOM.fromURL('https://finance.yahoo.co.jp/quote/998407.O');
   const url = 'https://finance.yahoo.co.jp/quote/998407.O';
 
   final response = await http.get(Uri.parse(url));
@@ -59,7 +55,9 @@ Future<Map<String, String>> getnk() async {
     "Price": spanTexts[18],
     "Reshio": spanTexts[22],
     "Percent": spanTexts[28],
-    "Polarity": Polarity
+    "Polarity": Polarity,
+    "Banefits": "Unused",
+    "Evaluation": "Unused"
   };
 
   return mapString;
@@ -67,7 +65,6 @@ Future<Map<String, String>> getnk() async {
 
 Future<Map<String, String>> getAny(
     String code, String holding, String price) async {
-  //final String baseUrl = 'https://finance.yahoo.co.jp/quote/';
   final url = 'https://finance.yahoo.co.jp/quote/$code.T';
 
   final response = await http.get(Uri.parse(url));
@@ -84,9 +81,17 @@ Future<Map<String, String>> getAny(
   String Polarity = spanTexts[28][0] == '-' ? '-' : '+';
 
   int int_holding = int.parse(holding);
-  int int_price = int.parse(price);
-  int asset = int_holding + int_price;
-  String Asset = asset.toString();
+
+  int int_price =
+      spanTexts[21] == '---' ? 0 : int.parse(spanTexts[21].replaceAll(',', ''));
+
+  final formatter = NumberFormat('#,###');
+
+  int banefits = int_price - int.parse(price);
+  String Banefits = formatter.format(banefits); //banefits.toString();
+
+  int evaluation = int_holding * int_price;
+  String Evaluation = formatter.format(evaluation); //evaluation.toString();
 
   Map<String, String> mapString = {
     "Code": code,
@@ -95,7 +100,8 @@ Future<Map<String, String>> getAny(
     "Reshio": spanTexts[29],
     "Percent": spanTexts[33],
     "Polarity": Polarity,
-    "Asset": Asset
+    "Banefits": Banefits,
+    "Evaluation": Evaluation
   };
 
   return mapString;
@@ -124,13 +130,9 @@ Future<Response> getStockData(Request req) async {
     anycode.add(values.sublist(i, i + 3));
   }
 
-  print(anycode);
-  print(anycode[0][0]); // ['John', 30, 'New York']
   print(queryParameters);
+//final List<String> stdcode = ['6758', '6976', '6701'];
 
-  //final List<String> stdcode = ['6758', '6976', '6701'];
-  //final Map<String, String> stdstock = {};
-  //final Map<String, String> anystock = {};
   List<Map<String, String>> stdList = [];
   List<Map<String, String>> anyList = [];
   List<Map<String, String>> assetList = [];
@@ -155,17 +157,11 @@ Future<Response> getStockData(Request req) async {
     anyList.add(result);
   }
 
-  //final stdjsonData = const JsonEncoder.withIndent("").convert(stdList);
-  //print(stdjsonData);
-
-  //final anyjsonData = const JsonEncoder.withIndent("").convert(anyList);
-
   Map<String, List<Map<String, String>>> data = {
     'stdData': stdList,
     'anyData': anyList,
   };
 
-  //var jsonData = json.encode(data);
   final jsonData = const JsonEncoder.withIndent("").convert(data);
   print(jsonData);
   return Response.ok(jsonData, headers: {'Content-Type': 'application/json'});
@@ -196,36 +192,14 @@ Future<Response> _rootHandler(Request req) async {
     "Polarity": polarity
   };
 
-  // Map => json文字列
-  //final json = convert.json.encode(jsonString);
-  //print(json);
   stdstock.add(jsonString);
   stdstock.add(jsonString);
   final jsonData = const JsonEncoder.withIndent("").convert(stdstock);
-  //stdstock.add(jsonData);
 
   print(jsonData);
   return Response.ok(jsonData, headers: {'Content-Type': 'application/json'});
-
-  //return Response.ok('Hello, World!\n');
 }
 
-/*
-Response _rootcode(HttpRequest request) {
-  // リスト形式の株式データ
-  List<Map<String, dynamic>> stocks = [
-    {'Code': '1234', 'Name': 'Apple Inc.', 'Price': 100.0},
-    {'Code': '5678', 'Name': 'Microsoft Corporation', 'Price': 200.0},
-    {'Code': '9012', 'Name': 'Amazon.com, Inc.', 'Price': 300.0},
-  ];
-
-  // JSON形式に変換してレスポンスを返す
-  request.response.statusCode = 200;
-  request.response.headers.set('Content-Type', 'application/json');
-  request.response.write(jsonEncode(stocks));
-  request.response.close();
-}
-*/
 Response _echoHandler(Request request) {
   final message = request.params['message'];
   return Response.ok('$message\n');

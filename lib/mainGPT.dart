@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'Clipper.dart';
@@ -11,6 +11,8 @@ class StockData {
   final String reshio;
   final String percent;
   final String polarity;
+  final String banefits;
+  final String evaluation;
 
   StockData({
     required this.code,
@@ -19,6 +21,8 @@ class StockData {
     required this.reshio,
     required this.percent,
     required this.polarity,
+    required this.banefits,
+    required this.evaluation,
   });
 }
 
@@ -29,36 +33,34 @@ class MyAppGPT extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       title: 'Stock Data',
-      home: MyHomePage(),
+      home: _MyHomePage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+class _MyHomePage extends StatefulWidget {
+  const _MyHomePage({Key? key}) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  EdgeInsets std_margin =
+class _MyHomePageState extends State<_MyHomePage> {
+  final formatter = NumberFormat('#,###');
+  EdgeInsets stdmargin =
       const EdgeInsets.only(left: 10, top: 10, right: 10, bottom: 0);
+
+  String marktprice = "";
+  String inVestment = "";
+  String profit = "";
+  String marktpolarity = "";
+
   static List<List<dynamic>> data = [
     ["6758", 200, 1665],
     ["6976", 300, 1801],
     ["3436", 0, 0],
   ];
 
-  Map<String, dynamic> data3 = {
-    '6758': {'value1': 200, 'value2': 1665},
-    '6976': {'value1': 300, 'value2': 1801},
-    '3436': {'value1': 0, 'value2': 0}
-  };
-
-  Map<String, dynamic> data1 = {'code': '6758'};
-  //{'code': 6976, 'quantity': 300, 'price': 1801},
-  //{'code': 3436, 'quantity': 0, 'price': 0};
   Map<String, dynamic> data2 = {
     'key1': '6758',
     'key2': '200',
@@ -70,15 +72,28 @@ class _MyHomePageState extends State<MyHomePage> {
     'key8': '0',
     'key9': '0',
   };
-  Map<String, dynamic> data4 = {'key3': 'value3', 'key4': 'value4'};
 
-  //final mergedData = {...data2, ...data3};
+  void maptoList() {
+    int investment = 0;
+
+    for (var i = 2; i < data2.length; i += 3) {
+      investment = investment +
+          (int.parse(data2["key$i"].replaceAll(',', '')) *
+              int.parse(data2["key${i + 1}"].replaceAll(',', '')));
+    }
+    setState(() {
+      inVestment = formatter.format(investment);
+    });
+  }
 
   Future<List<StockData>>? _futureStockData;
   List anystock = [];
   List stdstock = [];
 
   Future<List<StockData>> _fetchStockData() async {
+    int addprice = 0;
+    int gain = 0;
+
     //final response =
     //   await http.get(Uri.parse('http://localhost:3000/api/v1/list'));
 
@@ -96,30 +111,39 @@ class _MyHomePageState extends State<MyHomePage> {
 
       for (final data in stdData) {
         final stockData = StockData(
-          code: data['Code'],
-          name: data['Name'],
-          price: data['Price'],
-          reshio: data['Reshio'],
-          percent: data['Percent'],
-          polarity: data['Polarity'],
-        );
+            code: data['Code'],
+            name: data['Name'],
+            price: data['Price'],
+            reshio: data['Reshio'],
+            percent: data['Percent'],
+            polarity: data['Polarity'],
+            banefits: data['Banefits'],
+            evaluation: data['Evaluation']);
 
         stockDataList.add(stockData);
       }
 
       for (final data in anyData) {
         final stockData = StockData(
-          code: data['Code'],
-          name: data['Name'],
-          price: data['Price'],
-          reshio: data['Reshio'],
-          percent: data['Percent'],
-          polarity: data['Polarity'],
-        );
+            code: data['Code'],
+            name: data['Name'],
+            price: data['Price'],
+            reshio: data['Reshio'],
+            percent: data['Percent'],
+            polarity: data['Polarity'],
+            banefits: data['Banefits'],
+            evaluation: data['Evaluation']);
 
         stockDataList.add(stockData);
+        addprice = addprice + int.parse(data['Evaluation'].replaceAll(',', ''));
       }
+      gain = (addprice - int.parse(inVestment.replaceAll(',', '')));
 
+      setState(() {
+        marktprice = formatter.format(addprice);
+        profit = formatter.format(gain);
+        marktpolarity = gain > 0 ? "+" : "-";
+      });
       return stockDataList;
     } else {
       throw Exception('Failed to fetch stock data');
@@ -129,6 +153,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    maptoList();
     _futureStockData = _fetchStockData();
   }
 
@@ -138,6 +163,89 @@ class _MyHomePageState extends State<MyHomePage> {
       _futureStockData = _fetchStockData();
     });
   }
+
+  Container marketView() => Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              //Color(0xffb43af7),
+              //Color(0x0B52067),
+              //Color(0xff6d2af7),
+              Colors.black,
+              Colors.grey.shade800,
+            ],
+          ),
+          borderRadius: BorderRadius.circular(10),
+          color: const Color.fromARGB(255, 56, 50, 50),
+        ),
+        child: Row(
+          children: [
+            const Icon(
+              Icons.currency_yen,
+              //Icons.attach_money,
+              size: 60,
+              color: Colors.grey,
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text.rich(
+                  TextSpan(
+                    text: 'Market capitalization',
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 30,
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircleAvatar(
+                      maxRadius: 8.0,
+                      backgroundColor:
+                          marktpolarity == "+" ? Colors.orange : Colors.blue,
+                    ),
+                    Text.rich(
+                      TextSpan(
+                        text: 'Market Price:',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                        children: [
+                          TextSpan(
+                            text: marktprice,
+                            style: const TextStyle(
+                              color: Colors.orange,
+                              fontSize: 30,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                Text.rich(
+                  TextSpan(
+                    text: 'Profit(Gains):  ¥$profit',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
+                    children: [
+                      TextSpan(
+                        text: '   Investment:  ¥$inVestment',
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
 
   ListView listView(dynamic anystock) => ListView.builder(
       scrollDirection: Axis.vertical,
@@ -218,7 +326,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   color: Colors.blue),
                               textAlign: TextAlign.left),
                           Text(
-                            "Benefits: {anystock[index].banefits}",
+                            "Benefits: ${anystock[index].banefits}",
                             style: const TextStyle(
                                 fontFamily: 'NoteSansJP',
                                 //fontWeight: FontWeight.bold,
@@ -228,7 +336,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         ],
                       ),
                       Text(
-                        "Evaluation: {anystock[index].evaluation}",
+                        "Evaluation: ${anystock[index].evaluation}",
                         style: const TextStyle(
                             fontFamily: 'NoteSansJP',
                             //fontWeight: FontWeight.bold,
@@ -290,7 +398,7 @@ class _MyHomePageState extends State<MyHomePage> {
             return Stack(
               children: <Widget>[
                 Container(
-                  width: 750,
+                  width: 600,
                   height: 600,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
@@ -301,9 +409,19 @@ class _MyHomePageState extends State<MyHomePage> {
                       height: 20.0,
                     ),
                     Container(
-                      margin: std_margin,
-                      width: 700,
-                      height: 250,
+                      margin: stdmargin,
+                      width: 500,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        color: Colors.black,
+                      ),
+                      child: marketView(), //listView(), //gridView1(),
+                    ),
+                    Container(
+                      margin: stdmargin,
+                      width: 500,
+                      height: 220,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5),
                         color: Colors.black,
@@ -314,21 +432,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 )
               ],
             );
-
-/*
-            ListView.builder(
-              itemCount: anystock.length,
-              itemBuilder: (context, index) {
-                final stockData = anystock[index];
-
-                return ListTile(
-                  title: Text(stockData.name),
-                  subtitle: Text(stockData.code),
-                  trailing: Text(stockData.price),
-                );
-              },
-            );
-            */
           },
         ),
       ),
