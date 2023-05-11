@@ -14,19 +14,19 @@ class MyApp11 extends StatelessWidget {
     return const MaterialApp(
       //画面右上の赤いバーナーを消す
       debugShowCheckedModeBanner: false,
-      home: MyHomePage(),
+      home: _MyHomePage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+class _MyHomePage extends StatefulWidget {
+  const _MyHomePage({Key? key}) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<_MyHomePage> {
   late List<dynamic> _data;
   bool _isLoading = false;
   List stdstock = [];

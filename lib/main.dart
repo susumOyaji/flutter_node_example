@@ -6,11 +6,12 @@ import 'dart:io';
 import 'main1.dart';
 import 'main100.dart';
 import 'mainGPT.dart';
+import 'mainGPTjson.dart';
 import 'dart:async';
 
 void main() async {
   //main99();
-  runApp(const MyAppGPT());
+  runApp(const MyAppGPTjson());
 }
 
 class MyApp extends StatelessWidget {
