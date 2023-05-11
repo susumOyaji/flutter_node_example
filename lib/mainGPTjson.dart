@@ -71,7 +71,26 @@ class _MyHomePageState extends State<_MyHomePage> {
     });
   }
 
-  
+/*
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart';
+
+Future<Map<String, dynamic>> fetchData(String url, {Map<String, String>? queryParameters}) async {
+  try {
+    Response response = await get(url, queryParameters: queryParameters);
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Request failed. Status code: ${response.statusCode}');
+    }
+  } catch (error) {
+    print(error);
+    throw error;
+  }
+}
+*/
+
 
   Future<Map<String,dynamic>> _fetchStockData() async {
     const url = 'http://localhost:3000/api/v1/list'; //←ここに表示させたいURLを入力する
