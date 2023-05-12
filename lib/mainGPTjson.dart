@@ -173,7 +173,9 @@ class _MyHomePageState extends State<_MyHomePage> {
                       TextSpan(
                         text: '${asset[0]["Profit"]}',
                         style: const TextStyle(
-                          fontSize: 20.0, //fontWeight: FontWeight.bold,
+                          fontSize: 20.0, 
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white
                         ),
                       ),
                     ],
