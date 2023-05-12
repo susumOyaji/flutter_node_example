@@ -187,7 +187,6 @@ Future<Response> getStockData(Request req) async {
 
   final jsonData = const JsonEncoder.withIndent("").convert(data);
   print(jsonData);
-  print(anyList);
   return Response.ok(jsonData, headers: {'Content-Type': 'application/json'});
 }
 

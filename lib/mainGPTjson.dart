@@ -87,7 +87,160 @@ class _MyHomePageState extends State<_MyHomePage> {
     });
   }
 
-  Container stackmarketView(asset) => Container(
+  Container stackmarketView(stdstock) => Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Colors.black,
+            Colors.grey.shade800,
+          ],
+        ),
+        borderRadius: BorderRadius.circular(10),
+        color: const Color.fromARGB(255, 56, 50, 50),
+      ),
+      child: Row(children: [
+        const Icon(
+          Icons.currency_yen,
+          size: 60,
+          color: Colors.grey,
+        ),
+        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Row(
+            children: <Widget>[
+              CircleAvatar(
+                maxRadius: 5.0,
+                backgroundColor: stdstock[0]['Polarity'] == 'true'
+                    ? Colors.red
+                    : Colors.green,
+              ),
+              const Text(
+                "Dow Price: \$ ",
+                style: TextStyle(
+                  fontSize: 15.0,
+                  color: Colors.white,
+                  fontFamily: 'NotoSansJP',
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+              RichText(
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: '${stdstock[0]['Price']}',
+                      style: const TextStyle(
+                        fontSize: 15.0, //fontWeight: FontWeight.bold,
+                        fontFamily: 'NotoSansJP',
+                        fontWeight: FontWeight.w900,
+                        color: Colors.blueAccent,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+
+          Row(
+            children: <Widget>[
+              const SizedBox(width: 10),
+              const Text(
+                "          The day before ratio: \$ ",
+                style: TextStyle(
+                  fontSize: 15.0,
+                  color: Colors.white,
+                  fontFamily: 'NotoSansJP',
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+              RichText(
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text:
+                          '${stdstock[0]['Reshio'] + "   " + stdstock[0]["Percent"] + "%"}',
+                      style: TextStyle(
+                        fontSize: 12.0,
+                        color: stdstock[0]["Polarity"] == '+'
+                            ? Colors.red
+                            : Colors.green,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          // SizedBox(height: 10),
+
+          Row(
+            children: <Widget>[
+              CircleAvatar(
+                maxRadius: 5.0,
+                backgroundColor: stdstock[1]["Polarity"] == '+'
+                    ? Colors.red
+                    : Colors.green,
+              ),
+              const Text(
+                "Nikkey Price: ￥ ",
+                style: TextStyle(
+                  fontSize: 15.0,
+                  color: Colors.white,
+                  fontFamily: 'NotoSansJP',
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+              RichText(
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: '${stdstock[1]["Price"]}',
+                      style: const TextStyle(
+                        fontSize: 15.0,
+                        fontFamily: 'NotoSansJP',
+                        fontWeight: FontWeight.w900,
+                        color: Colors.blueAccent, //fontWeight: FontWeight.bold,
+                      ),
+                      //style: TextStyle(fontSize: 12.0,//fontWeight: FontWeight.bold,
+                      //),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+
+          Row(children: <Widget>[
+            const SizedBox(width: 10),
+            const Text(
+              "          The day before ratio: ￥ ",
+              style: TextStyle(
+                fontSize: 15.0,
+                color: Colors.white,
+                fontFamily: 'NotoSansJP',
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+            RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: '${stdstock[1]["Reshio"] + "  " + stdstock[1]["Percent"] + "%"}',
+                    style: TextStyle(
+                      fontSize: 15.0,
+                      color:
+                          stdstock[1]["Polarity"] == '+' ? Colors.red : Colors.green,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ]),
+        ]),
+      ]));
+
+  Container stackAssetView(asset) => Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
@@ -105,8 +258,6 @@ class _MyHomePageState extends State<_MyHomePage> {
           color: Colors.grey,
         ),
         Column(
-          //mainAxisAlignment: MainAxisAlignment.start,
-          //mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text.rich(
@@ -161,22 +312,21 @@ class _MyHomePageState extends State<_MyHomePage> {
                 //),
                 const Text(
                   "Profit(Gains)", //"Gain or loss", //"Market price",
-                  style: TextStyle(fontSize: 10.0, color: Colors.white),
+                  style: TextStyle(fontSize: 15.0, color: Colors.white),
                 ),
                 RichText(
                   text: TextSpan(
                     children: [
                       const TextSpan(
                         text: "￥",
-                        style: TextStyle(fontSize: 10.0, color: Colors.white),
+                        style: TextStyle(fontSize: 15.0, color: Colors.white),
                       ),
                       TextSpan(
                         text: '${asset[0]["Profit"]}',
                         style: const TextStyle(
-                          fontSize: 20.0, 
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white
-                        ),
+                            fontSize: 15.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
                       ),
                     ],
                   ),
@@ -184,20 +334,21 @@ class _MyHomePageState extends State<_MyHomePage> {
                 const SizedBox(width: 10),
                 const Text(
                   "Investment",
-                  style: TextStyle(fontSize: 10.0, color: Colors.white),
+                  style: TextStyle(fontSize: 15.0, color: Colors.white),
                 ),
                 RichText(
                   text: TextSpan(
                     children: [
                       const TextSpan(
                         text: "￥",
-                        style: TextStyle(fontSize: 10.0, color: Colors.white),
+                        style: TextStyle(fontSize: 15.0, color: Colors.white),
                       ),
                       TextSpan(
                         text: '${asset[0]["Invest"]}',
                         style: const TextStyle(
-                          fontSize: 12.0, //fontWeight: FontWeight.bold,
-                        ),
+                            fontSize: 15.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
                       ),
                     ],
                   ),
@@ -207,86 +358,6 @@ class _MyHomePageState extends State<_MyHomePage> {
           ],
         )
       ]));
-
-  Container marketView(asset) => Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Colors.black,
-              Colors.grey.shade800,
-            ],
-          ),
-          borderRadius: BorderRadius.circular(10),
-          color: const Color.fromARGB(255, 56, 50, 50),
-        ),
-        child: Row(
-          children: [
-            const Icon(
-              Icons.currency_yen,
-              size: 60,
-              color: Colors.grey,
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text.rich(
-                  TextSpan(
-                    text: 'Market capitalization',
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 30,
-                    ),
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircleAvatar(
-                      maxRadius: 8.0,
-                      backgroundColor: asset[0]["Polarity"] == "+"
-                          ? Colors.orange
-                          : Colors.blue,
-                    ),
-                    Text.rich(
-                      TextSpan(
-                        text: 'Market Price:',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                        ),
-                        children: [
-                          TextSpan(
-                            text: '${asset[0]["Market"]}',
-                            style: const TextStyle(
-                              color: Colors.orange,
-                              fontSize: 30,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                Text.rich(
-                  TextSpan(
-                    text: 'Profit(Gains):  ¥${asset[0]["Profit"]}',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                    ),
-                    children: [
-                      TextSpan(
-                        text: '   Investment:  ¥${asset[0]["Invest"]}',
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      );
 
   ListView listView(dynamic anystock) => ListView.builder(
       scrollDirection: Axis.vertical,
@@ -462,6 +533,17 @@ class _MyHomePageState extends State<_MyHomePage> {
                         color: Colors.black,
                       ),
                       child: stackmarketView(
+                          stdstock), //marketView(asset), //listView(), //gridView1(),
+                    ),
+                    Container(
+                      margin: stdmargin,
+                      width: 500,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        color: Colors.black,
+                      ),
+                      child: stackAssetView(
                           asset), //marketView(asset), //listView(), //gridView1(),
                     ),
                     Container(
