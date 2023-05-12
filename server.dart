@@ -97,7 +97,7 @@ Future<Map<String, String>> getAny(
     "Code": code,
     "Name": h1Texts[1],
     "Price": spanTexts[21],
-    "Reshio": spanTexts[29],
+    "Reshio": spanTexts[28],
     "Percent": spanTexts[33],
     "Polarity": Polarity,
     "Banefits": Banefits,
@@ -107,8 +107,33 @@ Future<Map<String, String>> getAny(
   return mapString;
 }
 
-Future<Map<String, String>> getAsset(String code) async {
-  Map<String, String> mapString = {};
+Future<Map<String, String>> getAsset(
+    Map<String, String> agu, List<Map<String, String>> anyList) async {
+  int intinvestment = 0;
+  int intEvaluation = 0;
+  final formatter = NumberFormat('#,###');
+
+  for (var i = 2; i < agu.length; i += 3) {
+    intinvestment = intinvestment +
+        (int.parse(agu["key$i"]!.replaceAll(',', '')) *
+            int.parse(agu["key${i + 1}"]!.replaceAll(',', '')));
+  }
+  String investment = formatter.format(intinvestment);
+
+  for (int i = 0; i < anyList.length; i++) {
+    intEvaluation = intEvaluation +
+        int.parse(anyList[i]['Evaluation']!.replaceAll(',', ''));
+  }
+  String evaluation = formatter.format(intEvaluation);
+  String profit = formatter.format(intEvaluation - intinvestment);
+  String polarity = (intEvaluation - intinvestment) >= 0 ? "+" : "-";
+
+  Map<String, String> mapString = {
+    "Market": evaluation,
+    "Invest": investment,
+    "Profit": profit,
+    "Polarity": polarity,
+  };
 
   return mapString;
 }
@@ -124,23 +149,17 @@ Future<Response> getStockData(Request req) async {
   // クエリパラメータを取得する
   final queryParameters = req.url.queryParameters;
 
-  List<dynamic> values = queryParameters.values.toList();
-
-  List<List<dynamic>> anycode = [];
-  for (var i = 0; i < values.length; i += 3) {
-    anycode.add(values.sublist(i, i + 3));
-  }
-
   print(queryParameters);
+
 //final List<String> stdcode = ['6758', '6976', '6701'];
 
   List<Map<String, String>> stdList = [];
   List<Map<String, String>> anyList = [];
+  List<Map<String, String>> assetList = [];
   //List<Map<String, String>> assetList = [];
-  String code;
-  String holding;
-  String pice;
-
+  String? code;
+  String? holding;
+  String? price;
   Map<String, String> result;
 
   result = await getdji();
@@ -149,32 +168,33 @@ Future<Response> getStockData(Request req) async {
   result = await getnk();
   stdList.add(result);
 
-  for (int i = 0; i < anycode.length; i++) {
-    code = anycode[i][0];
-    holding = anycode[i][1];
-    pice = anycode[i][2];
-    result = await getAny(code, holding, pice);
-
+  for (int i = 1; i < queryParameters.length; i += 3) {
+    code = queryParameters['key$i']; //anycode[i][0];
+    holding = queryParameters['key${i + 1}']; //anycode[i][1];
+    price = queryParameters['key${i + 2}']; //anycode[i][2];
+    result = await getAny(code!, holding!, price!);
     anyList.add(result);
   }
+
+  result = await getAsset(queryParameters, anyList);
+  assetList.add(result);
 
   Map<String, List<Map<String, String>>> data = {
     'stdData': stdList,
     'anyData': anyList,
+    'assetData':assetList
   };
 
   final jsonData = const JsonEncoder.withIndent("").convert(data);
   print(jsonData);
+  print(anyList);
   return Response.ok(jsonData, headers: {'Content-Type': 'application/json'});
 }
 
 Future<Response> getSchedule(Request request) async {
-  
-   final message = request.params['message'];
+  final message = request.params['message'];
   return Response.ok('$message\n');
-
 }
-
 
 Future<Response> _rootHandler(Request req) async {
   List<Map<String, String>> stdstock = [];

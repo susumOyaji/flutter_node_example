@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'Clipper.dart';
 
-
-
 void main() async {
   //main99();
   runApp(const MyAppGPTjson());
@@ -35,6 +33,9 @@ class _MyHomePageState extends State<_MyHomePage> {
   EdgeInsets stdmargin =
       const EdgeInsets.only(left: 10, top: 10, right: 10, bottom: 0);
 
+  //late Map<String, dynamic> _data;
+  Future<Map<String, dynamic>>? _data;
+
   String marktprice = "";
   String inVestment = "";
   String profit = "";
@@ -58,48 +59,14 @@ class _MyHomePageState extends State<_MyHomePage> {
     'key9': '0',
   };
 
-  void maptoList() {
-    int investment = 0;
-
-    for (var i = 2; i < data2.length; i += 3) {
-      investment = investment +
-          (int.parse(data2["key$i"].replaceAll(',', '')) *
-              int.parse(data2["key${i + 1}"].replaceAll(',', '')));
-    }
-    setState(() {
-      inVestment = formatter.format(investment);
-    });
-  }
-
-/*
-import 'dart:async';
-import 'dart:convert';
-import 'package:http/http.dart';
-
-Future<Map<String, dynamic>> fetchData(String url, {Map<String, String>? queryParameters}) async {
-  try {
-    Response response = await get(url, queryParameters: queryParameters);
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
-    } else {
-      throw Exception('Request failed. Status code: ${response.statusCode}');
-    }
-  } catch (error) {
-    print(error);
-    throw error;
-  }
-}
-*/
-
-
-  Future<Map<String,dynamic>> _fetchStockData() async {
+  Future<Map<String, dynamic>> _fetchStockData() async {
     const url = 'http://localhost:3000/api/v1/list'; //←ここに表示させたいURLを入力する
     final response =
         await http.get(Uri.parse(url).replace(queryParameters: data2));
 
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body);
-    
+
       return jsonData;
     } else {
       throw Exception('Failed to fetch stock data');
@@ -109,18 +76,137 @@ Future<Map<String, dynamic>> fetchData(String url, {Map<String, String>? queryPa
   @override
   void initState() {
     super.initState();
-    maptoList();
-    _fetchStockData();
+    //maptoList();
+    _data = _fetchStockData();
   }
 
   void _refreshData() {
     setState(() {
       print("_refreshData");
-      _fetchStockData();
+      _data = _fetchStockData();
     });
   }
 
-  Container marketView() => Container(
+  Container stackmarketView(asset) => Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Colors.black,
+            Colors.grey.shade800,
+          ],
+        ),
+        borderRadius: BorderRadius.circular(10),
+        color: const Color.fromARGB(255, 56, 50, 50),
+      ),
+      child: Row(children: [
+        const Icon(
+          Icons.currency_yen,
+          size: 60,
+          color: Colors.grey,
+        ),
+        Column(
+          //mainAxisAlignment: MainAxisAlignment.start,
+          //mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text.rich(
+              TextSpan(
+                text: 'Market capitalization',
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 30,
+                ),
+              ),
+            ),
+            Row(
+              children: <Widget>[
+                CircleAvatar(
+                  maxRadius: 5.0,
+                  backgroundColor: asset[0]["Polarity"] == "+"
+                      ? Colors.orange
+                      : Colors.green, //Colors.green,
+                ),
+                const Text(
+                  "Market price: ", //"Gain or loss",
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    color: Colors.white,
+                    fontFamily: 'NotoSansJP',
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: '${asset[0]["Market"]}',
+                        style: TextStyle(
+                          fontSize: 24.0,
+                          color: asset[0]["Polarity"] == "+"
+                              ? Colors.orange
+                              : Colors.green,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: <Widget>[
+                const SizedBox(width: 10),
+                //Text("The day before ratio",
+                //  style: TextStyle(fontSize: 10.0, color: Colors.white),
+                //),
+                const Text(
+                  "Profit(Gains)", //"Gain or loss", //"Market price",
+                  style: TextStyle(fontSize: 10.0, color: Colors.white),
+                ),
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      const TextSpan(
+                        text: "￥",
+                        style: TextStyle(fontSize: 10.0, color: Colors.white),
+                      ),
+                      TextSpan(
+                        text: '${asset[0]["Profit"]}',
+                        style: const TextStyle(
+                          fontSize: 20.0, //fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 10),
+                const Text(
+                  "Investment",
+                  style: TextStyle(fontSize: 10.0, color: Colors.white),
+                ),
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      const TextSpan(
+                        text: "￥",
+                        style: TextStyle(fontSize: 10.0, color: Colors.white),
+                      ),
+                      TextSpan(
+                        text: '${asset[0]["Invest"]}',
+                        style: const TextStyle(
+                          fontSize: 12.0, //fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
+        )
+      ]));
+
+  Container marketView(asset) => Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
@@ -155,8 +241,9 @@ Future<Map<String, dynamic>> fetchData(String url, {Map<String, String>? queryPa
                   children: [
                     CircleAvatar(
                       maxRadius: 8.0,
-                      backgroundColor:
-                          marktpolarity == "+" ? Colors.orange : Colors.blue,
+                      backgroundColor: asset[0]["Polarity"] == "+"
+                          ? Colors.orange
+                          : Colors.blue,
                     ),
                     Text.rich(
                       TextSpan(
@@ -167,7 +254,7 @@ Future<Map<String, dynamic>> fetchData(String url, {Map<String, String>? queryPa
                         ),
                         children: [
                           TextSpan(
-                            text: marktprice,
+                            text: '${asset[0]["Market"]}',
                             style: const TextStyle(
                               color: Colors.orange,
                               fontSize: 30,
@@ -180,14 +267,14 @@ Future<Map<String, dynamic>> fetchData(String url, {Map<String, String>? queryPa
                 ),
                 Text.rich(
                   TextSpan(
-                    text: 'Profit(Gains):  ¥$profit',
+                    text: 'Profit(Gains):  ¥${asset[0]["Profit"]}',
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 16,
                     ),
                     children: [
                       TextSpan(
-                        text: '   Investment:  ¥$inVestment',
+                        text: '   Investment:  ¥${asset[0]["Invest"]}',
                         style: const TextStyle(color: Colors.white),
                       ),
                     ],
@@ -336,8 +423,8 @@ Future<Map<String, dynamic>> fetchData(String url, {Map<String, String>? queryPa
         title: const Text('Stock Data'),
       ),
       body: Center(
-        child: FutureBuilder<Map<String,dynamic>>(
-          future: _fetchStockData(),//_futureStockData,
+        child: FutureBuilder<Map<String, dynamic>>(
+          future: _data, //  _fetchStockData(), //_futureStockData,
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return const Center(
@@ -346,9 +433,10 @@ Future<Map<String, dynamic>> fetchData(String url, {Map<String, String>? queryPa
             } else if (snapshot.hasError) {
               return Text('${snapshot.error}');
             }
-            Map<String,dynamic> stockDataList = snapshot.data!;
+            Map<String, dynamic> stockDataList = snapshot.data!;
             var stdstock = stockDataList["stdData"];
             var anystock = stockDataList["anyData"];
+            var asset = stockDataList["assetData"];
             //anystock = stockDataList.sublist(2, stockDataList.length);
             return Stack(
               children: <Widget>[
@@ -371,7 +459,8 @@ Future<Map<String, dynamic>> fetchData(String url, {Map<String, String>? queryPa
                         borderRadius: BorderRadius.circular(5),
                         color: Colors.black,
                       ),
-                      child: marketView(), //listView(), //gridView1(),
+                      child: stackmarketView(
+                          asset), //marketView(asset), //listView(), //gridView1(),
                     ),
                     Container(
                       margin: stdmargin,
