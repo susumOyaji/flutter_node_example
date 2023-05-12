@@ -15,7 +15,7 @@ class MyAppGPTjson extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      title: 'Stock Data',
+      //title: 'Stock Data',
       home: _MyHomePage(),
     );
   }
@@ -492,9 +492,9 @@ class _MyHomePageState extends State<_MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Stock Data'),
-      ),
+      //appBar: AppBar(
+      //  title: const Text('Stock Data'),
+      //),
       body: Center(
         child: FutureBuilder<Map<String, dynamic>>(
           future: _data, //  _fetchStockData(), //_futureStockData,
