@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'Clipper.dart';
+import 'dart:async';
 
 void main() async {
   //main99();
@@ -76,7 +76,6 @@ class _MyHomePageState extends State<_MyHomePage> {
   @override
   void initState() {
     super.initState();
-    //maptoList();
     _data = _fetchStockData();
   }
 
@@ -177,9 +176,8 @@ class _MyHomePageState extends State<_MyHomePage> {
             children: <Widget>[
               CircleAvatar(
                 maxRadius: 5.0,
-                backgroundColor: stdstock[1]["Polarity"] == '+'
-                    ? Colors.red
-                    : Colors.green,
+                backgroundColor:
+                    stdstock[1]["Polarity"] == '+' ? Colors.red : Colors.green,
               ),
               const Text(
                 "Nikkey Price: ￥ ",
@@ -225,11 +223,13 @@ class _MyHomePageState extends State<_MyHomePage> {
               text: TextSpan(
                 children: [
                   TextSpan(
-                    text: '${stdstock[1]["Reshio"] + "  " + stdstock[1]["Percent"] + "%"}',
+                    text:
+                        '${stdstock[1]["Reshio"] + "  " + stdstock[1]["Percent"] + "%"}',
                     style: TextStyle(
                       fontSize: 15.0,
-                      color:
-                          stdstock[1]["Polarity"] == '+' ? Colors.red : Colors.green,
+                      color: stdstock[1]["Polarity"] == '+'
+                          ? Colors.red
+                          : Colors.green,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
