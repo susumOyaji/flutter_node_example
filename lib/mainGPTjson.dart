@@ -3,6 +3,8 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
+import 'package:http/http.dart';
+import 'dart:io';
 
 void main() async {
   //main99();
@@ -33,7 +35,6 @@ class _MyHomePageState extends State<_MyHomePage> {
   EdgeInsets stdmargin =
       const EdgeInsets.only(left: 10, top: 10, right: 10, bottom: 0);
 
-  //late Map<String, dynamic> _data;
   Future<Map<String, dynamic>>? _data;
 
   String marktprice = "";
@@ -59,6 +60,28 @@ class _MyHomePageState extends State<_MyHomePage> {
     'key9': '0',
   };
 
+  Future<Map<String, dynamic>> _fetchStockTv() async {
+    // テレビ番組のスケジュールを取得するURLを設定します。
+    //String url = 'https://www.tv-tokyo.co.jp/program/schedule/';
+    //String url = 'https://www.nhk.or.jp/hensei/tv/schedule/all/';
+    const url = 'http://localhost:3000/api/v1/tv'; //←ここに表示させたいURLを入力する
+
+    // URLから応答を取得します。
+    Response response = await http.get(Uri.parse(url).replace());
+// テレビ番組のスケジュールを取得するURLを設定します。
+
+    // 応答を解析して、各番組の出演者を取得します。
+    Map<String, dynamic> programs =
+        json.decode(response.body)['list'];
+
+    // 出演者を画面に出力します。
+    //for (var program in programs) {
+      print('番組名：{program}');
+      print('出演者：{program}');
+    //}
+    return programs;
+  }
+
   Future<Map<String, dynamic>> _fetchStockData() async {
     const url = 'http://localhost:3000/api/v1/list'; //←ここに表示させたいURLを入力する
     final response =
@@ -77,6 +100,7 @@ class _MyHomePageState extends State<_MyHomePage> {
   void initState() {
     super.initState();
     _data = _fetchStockData();
+    //_data = _fetchStockTv();
   }
 
   void _refreshData() {

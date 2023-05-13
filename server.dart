@@ -138,12 +138,56 @@ Future<Map<String, String>> getAsset(
   return mapString;
 }
 
+Future<Map<String, String>> getTv() async {
+  //final url = 'https://finance.yahoo.co.jp/quote/$code.T';
+  final url = 'https://www.nhk.or.jp/hensei/tv/schedule/all/';
+  final response = await http.get(Uri.parse(url));
+
+  final body = parser.parse(response.body);
+
+  final h1Elements = body.querySelectorAll('h1');
+  final h1Texts = h1Elements.map((h1Element) => h1Element.text).toList();
+
+  final spanElements = body.querySelectorAll('span');
+  final spanTexts =
+      spanElements.map((spanElement) => spanElement.text).toList();
+
+  String Polarity = spanTexts[28][0] == '-' ? '-' : '+';
+
+  //int int_holding = int.parse(holding);
+
+  int int_price =
+      spanTexts[21] == '---' ? 0 : int.parse(spanTexts[21].replaceAll(',', ''));
+
+  final formatter = NumberFormat('#,###');
+
+  //int banefits = int_price - int.parse(price);
+  //String Banefits = formatter.format(banefits); //banefits.toString();
+
+  //int evaluation = int_holding * int_price;
+  //String Evaluation = formatter.format(evaluation); //evaluation.toString();
+
+  Map<String, String> mapString = {
+    //"Code": code,
+    "Name": h1Texts[1],
+    "Price": spanTexts[21],
+    "Reshio": spanTexts[28],
+    "Percent": spanTexts[33],
+    "Polarity": Polarity,
+    //"Banefits": Banefits,
+    //"Evaluation": Evaluation
+  };
+
+  return mapString;
+}
+
 // Configure routes.
 final _router = Router()
   ..get('/api/v1/user', _rootHandler)
   ..get('/api/v1/list', getStockData)
   ..get('/echo/<message>', _echoHandler)
-  ..get('/api/v1/tv', getSchedule);
+  ..get('/api/v1/', getSchedule)
+  ..get('/api/v1/tv', getTvSchedule);
 
 Future<Response> getStockData(Request req) async {
   // クエリパラメータを取得する
@@ -182,9 +226,24 @@ Future<Response> getStockData(Request req) async {
   Map<String, List<Map<String, String>>> data = {
     'stdData': stdList,
     'anyData': anyList,
-    'assetData':assetList
+    'assetData': assetList
   };
 
+  final jsonData = const JsonEncoder.withIndent("").convert(data);
+  print(jsonData);
+  return Response.ok(jsonData, headers: {'Content-Type': 'application/json'});
+}
+
+Future<Response> getTvSchedule(Request request) async {
+  Map<String, String> result;
+  List<Map<String, String>> stdList = [];
+
+  result = await getTv();
+  stdList.add(result);
+
+  Map<String, List<Map<String, String>>> data = {
+    'stdData': stdList,
+  };
   final jsonData = const JsonEncoder.withIndent("").convert(data);
   print(jsonData);
   return Response.ok(jsonData, headers: {'Content-Type': 'application/json'});
