@@ -8,11 +8,11 @@ import 'dart:io';
 
 void main() async {
   //main99();
-  runApp(const MyAppGPTjson());
+  runApp(const MyApp());
 }
 
-class MyAppGPTjson extends StatelessWidget {
-  const MyAppGPTjson({Key? key}) : super(key: key);
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -111,6 +111,7 @@ class _MyHomePageState extends State<_MyHomePage> {
   }
 
   Container stackmarketView(stdstock) => Container(
+    padding: const EdgeInsets.only(top:10.0),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
@@ -123,7 +124,7 @@ class _MyHomePageState extends State<_MyHomePage> {
       ),
       child: Row(children: [
         const Icon(
-          Icons.currency_yen,
+          Icons.trending_up,
           size: 60,
           color: Colors.grey,
         ),
@@ -180,9 +181,9 @@ class _MyHomePageState extends State<_MyHomePage> {
                   children: [
                     TextSpan(
                       text:
-                          '${stdstock[0]['Reshio'] + "   " + stdstock[0]["Percent"] + "%"}',
+                          '${stdstock[0]['Reshio'] + "   " + stdstock[0]["Percent"]}',
                       style: TextStyle(
-                        fontSize: 12.0,
+                        fontSize: 15.0,
                         color: stdstock[0]["Polarity"] == '+'
                             ? Colors.red
                             : Colors.green,
@@ -248,7 +249,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                 children: [
                   TextSpan(
                     text:
-                        '${stdstock[1]["Reshio"] + "  " + stdstock[1]["Percent"] + "%"}',
+                        '${stdstock[1]["Reshio"] + "  " + stdstock[1]["Percent"]}',
                     style: TextStyle(
                       fontSize: 15.0,
                       color: stdstock[1]["Polarity"] == '+'
@@ -265,6 +266,7 @@ class _MyHomePageState extends State<_MyHomePage> {
       ]));
 
   Container stackAssetView(asset) => Container(
+    padding: const EdgeInsets.only(top:5.0),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [

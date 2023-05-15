@@ -1,3 +1,4 @@
+
 import 'dart:io';
 import 'dart:convert';
 
@@ -8,6 +9,7 @@ import 'package:shelf_router/shelf_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as parser;
 import 'package:shelf_cors_headers/shelf_cors_headers.dart';
+import 'package:html/parser.dart' as html;
 
 Future<Map<String, String>> getdji() async {
   const url = 'https://finance.yahoo.co.jp/quote/%5EDJI';
@@ -20,7 +22,7 @@ Future<Map<String, String>> getdji() async {
   final spanTexts =
       spanElements.map((spanElement) => spanElement.text).toList();
 
-  String Polarity = spanTexts[26][0] == '-' ? '-' : '+';
+  String polarity = spanTexts[26][0] == '-' ? '-' : '+';
 
   Map<String, String> mapString = {
     "Code": "^DJI",
@@ -28,7 +30,7 @@ Future<Map<String, String>> getdji() async {
     "Price": spanTexts[16],
     "Reshio": spanTexts[20],
     "Percent": spanTexts[26],
-    "Polarity": Polarity,
+    "Polarity": polarity,
     "Banefits": "Unused",
     "Evaluation": "Unused"
   };
@@ -47,21 +49,33 @@ Future<Map<String, String>> getnk() async {
   final spanTexts =
       spanElements.map((spanElement) => spanElement.text).toList();
 
-  String Polarity = spanTexts[28][0] == '-' ? '-' : '+';
+  String polarity = spanTexts[28][0] == '-' ? '-' : '+';
 
   Map<String, String> mapString = {
     "Code": "NIKKEI",
     "Name": "NIKKEI",
-    "Price": spanTexts[18],
-    "Reshio": spanTexts[22],
-    "Percent": spanTexts[28],
-    "Polarity": Polarity,
+    "Price": spanTexts[16],
+    "Reshio": spanTexts[20],
+    "Percent": spanTexts[26],
+    "Polarity": polarity,
     "Banefits": "Unused",
     "Evaluation": "Unused"
   };
 
   return mapString;
 }
+
+Map<String, dynamic> data2 = {
+  'key1': '6758',
+  'key2': '200',
+  'key3': '1665',
+  'key4': '6976',
+  'key5': '300',
+  'key6': '1801',
+  'key7': '3436',
+  'key8': '0',
+  'key9': '0',
+};
 
 Future<Map<String, String>> getAny(
     String code, String holding, String price) async {
@@ -78,28 +92,28 @@ Future<Map<String, String>> getAny(
   final spanTexts =
       spanElements.map((spanElement) => spanElement.text).toList();
 
-  String Polarity = spanTexts[28][0] == '-' ? '-' : '+';
+  String polarity = spanTexts[28][0] == '-' ? '-' : '+';
 
-  int int_holding = int.parse(holding);
+  int intHolding = int.parse(holding);
 
-  int int_price =
+  int intPrice =
       spanTexts[21] == '---' ? 0 : int.parse(spanTexts[21].replaceAll(',', ''));
 
   final formatter = NumberFormat('#,###');
 
-  int banefits = int_price - int.parse(price);
+  int banefits = intPrice - int.parse(price);
   String Banefits = formatter.format(banefits); //banefits.toString();
 
-  int evaluation = int_holding * int_price;
+  int evaluation = intHolding * intPrice;
   String Evaluation = formatter.format(evaluation); //evaluation.toString();
 
   Map<String, String> mapString = {
     "Code": code,
     "Name": h1Texts[1],
     "Price": spanTexts[21],
-    "Reshio": spanTexts[28],
+    "Reshio": spanTexts[30],
     "Percent": spanTexts[33],
-    "Polarity": Polarity,
+    "Polarity": polarity,
     "Banefits": Banefits,
     "Evaluation": Evaluation
   };
@@ -140,26 +154,35 @@ Future<Map<String, String>> getAsset(
 
 Future<Map<String, String>> getTv() async {
   //final url = 'https://finance.yahoo.co.jp/quote/$code.T';
-  final url = 'https://www.nhk.or.jp/hensei/tv/schedule/all/';
+  const url = 'https://tv.yahoo.co.jp/search?q=HiHi';
   final response = await http.get(Uri.parse(url));
 
   final body = parser.parse(response.body);
 
-  final h1Elements = body.querySelectorAll('h1');
+  //String htmlString =
+  //    '<html><head><title>Example</title></head><body><p>Hello, world!</p></body></html>';
+  var document = html.parse(body);
+  var tags = document.getElementsByTagName('*');
+
+  for (var tag in tags) {
+    print(tag.toString());
+  }
+
+  final h1Elements = body.querySelectorAll('section');
   final h1Texts = h1Elements.map((h1Element) => h1Element.text).toList();
 
-  final spanElements = body.querySelectorAll('span');
+  final spanElements = body.querySelectorAll('p');
   final spanTexts =
       spanElements.map((spanElement) => spanElement.text).toList();
 
-  String Polarity = spanTexts[28][0] == '-' ? '-' : '+';
+  //String Polarity = spanTexts[28][0] == '-' ? '-' : '+';
 
   //int int_holding = int.parse(holding);
 
-  int int_price =
-      spanTexts[21] == '---' ? 0 : int.parse(spanTexts[21].replaceAll(',', ''));
+  //int int_price =
+  //    spanTexts[21] == '---' ? 0 : int.parse(spanTexts[21].replaceAll(',', ''));
 
-  final formatter = NumberFormat('#,###');
+  //final formatter = NumberFormat('#,###');
 
   //int banefits = int_price - int.parse(price);
   //String Banefits = formatter.format(banefits); //banefits.toString();
@@ -173,7 +196,7 @@ Future<Map<String, String>> getTv() async {
     "Price": spanTexts[21],
     "Reshio": spanTexts[28],
     "Percent": spanTexts[33],
-    "Polarity": Polarity,
+    //"Polarity": Polarity,
     //"Banefits": Banefits,
     //"Evaluation": Evaluation
   };
@@ -191,7 +214,7 @@ final _router = Router()
 
 Future<Response> getStockData(Request req) async {
   // クエリパラメータを取得する
-  final queryParameters = req.url.queryParameters;
+  var queryParameters = req.url.queryParameters;
 
   print(queryParameters);
 
@@ -211,6 +234,20 @@ Future<Response> getStockData(Request req) async {
 
   result = await getnk();
   stdList.add(result);
+
+  Map<String, String> data2 = {
+    'key1': '6758',
+    'key2': '200',
+    'key3': '1665',
+    'key4': '6976',
+    'key5': '300',
+    'key6': '1801',
+    'key7': '3436',
+    'key8': '0',
+    'key9': '0',
+  };
+
+  queryParameters = data2;
 
   for (int i = 1; i < queryParameters.length; i += 3) {
     code = queryParameters['key$i']; //anycode[i][0];

@@ -4,14 +4,29 @@
     // 詳細情報は次を確認してください: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-
+        {
+            "name": "Dart & Flutter",
+            "request": "launch",
+            "type": "dart"
+        },
         {
             "name": "Dart: Debug Current File",
-            "type": "dart",
             "request": "launch",
+            "type": "dart",
             "program": "${file}"
-          },
-        
+        },
+        {
+            "name": "flutter_node_example (profile mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "flutter_node_example (release mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
         {
             "type": "vscode-edge-devtools.debug",
             "request": "launch",
@@ -32,18 +47,6 @@
             "name": "flutter_node_example",
             "request": "launch",
             "type": "dart",
-        },
-        {
-            "name": "flutter_node_example (profile mode)",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "profile"
-        },
-        {
-            "name": "flutter_node_example (release mode)",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "release"
         }
     ]
 }

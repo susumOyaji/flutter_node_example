@@ -3,15 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'Clipper.dart';
 import 'dart:io';
-import 'main1.dart';
-import 'main100.dart';
-import 'mainGPT.dart';
-import 'mainGPTjson.dart';
 import 'dart:async';
 
 void main() async {
   //main99();
-  runApp(const MyAppGPTjson());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
