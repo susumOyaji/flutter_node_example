@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>JSON Data Display</title>
+</head>
+<body>
+	<h1>JSON Data Display</h1>
+
+	<div id="json-data"></div>
+
+	<script>
+		// ローカルホストからJSONデータを取得
+		fetch('http://localhost:3000/api/v1/list')
+			.then(response => response.json())
+			.then(data => {
+				// JSONデータをHTMLに表示
+				document.getElementById('json-data').innerHTML = JSON.stringify(data);
+			})
+			.catch(error => console.error(error));
+	</script>
+</body>
+</html>

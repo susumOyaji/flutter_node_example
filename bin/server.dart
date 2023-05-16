@@ -1,4 +1,3 @@
-
 import 'dart:io';
 import 'dart:convert';
 
@@ -8,8 +7,10 @@ import 'package:shelf/shelf_io.dart';
 import 'package:shelf_router/shelf_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as parser;
+import 'package:html/parser.dart' show parse;
 import 'package:shelf_cors_headers/shelf_cors_headers.dart';
 import 'package:html/parser.dart' as html;
+import 'package:html/dom.dart';
 
 Future<Map<String, String>> getdji() async {
   const url = 'https://finance.yahoo.co.jp/quote/%5EDJI';
@@ -111,8 +112,8 @@ Future<Map<String, String>> getAny(
     "Code": code,
     "Name": h1Texts[1],
     "Price": spanTexts[21],
-    "Reshio": spanTexts[30],
-    "Percent": spanTexts[33],
+    "Reshio": spanTexts[28],
+    "Percent": spanTexts[31],
     "Polarity": polarity,
     "Banefits": Banefits,
     "Evaluation": Evaluation
@@ -153,27 +154,95 @@ Future<Map<String, String>> getAsset(
 }
 
 Future<Map<String, String>> getTv() async {
-  //final url = 'https://finance.yahoo.co.jp/quote/$code.T';
-  const url = 'https://tv.yahoo.co.jp/search?q=HiHi';
+  //const url = 'https://finance.yahoo.co.jp/quote/6758.T';
+  const url =
+      'https://www.tvkingdom.jp/schedulesBySearch.action?stationPlatformId=0&condition.keyword=HiHi&submit=%E6%A4%9C%E7%B4%A2';
+
   final response = await http.get(Uri.parse(url));
 
   final body = parser.parse(response.body);
+  String htmlbody = body.outerHtml;
+  //print(body.outerHtml);
 
-  //String htmlString =
-  //    '<html><head><title>Example</title></head><body><p>Hello, world!</p></body></html>';
-  var document = html.parse(body);
-  var tags = document.getElementsByTagName('*');
-
-  for (var tag in tags) {
-    print(tag.toString());
-  }
-
-  final h1Elements = body.querySelectorAll('section');
+  final h1Elements = body.querySelectorAll('a');
   final h1Texts = h1Elements.map((h1Element) => h1Element.text).toList();
 
   final spanElements = body.querySelectorAll('p');
   final spanTexts =
       spanElements.map((spanElement) => spanElement.text).toList();
+
+  String html = '''
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <meta charset="UTF-8" />
+      <title>HTML Tags</title>
+    </head>
+    <body>
+      <h1>Heading 1</h1>
+      <p>Paragraph 1</p>
+      <a href="#">Link 1</a>
+      <h2>Heading 2</h2>
+      <p>Paragraph 2</p>
+      <a href="#">Link 2</a>
+    </body>
+  </html>
+  ''';
+  var document = parse(htmlbody);
+  //var headings = document.getElementsByTagName('h2');
+
+   List<Element> h1Tags = document.getElementsByTagName('h2');
+   for (var h1Tag in h1Tags) {
+    var siblingElements = <Element>[];
+    var nextElement = h1Tag.nextElementSibling;
+    
+    while (nextElement != null && nextElement.localName != 'h2') {
+      siblingElements.add(nextElement);
+      nextElement = nextElement.nextElementSibling;
+    }
+    
+    print('Group: ${h1Tag.text}');
+    for (var element in siblingElements) {
+      //print(element.outerHtml);
+    }
+    print('------------------------');
+  }
+
+
+ var h1Element = document.querySelector('h2');
+  var siblingElements = <Element>[];
+
+  var nextElement = h1Element?.nextElementSibling;
+  while (nextElement != null) {
+    siblingElements.add(nextElement);
+    nextElement = nextElement.nextElementSibling;
+  }
+
+  print('h2: ${h1Element?.text}');
+  for (var element in siblingElements) {
+    print(element.outerHtml);
+  }
+
+
+  /*
+  print('Headings:');
+  for (var heading in headings) {
+    print(heading.text);
+  }
+
+  var paragraphs = document.getElementsByTagName('p');
+  print('Paragraphs:');
+  for (var paragraph in paragraphs) {
+    print(paragraph.text);
+  }
+
+  var links = document.getElementsByTagName('a');
+  print('Links:');
+  for (var link in links) {
+    print(link.attributes['href']);
+  }
+  */
+  //print(h1Texts);
 
   //String Polarity = spanTexts[28][0] == '-' ? '-' : '+';
 
@@ -192,8 +261,8 @@ Future<Map<String, String>> getTv() async {
 
   Map<String, String> mapString = {
     //"Code": code,
-    "Name": h1Texts[1],
-    "Price": spanTexts[21],
+    "Name": h1Texts[42],
+    "Price": spanTexts[10],
     "Reshio": spanTexts[28],
     "Percent": spanTexts[33],
     //"Polarity": Polarity,

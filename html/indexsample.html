@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width" />
+    <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="items.css" />
+
+    <title>StockCard-Node_web.js</title>
+    <style>
+        html {
+            background-color: rgb(240, 240, 240);
+        }
+    </style>
+    <title>ListView Sample</title>
+
+</head>
+
+<body>
+    <div id="stocks_container">
+        <h1>StockCard</h1>
+        <div id="dey"></div>
+    </div>
+
+    <div id="average_container">
+
+        <label class="material-icons">trending_up</label>
+
+        <div class="Price-container">
+
+
+            <label class="dow_circle"></label>
+            <label>Dow Price:$&nbsp;</label>
+            <label id="dow-container"></label>
+            <br>
+            <a><span></span>The day before reshio:$&nbsp;</a>
+            <label id="dowreshio-container"></label>
+
+            <br>
+            <label class="nk_circle"></label>
+            <label>Nikkei Price:￥</label>
+            <label id="nk-container"> </label>
+            <br>
+            <a><span></span>The day before reshio:￥</a>
+            <label id="nkreshio-container"></label>
+
+        </div>
+    </div>
+
+    <div id="market-container">
+        <label class="material-icons">currency_yen</label>
+        <div class="marketPrice-container">
+            <div><b><span id="Market">Market capitalization</span></b></div>
+            <label class="mk_circle"></label>
+            <b >Market price:&nbsp;</b>
+            <label id="Market-price"></label>
+            <br>
+            <label>
+                <span1></span1>Profit(Gains):￥
+            </label>
+            <label id="profit"></label>
+            <label>
+                <span1></span1>Investment:￥
+            </label>
+            <label id="invest"></label>
+        </div>
+
+    </div>
+
+
+
+
+    <div id="listview-container"></div>
+
+    <p><input type="button" value="項目を追加する" onClick="myItemField.add();" /></p>
+    <p><input type="button" value="項目を削除する" onClick="myItemField.remove();" /></p>
+
+
+
+    <script>
+        function countItems(data) {
+            let count = 0;
+            data.forEach(item => count++);
+            return count;
+        }
+
+
+
+        //②配列リテラルの例
+        //var items = ['6758', 1665, 200];
+        var items = [
+            ['6758', 200, 1665],
+            ['6976', 300, 1801],
+            ['3436', 0, 0]
+        ];
+        let globalStock;
+        var currentNumber = 0;
+        /*
+        Future fetch(List < String > items) async {
+            index = 0;
+            acquiredAssetsSum = 0;
+            valuableAssetsSum = 0;
+
+            acquiredAssetsItems = [];
+            valuableAssetsItems = [];
+            code = [];
+            presentvalue = [];
+            changePriceValue = [];
+            changePriceRate = [];
+            benefits = [];
+            signalstate = [];
+            percentcheng = [];
+
+            //List<String> responce = items; //"998407.O,0,0\n^DJI,0,0\n";
+
+            for (String item in items) {
+                final response = await http
+                    .get(Uri.parse('https://finance.yahoo.co.jp/quote/$item')); //^DJI
+            final String json = response.body;
+        */
+        function ItemField() {
+            currentNumber = 0;
+            var itemTemplate = '<div class="Code-circle"><div class="Code" id="code__count__"></div> </div>'
+                + '<div class="Market"><label id="Name__count__"></label><br>'
+                + '<label>Market:</label><label id="ListviewMarket__count__"></label>'
+                + '<label><span1></span1>Benefits:</label><label id="benefit__count__"></label><br>'
+                + '<label>Evaluation:</label><label id="evalu__count__"></label></div>'
+                + '<button class="Button" id="previous__count__" type="button">btn</button>';
+
+//myItemField.add(stock[i].Code, stock[i].Name, stock[i].Price, stock[i].Reshio, stock[i].Percent,stock[i].Polarity,"Button2");
+//myItemField.add(stock[i].Code,stock[i].Name,items[i-2][1],items[i-2][2],stock[i].Price, stock[i].Reshio,stock[i].Percent,stock[i].Polarity,"Button2");
+            this.add = function (code, name, myshares,myprice,market, benefits, evaluation,polarity) {
+                currentNumber++;
+
+
+                // 新しいアイテムを作成する
+                var newItem = document.createElement("div");
+
+                var addItem = itemTemplate.replace(/__count__/mg, currentNumber);
+                newItem.innerHTML = addItem;
+
+
+                // アイテムに一意のIDを割り当てる
+                newItem.id = "item-" + currentNumber;//Math.floor(Math.random() * 100);
+
+
+                var Already_exists = document.getElementById("item-" + currentNumber) != null;
+                if (Already_exists == false){
+                    // Newアイテムにitemクラスを追加する class="item"
+                    newItem.classList.add("item");
+
+                    // アイテムをリストに追加する
+                    document.getElementById("listview-container").appendChild(newItem);
+                }
+
+                ///////var items = ['6758', 1665, 200];
+                var Code = document.getElementById("code" + currentNumber);
+                console.log(Code);
+                Code.innerHTML = code;
+                Code.style.color = "black";
+
+
+                //const Name = document.querySelector("Name" + currentNumber);
+                const Name = document.getElementById("Name" + currentNumber);
+                console.log(Name);
+                //Name.innerHTML = stock[currentNumber].Name;
+                Name.innerHTML = name;
+                Name.style.color = "gray";
+
+                var Market = document.getElementById("ListviewMarket" + currentNumber);
+                console.log(Market);
+                Market.innerHTML = market;
+
+                //一株当たりの利益
+                var Benefits = document.getElementById("benefit" + currentNumber);
+                console.log(Benefits);
+                var num = parseInt(market.replace(/,/g, ''));
+                Benefits.innerHTML = (num-myprice).toLocaleString();
+
+                var Evaluation = document.getElementById("evalu" + currentNumber);
+                console.log(Evaluation);
+                //var num = parseInt(market.replace(/,/g, ''));
+                Evaluation.innerHTML = (myshares*num).toLocaleString();
+
+                var Previous = document.getElementById("previous" + currentNumber);
+                console.log(Previous);
+                Previous.innerHTML = benefits;
+                Previous.style.color = "black";
+                Previous.style.backgroundColor = (polarity ==  "+" ?  "red" : "green");
+            
+
+                //var PreviousButton = document.getElementsByClassName("Button" + currentNumber);
+                //PreviousButon.style.color = polarity ==  "+" ?  "black" : "red";
+                
+
+                Previous.addEventListener("click", function () {
+                    alert("ボタンがクリックされました！" + Previous.id);
+                }); // ボタンにonclickイベントを設定
+
+
+            };
+            this.remove = function () {
+                if (currentNumber == 1) { return; }
+
+                var field = document.getElementById('item-' + currentNumber);
+                field.removeChild(field.lastChild);
+                field.innerHTML = '';
+
+                currentNumber--;
+                // remove処理
+            };
+            this.Allremove = function (currentNumber) {
+                if ( currentNumber== 0) { return; }
+                for (let i = 0; i < currentNumber.length; i++) {
+                    var field = document.getElementById('item-' + i);
+                    field.removeChild(field.lastChild);
+                    field.innerHTML = '';
+                }
+                //currentNumber--;
+                // remove処理
+            };
+        }
+
+        var myItemField = new ItemField();
+
+
+
+        function Re_fetch() {
+           
+            //const data = [1, 2, 3];
+            const queryString = `data=${encodeURIComponent(JSON.stringify(items))}`;
+
+            //fetch(`/api/v1/list?${queryString}`)
+            //    .then(response => response.json())
+            //    .then(data => console.log(data))
+            //    .catch(error => console.error(error));
+
+
+
+
+            // APIからJSONを取得する
+            fetch(`/api/v1/list?${queryString}`)
+                .then((response) => response.json())
+                .then((stock) => {
+                    console.log(JSON.stringify(stock, null, 2));
+                   
+               
+              
+                                   
+
+                    // id="todo-container"要素を取得する
+                    //const todoContainer = document.querySelector('#todo-container');
+                    const dowContainer = document.querySelector('#dow-container');
+                    const dowreshioContainer = document.querySelector('#dowreshio-container');
+                    const nkContainer = document.querySelector('#nk-container');
+                    const nkreshioContainer = document.querySelector('#nkreshio-container');
+
+
+                    const div = document.getElementById('target');
+
+                    // コンテナの中身を全部消す
+                    dowContainer.innerHTML = '';//`Number of items: ${count}`;
+                    nkContainer.innerHTML = '';
+
+                    //document.write('<img id="carousel__main" src="/img/icon-en-24dp/2x/yen_black_24dp.png">');
+
+                    //if (stock[0].Price != stock[0].Reshio) {
+                    dowContainer.innerHTML = stock[0].Price;
+                    console.log(stock[0].Price);
+                    dowreshioContainer.innerHTML = stock[0].Reshio + "&nbsp" + stock[0].Percent;
+
+                    stock[0].Polarity == "+" ? change = "red" : change = "green";
+                    document.getElementsByClassName("dow_circle")[0].style.background = change;
+                    document.getElementById("dowreshio-container").style.color = change;
+
+
+                    nkContainer.innerHTML = stock[1].Price;
+                    nkreshioContainer.innerHTML = stock[1].Reshio + "&nbsp" + stock[1].Percent;
+
+                    stock[1].Polarity == "+" ? change = "red" : change = "green";
+                    document.getElementsByClassName("nk_circle")[0].style.background = change;
+                    document.getElementById("nkreshio-container").style.color = change;
+
+                    
+                    
+                    
+                    
+                    //const Name = document.querySelector('#Name1');
+                    const ListviewMarket = document.querySelector('#ListviewMarket1');
+                    const Marketprice = document.querySelector('#Market-price');
+                    const Profit = document.querySelector('#profit');
+                    const Invest = document.querySelector('#invest');
+                    const Benefit = document.querySelector('#benefit');//一株当たりの利益
+                    const Evalu = document.querySelector('#evalu');
+                    const Code = document.querySelector('#code');
+                    const Previous = document.querySelector('#previous');
+
+
+
+
+
+                    //var items = [
+                    //    ['6758', 1665, 200],
+                    //    ['6976', 300, 1801]
+                    //];
+                    //function (code, name, myshares,myprice,market, benefits, evaluation,polarity)
+                    currentNumber = 0;
+                    var re=0;
+                    var con=0;
+                    var con1=0;
+                    //var add=0;
+                    var inv=0;
+                    for (let i = 2; i < stock.length; i++) { 
+                        myItemField.add(stock[i].Code,stock[i].Name,items[i-2][1],items[i-2][2],stock[i].Price, stock[i].Reshio,stock[i].Percent,stock[i].Polarity,"Button2");
+                        
+                        re = stock[i].Price.replace(',', '');//時価のカンマ削除
+                        re= (re ==  "---") ?  0.00 : re;
+                        con = con+(re * items[i-2][1]);//時価X持ち株数
+
+                        inv = inv+items[i-2][1] * items[i-2][2];//購入単価x購入株数
+                    }
+                    con1 = con.toLocaleString();//カンマ表記に戻す
+                    Marketprice.innerHTML = con1;//stock[2].Price+"1234";
+                   
+                    Invest.innerHTML = inv.toLocaleString();
+                    Profit.innerHTML = (con - inv).toLocaleString();
+
+                    (con > inv)  ? change = "orange" : change = "blue";
+                    document.getElementsByClassName("mk_circle")[0].style.background = change;
+                  
+    
+                  
+
+                    //var re = stock[2].Price.replace(',', '');//カンマ削除
+                    //var con = re * items[0][1];//時価X持ち株数
+                    //var con1 = con.toLocaleString();//カンマ表記に戻す
+                    //Marketprice.innerHTML = con1;//stock[2].Price+"1234";
+                    //var inv = items[0][1] * items[0][2];//購入単価x購入株数
+                    //Invest.innerHTML = inv.toLocaleString();
+                    //Profit.innerHTML = (con - inv).toLocaleString();
+
+
+
+
+
+                    //Benefit.innerHTML = (re - items[0][1]).toLocaleString();
+                    //Evalu.innerHTML = ((re - items[0][1]) * items[0][2]).toLocaleString();
+                   // Name.innerHTML = stock[2].Name;
+                    //ListviewMarket.innerHTML = stock[2].Price;
+                    //Code.innerHTML = items[0][0];
+                    //Previous.innerHTML = stock[2].Reshio;
+                    //stock[2].Polarity == "+" ? change = "rgb(255, 0, 0)" : change = "green";
+
+                    //irobako = document.getElementById("previous");
+                    //document.getElementById("previous").style.backgroundColor = change;
+                    //document.getElementById("previous").style.backgroundColor = change;
+                  
+                  
+                    //}
+                })
+                .catch((error) => {
+                    //alert("エラーが発生しました");
+                    //dowContainer.innerHTML = "エラーが発生しました";
+                    console.error(`[FetchAPI] ${error}, ${URL}`);
+                });
+
+        };
+
+
+        //await Re_fetch();
+        window.addEventListener('load', async function () {
+            await Re_fetch();
+            // setIntervalの基本
+            // タイマー開始
+            setInterval(Re_fetch, 60000);
+        });
+
+        document.getElementById("dey").innerHTML = showDay();
+        function showDay() {
+            var d = new Date();
+            let year = d.getFullYear();
+            let month = d.getMonth() + 1;
+            let day = d.getDate();
+            let dayofweek = d.getDay();
+            a = year + "/" + month.toString() + "/" + day.toString();
+            return a;
+        };
+
+        //myItemField.remove();
+
+
+
+
+
+
+        //fetchUrls(items[0]);
+
+
+        
+
+
+        //myItemField.add("items2", "1000", "2000", "3000", "Button2");
+        //myItemField.add("items3", "1000", "2000", "3000", "Button3");
+        //myItemField.remove();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        /*
+                var ItemField = {
+                    currentNumber: 3,
+                    itemTemplate: '<div class="Code-circle"><div class="code"></div> </div>'
+                        + '<div class="Market"><label id="Name__count__"></label><br>'
+                        + '<label>Market:</label><label id="ListviewMarket__count__"></label>'
+                        + '<label><span1></span1>Benefits:</label><label id="benefit__count__"></label><br>'
+                        + '<label>Evaluation:</label><label id="evalu__count__"></label></div>',
+        
+                    add: function (name, market, benefits, evaluation) {
+                        this.currentNumber++;
+        
+        
+                        // 新しいアイテムを作成する
+                        var newItem = document.createElement("div");
+        
+                        var addItem = this.itemTemplate.replace(/__count__/mg, this.currentNumber);
+                        newItem.innerHTML = addItem;
+        
+        
+                        // アイテムに一意のIDを割り当てる
+                        newItem.id = "item-" + this.currentNumber;//Math.floor(Math.random() * 100);
+        
+                        // Newアイテムにitemクラスを追加する class="item"
+                        newItem.classList.add("item");
+        
+                        // アイテムをリストに追加する
+                        document.getElementById("listview-container").appendChild(newItem);
+        
+        
+        
+        
+        
+        
+                        var Id = document.getElementById(newItem.id);
+                        console.log(Id);
+        
+        
+                        var Name = document.getElementById("Name" + this.currentNumber);
+                        console.log(Name);
+                        Name.innerHTML = name;
+        
+        
+        
+                        var Market = document.getElementById("ListviewMarket" + this.currentNumber);
+                        console.log(Market);
+                        Market.innerHTML = market;
+        
+        
+                        var Benefits = document.getElementById("benefit" + this.currentNumber);
+                        console.log(Benefits);
+                        Benefits.innerHTML = benefits;
+        
+                        var Evaluation = document.getElementById("evalu" + this.currentNumber);
+                        console.log(Evaluation);
+                        Evaluation.innerHTML = evaluation;
+        
+        
+        
+        
+                        var field = document.getElementById('listview-container' + this.currentNumber);
+        
+                        var newItem = this.itemTemplate.replace(/__count__/mg, this.currentNumber);
+                        //field.innerHTML = "";//newItem;
+        
+                        var nextNumber = this.currentNumber + 1;
+                        var new_area = document.createElement("div");
+                        new_area.setAttribute("id", "listview-container" + nextNumber);
+                        field.appendChild(new_area);
+                    },
+                    remove: function () {
+                        if (this.currentNumber == 1) { return; }
+        
+                        var field = document.getElementById('listview-container' + this.currentNumber);
+                        field.removeChild(field.lastChild);
+                        field.innerHTML = '';
+        
+                        this.currentNumber--;
+                    }
+                }
+                ItemField.add("items444", "1000", "2000", "3000");
+                ItemField.add("items333", "3000", "4000", "5000");
+        
+        */
+
+
+
+
+
+
+    </script>
+
+
+</body>
+
+</html>
