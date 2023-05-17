@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="jp">
+
+<head>
+
+
+  <title>Web Viewer</title>
+</head>
+
+<body>
+  <div id="app"></div>
+  <script>
+
+   
+    // ホームページのURLを指定してください
+    const url = 'https://example.com';
+
+    // Webページを表示する関数
+    function displayWebPage() {
+      const appElement = document.getElementById('app');
+      const iframe = document.createElement('iframe');
+      iframe.src = url;
+      appElement.appendChild(iframe);
+
+      // iframe内のタグを取得する
+      const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+      const tags = iframeDocument.getElementsByTagName('div');
+      console.log(tags);
+    }
+
+    // アプリの起動時にWebページを表示する
+    window.onload = displayWebPage;
+  </script>
+
+</body>
+
+</html>

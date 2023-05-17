@@ -1,8 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html  lang="ja">
+
 <head>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width" />
+    <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="items.css" />
+
 	<title>JSON Data Display</title>
 </head>
+
 <body>
 	<h1>JSON Data Display</h1>
 
@@ -10,7 +18,9 @@
 
 	<script>
 		// ローカルホストからJSONデータを取得
-		fetch('http://localhost:3000/api/v1/list')
+		fetch('http://localhost:3000/api/v1/list', {
+			credentials: 'include' // CORSリクエストでクッキーや認証情報を送信する
+		})
 			.then(response => response.json())
 			.then(data => {
 				// JSONデータをHTMLに表示
@@ -19,4 +29,5 @@
 			.catch(error => console.error(error));
 	</script>
 </body>
+
 </html>

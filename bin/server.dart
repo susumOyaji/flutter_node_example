@@ -191,25 +191,25 @@ Future<Map<String, String>> getTv() async {
   var document = parse(htmlbody);
   //var headings = document.getElementsByTagName('h2');
 
-   List<Element> h1Tags = document.getElementsByTagName('h2');
-   for (var h1Tag in h1Tags) {
+  List<Element> h2Tags = document.getElementsByTagName('h2');
+  for (var h2Tag in h2Tags) {
     var siblingElements = <Element>[];
-    var nextElement = h1Tag.nextElementSibling;
-    
+    var nextElement = h2Tag.nextElementSibling;
+
     while (nextElement != null && nextElement.localName != 'h2') {
       siblingElements.add(nextElement);
       nextElement = nextElement.nextElementSibling;
     }
-    
-    print('Group: ${h1Tag.text}');
+
+    print('Group: ${h2Tag.text}');
     for (var element in siblingElements) {
-      //print(element.outerHtml);
+      print(element.outerHtml);
     }
     print('------------------------');
   }
 
+  var h1Element = document.querySelector('h2');
 
- var h1Element = document.querySelector('h2');
   var siblingElements = <Element>[];
 
   var nextElement = h1Element?.nextElementSibling;
@@ -222,7 +222,6 @@ Future<Map<String, String>> getTv() async {
   for (var element in siblingElements) {
     print(element.outerHtml);
   }
-
 
   /*
   print('Headings:');
