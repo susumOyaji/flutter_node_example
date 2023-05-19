@@ -53,7 +53,7 @@ class _MyHomePageState extends State<_MyHomePage> {
     'key2': '200',
     'key3': '1665',
     'key4': '6976',
-    'key5': '300',
+    'key5': '100',
     'key6': '1801',
     'key7': '3436',
     'key8': '0',

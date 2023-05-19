@@ -260,9 +260,9 @@ Future<Map<String, String>> getTv() async {
 
   Map<String, String> mapString = {
     //"Code": code,
-    "Name": h1Texts[42],
-    "Price": spanTexts[10],
-    "Reshio": spanTexts[28],
+    "Program Name": h1Texts[42],
+    "Broadcast date and time": spanTexts[10],
+    "Broadcast Channels": spanTexts[28],
     "Percent": spanTexts[33],
     //"Polarity": Polarity,
     //"Banefits": Banefits,
@@ -308,14 +308,14 @@ Future<Response> getStockData(Request req) async {
     'key2': '200',
     'key3': '1665',
     'key4': '6976',
-    'key5': '300',
+    'key5': '100',
     'key6': '1801',
     'key7': '3436',
     'key8': '0',
     'key9': '0',
   };
 
-  queryParameters = data2;
+  //queryParameters = data2;
 
   for (int i = 1; i < queryParameters.length; i += 3) {
     code = queryParameters['key$i']; //anycode[i][0];
