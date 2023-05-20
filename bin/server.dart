@@ -153,10 +153,21 @@ Future<Map<String, String>> getAsset(
   return mapString;
 }
 
+void searchTags(List<Element> elements) {
+  for (var element in elements) {
+    print(element.localName); // タグの名前を表示
+    if (element.children.isNotEmpty) {
+      for (var child in element.children) {
+        print(child.localName); // 子要素のタグの名前を表示
+      }
+    }
+  }
+}
+
 Future<Map<String, String>> getTv() async {
   //const url = 'https://finance.yahoo.co.jp/quote/6758.T';
   const url =
-      'https://www.tvkingdom.jp/schedulesBySearch.action?stationPlatformId=0&condition.keyword=HiHi&submit=%E6%A4%9C%E7%B4%A2';
+      'https://www.tvkingdom.jp/schedulesBySearch.action?stationPlatformId=0&condition.keyword=HiHi Jets&submit=%E6%A4%9C%E7%B4%A2';
 
   final response = await http.get(Uri.parse(url));
 
@@ -171,23 +182,6 @@ Future<Map<String, String>> getTv() async {
   final spanTexts =
       spanElements.map((spanElement) => spanElement.text).toList();
 
-  String html = '''
-  <!DOCTYPE html>
-  <html>
-    <head>
-      <meta charset="UTF-8" />
-      <title>HTML Tags</title>
-    </head>
-    <body>
-      <h1>Heading 1</h1>
-      <p>Paragraph 1</p>
-      <a href="#">Link 1</a>
-      <h2>Heading 2</h2>
-      <p>Paragraph 2</p>
-      <a href="#">Link 2</a>
-    </body>
-  </html>
-  ''';
   var document = parse(htmlbody);
   //var headings = document.getElementsByTagName('h2');
 
@@ -201,27 +195,62 @@ Future<Map<String, String>> getTv() async {
       nextElement = nextElement.nextElementSibling;
     }
 
-    print('Group: ${h2Tag.text}');
+    //print('Group: ${h2Tag.text}');
     for (var element in siblingElements) {
-      print(element.outerHtml);
+      //print(element.outerHtml);
     }
-    print('------------------------');
+    //print('------------------------');
   }
 
-  var h1Element = document.querySelector('h2');
+  // 指定したタグ名の要素を階層下から検出
+  List<Element> h2elements = document.querySelectorAll('h2');
 
-  var siblingElements = <Element>[];
+  // h2タグのテキストを表示
+  int i = 0;
+  for (var element in h2elements) {
+    //print('h2タグのテキスト: ${i}  ${element.text}');
+    i++;
+  }
+  List<String> h2TextList = h2elements.map((element) => element.text).toList();
+  print(h2TextList);
+  //for (var element in h2elements) {
+  //  print(element.outerHtml);
+  //}
 
-  var nextElement = h1Element?.nextElementSibling;
-  while (nextElement != null) {
-    siblingElements.add(nextElement);
-    nextElement = nextElement.nextElementSibling;
+  List<String> nextElementsList = [];
+  String nextText;
+  Match? trimmedText;
+
+  for (Element element in h2elements) {
+    Element? nextElement = element.nextElementSibling;
+    if (nextElement != null) {
+      nextText = nextElement.text;
+      RegExp regex = RegExp(r'"([^"]*)"');
+      trimmedText = regex.firstMatch(nextText);
+      nextElementsList.add( trimmedText!.group(1)!);
+    }
   }
 
-  print('h2: ${h1Element?.text}');
-  for (var element in siblingElements) {
-    print(element.outerHtml);
-  }
+  //i = 0;
+  //var nextElement;
+  //for (var element in h2elements) {
+  //  nextElement = element.nextElementSibling;
+  //  if (nextElement != null) {
+  //print('pタグのテキスト: ${i} ${nextElement.text}');
+  //    nextElementsList.add(nextElement.text);
+  //    i++;
+  //  }
+  //}
+  print(nextElementsList);
+  //List<String> pTextList = nextElement.map((element) => element.text).toList();
+  //String htmlString = '<html><head><title>Example</title></head><body><div><p>Hello, world!</p></div></body></html>';
+
+  // var document1 = parse(htmlbody);
+  // var body1 = document1.body;
+
+  // searchTags(body1!.children);
+
+//}
 
   /*
   print('Headings:');
