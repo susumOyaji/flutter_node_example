@@ -212,24 +212,40 @@ Future<Map<String, String>> getTv() async {
     i++;
   }
   List<String> h2TextList = h2elements.map((element) => element.text).toList();
-  print(h2TextList);
+  //print(h2TextList);
   //for (var element in h2elements) {
   //  print(element.outerHtml);
   //}
 
   List<String> nextElementsList = [];
   String nextText;
-  Match? trimmedText;
+  String trimmedText;
+
+  String text =
+      '"5/22 (Mon) 11:00 ～ 11:30            (30分) \n         ＷＯＷＯＷプライム(Ch.191)\n           ドラマ"';
 
   for (Element element in h2elements) {
     Element? nextElement = element.nextElementSibling;
     if (nextElement != null) {
       nextText = nextElement.text;
-      RegExp regex = RegExp(r'"([^"]*)"');
-      trimmedText = regex.firstMatch(nextText);
-      nextElementsList.add( trimmedText!.group(1)!);
+      trimmedText = nextText.replaceAll('\n', '');
+      nextElementsList.add(trimmedText);
+
+      List<String> codeArray = nextText.split(' ');
+      List<String> dateArray = [];
+      List<String> timeArray = [];
+      List<String> channelArray = [];
+      List<String> genreArray = [];
+
+      if (codeArray.length >= 5) {
+        dateArray = codeArray.sublist(0, 2);
+        timeArray = codeArray.sublist(2, 4);
+        channelArray = codeArray.sublist(4, 5);
+        genreArray = codeArray.sublist(5);
+      }
     }
   }
+  print('${h2TextList[0]} ${nextElementsList[0]}');
 
   //i = 0;
   //var nextElement;
