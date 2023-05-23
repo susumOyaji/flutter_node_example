@@ -17,9 +17,10 @@ final _router = Router()
 
 
 Future<Response> _bodyHandler(Request req) async {
-  final url = req.url.toString();
-  //const url = 'https://finance.yahoo.co.jp/quote/%5EDJI';
+  //final url = req.url.toString();
+  const url = 'https://finance.yahoo.co.jp/quote/%5EDJI';
   //final response = await get(url);
+  print(url);
   final response = await http.get(Uri.parse(url));
   return Response.ok(response.body);
 }
