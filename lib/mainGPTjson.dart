@@ -60,6 +60,22 @@ class _MyHomePageState extends State<_MyHomePage> {
     'key9': '0',
   };
 
+
+Future _fetchStd() async {
+  const url = 'https://finance.yahoo.co.jp/quote/6976.T';
+  const backendUrl = 'http://localhost:3000/_bodyHandler'; // バックエンドのURL
+
+  final uri = Uri.parse(backendUrl); // バックエンドのURLをURIオブジェクトに変換
+  final response = await http.get(uri.replace(queryParameters: {'url': url}));
+  if (response.statusCode == 200) {
+    print(response.body); // レスポンスのボディを出力
+  } else {
+    print('Request failed with status: ${response.statusCode}');
+  }
+}
+
+
+
   Future<Map<String, dynamic>> _fetchStockTv() async {
     // テレビ番組のスケジュールを取得するURLを設定します。
     //String url = 'https://www.tv-tokyo.co.jp/program/schedule/';
@@ -99,8 +115,9 @@ class _MyHomePageState extends State<_MyHomePage> {
   @override
   void initState() {
     super.initState();
-    _data = _fetchStockData();
+    //_data = _fetchStockData();
     //_data = _fetchStockTv();
+    _fetchStd();
   }
 
   void _refreshData() {

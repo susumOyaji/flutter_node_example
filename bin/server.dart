@@ -175,12 +175,16 @@ Future<Map<String, String>> getTv() async {
   String htmlbody = body.outerHtml;
   //print(body.outerHtml);
 
-  final h1Elements = body.querySelectorAll('a');
-  final h1Texts = h1Elements.map((h1Element) => h1Element.text).toList();
+ // final h1Elements = body.querySelectorAll('a');
+  //final h1Texts = h1Elements.map((h1Element) => h1Element.text).toList();
 
-  final spanElements = body.querySelectorAll('p');
-  final spanTexts =
-      spanElements.map((spanElement) => spanElement.text).toList();
+  //final spanElements = body.querySelectorAll('p');
+  //final spanTexts =
+  //    spanElements.map((spanElement) => spanElement.text).toList();
+
+
+
+
 
   var document = parse(htmlbody);
   //var headings = document.getElementsByTagName('h2');
@@ -218,34 +222,38 @@ Future<Map<String, String>> getTv() async {
   //}
 
   List<String> nextElementsList = [];
-  String nextText;
+  String? nextText;
   String trimmedText;
 
-  String text =
-      '"5/22 (Mon) 11:00 ～ 11:30            (30分) \n         ＷＯＷＯＷプライム(Ch.191)\n           ドラマ"';
-
+ 
   for (Element element in h2elements) {
     Element? nextElement = element.nextElementSibling;
     if (nextElement != null) {
       nextText = nextElement.text;
       trimmedText = nextText.replaceAll('\n', '');
       nextElementsList.add(trimmedText);
-
-      List<String> codeArray = nextText.split(' ');
-      List<String> dateArray = [];
-      List<String> timeArray = [];
-      List<String> channelArray = [];
-      List<String> genreArray = [];
-
-      if (codeArray.length >= 5) {
-        dateArray = codeArray.sublist(0, 2);
-        timeArray = codeArray.sublist(2, 4);
-        channelArray = codeArray.sublist(4, 5);
-        genreArray = codeArray.sublist(5);
-      }
     }
   }
-  print('${h2TextList[0]} ${nextElementsList[0]}');
+  List<String> codeArray = nextElementsList[0].split(' ');
+  List<String> dateArray = [];
+  List<String> dayArray = [];
+  List<String> startArray = [];
+  List<String> fromArray = [];
+  List<String> endArray = [];
+  List<String> channelArray = [];
+  List<String> genreArray = [];
+
+  if (codeArray.length >= 5) {
+    dateArray = codeArray.sublist(0, 1);
+    dayArray = codeArray.sublist(1, 2);
+    startArray = codeArray.sublist(2, 3);
+    fromArray =codeArray.sublist(3, 4);
+    endArray =codeArray.sublist(4, 5);
+    channelArray = codeArray.sublist(26, 27);
+    genreArray = codeArray.sublist(5);
+  }
+
+  //print(codeArray);
 
   //i = 0;
   //var nextElement;
@@ -258,57 +266,13 @@ Future<Map<String, String>> getTv() async {
   //  }
   //}
   print(nextElementsList);
-  //List<String> pTextList = nextElement.map((element) => element.text).toList();
-  //String htmlString = '<html><head><title>Example</title></head><body><div><p>Hello, world!</p></div></body></html>';
-
-  // var document1 = parse(htmlbody);
-  // var body1 = document1.body;
-
-  // searchTags(body1!.children);
-
-//}
-
-  /*
-  print('Headings:');
-  for (var heading in headings) {
-    print(heading.text);
-  }
-
-  var paragraphs = document.getElementsByTagName('p');
-  print('Paragraphs:');
-  for (var paragraph in paragraphs) {
-    print(paragraph.text);
-  }
-
-  var links = document.getElementsByTagName('a');
-  print('Links:');
-  for (var link in links) {
-    print(link.attributes['href']);
-  }
-  */
-  //print(h1Texts);
-
-  //String Polarity = spanTexts[28][0] == '-' ? '-' : '+';
-
-  //int int_holding = int.parse(holding);
-
-  //int int_price =
-  //    spanTexts[21] == '---' ? 0 : int.parse(spanTexts[21].replaceAll(',', ''));
-
-  //final formatter = NumberFormat('#,###');
-
-  //int banefits = int_price - int.parse(price);
-  //String Banefits = formatter.format(banefits); //banefits.toString();
-
-  //int evaluation = int_holding * int_price;
-  //String Evaluation = formatter.format(evaluation); //evaluation.toString();
-
+ 
   Map<String, String> mapString = {
     //"Code": code,
-    "Program Name": h1Texts[42],
-    "Broadcast date and time": spanTexts[10],
-    "Broadcast Channels": spanTexts[28],
-    "Percent": spanTexts[33],
+    "Program Name": dateArray.toString(),
+    "Broadcast date and time": dayArray.toString(),
+    "Broadcast Channels": startArray.toString(),
+    "Percent": fromArray.toString(),
     //"Polarity": Polarity,
     //"Banefits": Banefits,
     //"Evaluation": Evaluation
