@@ -13,22 +13,13 @@ final _router = Router()
   ..get('/root', _rootHandler)
   ..get('/echo/<message>', _echoHandler);
 
-
-
-
 Future<Response> _bodyHandler(Request req) async {
-  //final url = req.url.toString();
-  const url = 'https://finance.yahoo.co.jp/quote/%5EDJI';
-  //final response = await get(url);
-  print(url);
-  final response = await http.get(Uri.parse(url));
+  // クエリパラメータを取得する
+  final url = req.url.queryParameters['url'];
+
+  final response = await http.get(Uri.parse(url.toString()));
   return Response.ok(response.body);
 }
-
-
-
-
-
 
 Response _rootHandler(Request req) {
   return Response.ok('Hello, World!\n');
@@ -50,6 +41,4 @@ void main(List<String> args) async {
   final port = int.parse(Platform.environment['PORT'] ?? '3000');
   final server = await serve(handler, ip, port);
   print('Server listening on port ${server.port}');
- 
-  
 }

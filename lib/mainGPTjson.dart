@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'package:http/http.dart';
-import 'dart:io';
+//import 'package:html/parser.dart' as html;
+import 'package:html/parser.dart' as parser;
+//import 'dart:io';
 
 void main() async {
   //main99();
@@ -36,6 +38,7 @@ class _MyHomePageState extends State<_MyHomePage> {
       const EdgeInsets.only(left: 10, top: 10, right: 10, bottom: 0);
 
   Future<Map<String, dynamic>>? _data;
+  List<Map<String, dynamic>> dataList=[];
 
   String marktprice = "";
   String inVestment = "";
@@ -44,7 +47,7 @@ class _MyHomePageState extends State<_MyHomePage> {
 
   static List<List<dynamic>> data = [
     ["6758", 200, 1665],
-    ["6976", 300, 1801],
+    ["6976", 100, 1801],
     ["3436", 0, 0],
   ];
 
@@ -60,21 +63,119 @@ class _MyHomePageState extends State<_MyHomePage> {
     'key9': '0',
   };
 
+  Future<String> _fetchStd(String code) async {
+    final url = code; //'https://finance.yahoo.co.jp/quote/$code.T';
+    const backendUrl = 'http://localhost:3000'; // バックエンドのURL
 
-Future _fetchStd() async {
-  const url = 'https://finance.yahoo.co.jp/quote/6976.T';
-  const backendUrl = 'http://localhost:3000'; // バックエンドのURL
-
-  final uri = Uri.parse(backendUrl); // バックエンドのURLをURIオブジェクトに変換
-  final response = await http.get(uri.replace(queryParameters: {'url': url}));
-  if (response.statusCode == 200) {
-    print(response.body); // レスポンスのボディを出力
-  } else {
-    print('Request failed with status: ${response.statusCode}');
+    final uri = Uri.parse(backendUrl); // バックエンドのURLをURIオブジェクトに変換
+    final response = await http.get(uri.replace(queryParameters: {'url': url}));
+    if (response.statusCode == 200) {
+      //print(response.body); // レスポンスのボディを出力
+      return response.body; // レスポンスのボディを返す
+    } else {
+      throw Exception('Request failed with status: ${response.statusCode}');
+    }
   }
-}
+
+  Future<void> webfetch() async {
+    const djiurl = 'https://finance.yahoo.co.jp/quote/%5EDJI';
+    final djiresponse =  await _fetchStd(djiurl);
+    final djibody = parser.parse(djiresponse);
+
+    final djispanElements = djibody.querySelectorAll('span');
+    final djispanTexts =
+        djispanElements.map((spanElement) => spanElement.text).toList();
+
+    String djipolarity = djispanTexts[26][0] == '-' ? '-' : '+';
+
+    Map<String, String> djimapString = {
+      "Code": "^DJI",
+      "Name": "^DJI",
+      "Price": djispanTexts[16],
+      "Reshio": djispanTexts[20],
+      "Percent": djispanTexts[26],
+      "Polarity": djipolarity,
+      "Banefits": "Unused",
+      "Evaluation": "Unused"
+    };
+     // オブジェクトをリストに追加
+    dataList.add(djimapString);
 
 
+
+
+
+
+  const nkurl = 'https://finance.yahoo.co.jp/quote/998407.O';
+
+  final nkresponse =  await _fetchStd(nkurl);;
+
+  final nkbody = parser.parse(nkresponse);
+
+  final nkspanElements = nkbody.querySelectorAll('span');
+  final nkspanTexts =
+      nkspanElements.map((spanElement) => spanElement.text).toList();
+
+  String nkpolarity = nkspanTexts[28][0] == '-' ? '-' : '+';
+
+  Map<String, String> nkmapString = {
+    "Code": "NIKKEI",
+    "Name": "NIKKEI",
+    "Price": nkspanTexts[16],
+    "Reshio": nkspanTexts[20],
+    "Percent": nkspanTexts[26],
+    "Polarity": nkpolarity,
+    "Banefits": "Unused",
+    "Evaluation": "Unused"
+  };
+    // オブジェクトをリストに追加
+    dataList.add(nkmapString);
+
+
+    final url = 'https://finance.yahoo.co.jp/quote/${data[0][0]}.T';
+    final bodyresponse = await _fetchStd(url);
+    //final jsonData = jsonDecode(response.toString());
+
+    final body = parser.parse(bodyresponse);
+
+    final h1Elements = body.querySelectorAll('h1');
+    final h1Texts = h1Elements.map((h1Element) => h1Element.text).toList();
+
+    final spanElements = body.querySelectorAll('span');
+    final spanTexts =
+        spanElements.map((spanElement) => spanElement.text).toList();
+
+    String polarity = spanTexts[28][0] == '-' ? '-' : '+';
+
+    int intHolding = data[0][1];
+
+    int intPrice = spanTexts[21] == '---'
+        ? 0
+        : int.parse(spanTexts[21].replaceAll(',', ''));
+
+    num banefits = intPrice - data[0][2];
+    String bBanefits = formatter.format(banefits); //banefits.toString();
+
+    int evaluation = intHolding * intPrice;
+    String eEvaluation = formatter.format(evaluation); //evaluation.toString();
+
+    Map<String, String> mapString = {
+      "Code": data[0][0],
+      "Name": h1Texts[1],
+      "Price": spanTexts[21],
+      "Reshio": spanTexts[28],
+      "Percent": spanTexts[31],
+      "Polarity": polarity,
+      "Banefits": bBanefits,
+      "Evaluation": eEvaluation
+    };
+
+    // オブジェクトをリストに追加
+    dataList.add(mapString);
+    print(dataList);
+
+    //return dataList;
+  }
 
   Future<Map<String, dynamic>> _fetchStockTv() async {
     // テレビ番組のスケジュールを取得するURLを設定します。
@@ -87,13 +188,12 @@ Future _fetchStd() async {
 // テレビ番組のスケジュールを取得するURLを設定します。
 
     // 応答を解析して、各番組の出演者を取得します。
-    Map<String, dynamic> programs =
-        json.decode(response.body)['list'];
+    Map<String, dynamic> programs = json.decode(response.body)['list'];
 
     // 出演者を画面に出力します。
     //for (var program in programs) {
-      print('番組名：{program}');
-      print('出演者：{program}');
+    print('番組名：{program}');
+    print('出演者：{program}');
     //}
     return programs;
   }
@@ -117,18 +217,18 @@ Future _fetchStd() async {
     super.initState();
     //_data = _fetchStockData();
     //_data = _fetchStockTv();
-    _fetchStd();
+    webfetch();
   }
 
   void _refreshData() {
     setState(() {
       print("_refreshData");
-      _data = _fetchStockData();
+      webfetch();
     });
   }
 
   Container stackmarketView(stdstock) => Container(
-    padding: const EdgeInsets.only(top:10.0),
+      padding: const EdgeInsets.only(top: 10.0),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
@@ -283,7 +383,7 @@ Future _fetchStd() async {
       ]));
 
   Container stackAssetView(asset) => Container(
-    padding: const EdgeInsets.only(top:5.0),
+      padding: const EdgeInsets.only(top: 5.0),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
@@ -539,8 +639,8 @@ Future _fetchStd() async {
       //  title: const Text('Stock Data'),
       //),
       body: Center(
-        child: FutureBuilder<Map<String, dynamic>>(
-          future: _data, //  _fetchStockData(), //_futureStockData,
+        child: FutureBuilder<List<Map<String, dynamic>>>(
+          future: dataList,//webfetch(),//dataList,//_data, //  _fetchStockData(), //_futureStockData,
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return const Center(
@@ -549,10 +649,10 @@ Future _fetchStd() async {
             } else if (snapshot.hasError) {
               return Text('${snapshot.error}');
             }
-            Map<String, dynamic> stockDataList = snapshot.data!;
-            var stdstock = stockDataList["stdData"];
-            var anystock = stockDataList["anyData"];
-            var asset = stockDataList["assetData"];
+            List<Map<String, dynamic>> stockDataList = snapshot.data!;
+            var stdstock = stockDataList[0];
+            var anystock = stockDataList[1];
+            var asset = stockDataList[2];
             //anystock = stockDataList.sublist(2, stockDataList.length);
             return Stack(
               children: <Widget>[
