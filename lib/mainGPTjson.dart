@@ -38,7 +38,8 @@ class _MyHomePageState extends State<_MyHomePage> {
       const EdgeInsets.only(left: 10, top: 10, right: 10, bottom: 0);
 
   Future<Map<String, dynamic>>? _data;
-  List<Map<String, dynamic>> dataList=[];
+  Future<Map<String, List<Map<String, dynamic>>>>? returnMap;
+  //Future<List<Map<String, dynamic>>> dataList = Future.value([]);
 
   String marktprice = "";
   String inVestment = "";
@@ -77,9 +78,10 @@ class _MyHomePageState extends State<_MyHomePage> {
     }
   }
 
-  Future<void> webfetch() async {
+  Future<Map<String, List<Map<String, dynamic>>>> webfetch() async {
+    List<Map<String, dynamic>> dataList=[];
     const djiurl = 'https://finance.yahoo.co.jp/quote/%5EDJI';
-    final djiresponse =  await _fetchStd(djiurl);
+    final djiresponse = await _fetchStd(djiurl);
     final djibody = parser.parse(djiresponse);
 
     final djispanElements = djibody.querySelectorAll('span');
@@ -88,7 +90,7 @@ class _MyHomePageState extends State<_MyHomePage> {
 
     String djipolarity = djispanTexts[26][0] == '-' ? '-' : '+';
 
-    Map<String, String> djimapString = {
+    Map<String, dynamic> djimapString = {
       "Code": "^DJI",
       "Name": "^DJI",
       "Price": djispanTexts[16],
@@ -98,39 +100,36 @@ class _MyHomePageState extends State<_MyHomePage> {
       "Banefits": "Unused",
       "Evaluation": "Unused"
     };
-     // オブジェクトをリストに追加
+    // オブジェクトをリストに追加
+    //dataList = Future.value(djimapString);
     dataList.add(djimapString);
 
+    const nkurl = 'https://finance.yahoo.co.jp/quote/998407.O';
 
+    final nkresponse = await _fetchStd(nkurl);
+    
 
+    final nkbody = parser.parse(nkresponse);
 
+    final nkspanElements = nkbody.querySelectorAll('span');
+    final nkspanTexts =
+        nkspanElements.map((spanElement) => spanElement.text).toList();
 
+    String nkpolarity = nkspanTexts[28][0] == '-' ? '-' : '+';
 
-  const nkurl = 'https://finance.yahoo.co.jp/quote/998407.O';
-
-  final nkresponse =  await _fetchStd(nkurl);;
-
-  final nkbody = parser.parse(nkresponse);
-
-  final nkspanElements = nkbody.querySelectorAll('span');
-  final nkspanTexts =
-      nkspanElements.map((spanElement) => spanElement.text).toList();
-
-  String nkpolarity = nkspanTexts[28][0] == '-' ? '-' : '+';
-
-  Map<String, String> nkmapString = {
-    "Code": "NIKKEI",
-    "Name": "NIKKEI",
-    "Price": nkspanTexts[16],
-    "Reshio": nkspanTexts[20],
-    "Percent": nkspanTexts[26],
-    "Polarity": nkpolarity,
-    "Banefits": "Unused",
-    "Evaluation": "Unused"
-  };
+    Map<String, dynamic> nkmapString = {
+      "Code": "NIKKEI",
+      "Name": "NIKKEI",
+      "Price": nkspanTexts[16],
+      "Reshio": nkspanTexts[20],
+      "Percent": nkspanTexts[26],
+      "Polarity": nkpolarity,
+      "Banefits": "Unused",
+      "Evaluation": "Unused"
+    };
     // オブジェクトをリストに追加
+    //dataList = Future.value(nkmapString);
     dataList.add(nkmapString);
-
 
     final url = 'https://finance.yahoo.co.jp/quote/${data[0][0]}.T';
     final bodyresponse = await _fetchStd(url);
@@ -159,7 +158,7 @@ class _MyHomePageState extends State<_MyHomePage> {
     int evaluation = intHolding * intPrice;
     String eEvaluation = formatter.format(evaluation); //evaluation.toString();
 
-    Map<String, String> mapString = {
+    Map<String, dynamic> mapString = {
       "Code": data[0][0],
       "Name": h1Texts[1],
       "Price": spanTexts[21],
@@ -171,10 +170,14 @@ class _MyHomePageState extends State<_MyHomePage> {
     };
 
     // オブジェクトをリストに追加
+    //dataList = Future.value(mapString);
     dataList.add(mapString);
     print(dataList);
+    Map<String, List<Map<String, dynamic>>> retdata = {
+      'stdData': dataList,
+    };
 
-    //return dataList;
+    return retdata;
   }
 
   Future<Map<String, dynamic>> _fetchStockTv() async {
@@ -217,13 +220,13 @@ class _MyHomePageState extends State<_MyHomePage> {
     super.initState();
     //_data = _fetchStockData();
     //_data = _fetchStockTv();
-    webfetch();
+    returnMap = webfetch();
   }
 
   void _refreshData() {
     setState(() {
       print("_refreshData");
-      webfetch();
+      returnMap = webfetch();
     });
   }
 
@@ -639,9 +642,9 @@ class _MyHomePageState extends State<_MyHomePage> {
       //  title: const Text('Stock Data'),
       //),
       body: Center(
-        child: FutureBuilder<List<Map<String, dynamic>>>(
-          future: dataList,//webfetch(),//dataList,//_data, //  _fetchStockData(), //_futureStockData,
-          builder: (context, snapshot) {
+        child: FutureBuilder<Map<String, List<Map<String, dynamic>>>>(
+          future: returnMap, //webfetch(),//dataList,//_data, //  _fetchStockData(), //_futureStockData,
+          builder:(context, AsyncSnapshot snapshot) {
             if (!snapshot.hasData) {
               return const Center(
                 child: CircularProgressIndicator(),
@@ -649,7 +652,8 @@ class _MyHomePageState extends State<_MyHomePage> {
             } else if (snapshot.hasError) {
               return Text('${snapshot.error}');
             }
-            List<Map<String, dynamic>> stockDataList = snapshot.data!;
+            Map<String, List<Map<String, dynamic>>> stockDataList = snapshot.data!;
+            print(stockDataList);
             var stdstock = stockDataList[0];
             var anystock = stockDataList[1];
             var asset = stockDataList[2];
