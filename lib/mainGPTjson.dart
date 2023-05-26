@@ -160,7 +160,7 @@ class _MyHomePageState extends State<_MyHomePage> {
           formatter.format(evaluation); //evaluation.toString();
 
       Map<String, dynamic> mapString = {
-        "Code": data[i][0],
+        "Code": spanTexts[24],
         "Name": h1Texts[1],
         "Price": spanTexts[21],
         "Reshio": spanTexts[29],
