@@ -87,7 +87,8 @@ class _MyHomePageState extends State<_MyHomePage> {
     final djispanTexts =
         djispanElements.map((spanElement) => spanElement.text).toList();
 
-    String djipolarity = djispanTexts[26] == '-' ? '-' : '+';
+    String firstChar = djispanTexts[25].substring(0, 1);
+    String djipolarity = firstChar == '-' ? '-' : '+';
 
     Map<String, dynamic> djimapString = {
       "Code": "^DJI",
