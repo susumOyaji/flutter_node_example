@@ -38,8 +38,7 @@ class _MyHomePageState extends State<_MyHomePage> {
       const EdgeInsets.only(left: 10, top: 10, right: 10, bottom: 0);
 
   Future<Map<String, dynamic>>? _data;
-  Future<Map<String, List<Map<String, dynamic>>>>? returnMap;
-  //Future<List<Map<String, dynamic>>> dataList = Future.value([]);
+  Future<List<Map<String, dynamic>>>? returnMap;
 
   String marktprice = "";
   String inVestment = "";
@@ -78,8 +77,8 @@ class _MyHomePageState extends State<_MyHomePage> {
     }
   }
 
-  Future<Map<String, List<Map<String, dynamic>>>> webfetch() async {
-    List<Map<String, dynamic>> dataList=[];
+  Future<List<Map<String, dynamic>>> webfetch() async {
+    List<Map<String, dynamic>> dataList = [];
     const djiurl = 'https://finance.yahoo.co.jp/quote/%5EDJI';
     final djiresponse = await _fetchStd(djiurl);
     final djibody = parser.parse(djiresponse);
@@ -88,26 +87,24 @@ class _MyHomePageState extends State<_MyHomePage> {
     final djispanTexts =
         djispanElements.map((spanElement) => spanElement.text).toList();
 
-    String djipolarity = djispanTexts[26][0] == '-' ? '-' : '+';
+    String djipolarity = djispanTexts[26] == '-' ? '-' : '+';
 
     Map<String, dynamic> djimapString = {
       "Code": "^DJI",
       "Name": "^DJI",
-      "Price": djispanTexts[16],
-      "Reshio": djispanTexts[20],
-      "Percent": djispanTexts[26],
+      "Price": djispanTexts[18],
+      "Reshio": djispanTexts[25],
+      "Percent": djispanTexts[28],
       "Polarity": djipolarity,
       "Banefits": "Unused",
       "Evaluation": "Unused"
     };
     // オブジェクトをリストに追加
-    //dataList = Future.value(djimapString);
     dataList.add(djimapString);
 
     const nkurl = 'https://finance.yahoo.co.jp/quote/998407.O';
 
     final nkresponse = await _fetchStd(nkurl);
-    
 
     final nkbody = parser.parse(nkresponse);
 
@@ -115,69 +112,97 @@ class _MyHomePageState extends State<_MyHomePage> {
     final nkspanTexts =
         nkspanElements.map((spanElement) => spanElement.text).toList();
 
-    String nkpolarity = nkspanTexts[28][0] == '-' ? '-' : '+';
+    String nkpolarity = nkspanTexts[28] == '-' ? '-' : '+';
 
     Map<String, dynamic> nkmapString = {
       "Code": "NIKKEI",
       "Name": "NIKKEI",
-      "Price": nkspanTexts[16],
-      "Reshio": nkspanTexts[20],
-      "Percent": nkspanTexts[26],
+      "Price": nkspanTexts[18],
+      "Reshio": nkspanTexts[25],
+      "Percent": nkspanTexts[28],
       "Polarity": nkpolarity,
       "Banefits": "Unused",
       "Evaluation": "Unused"
     };
     // オブジェクトをリストに追加
-    //dataList = Future.value(nkmapString);
     dataList.add(nkmapString);
 
-    final url = 'https://finance.yahoo.co.jp/quote/${data[0][0]}.T';
-    final bodyresponse = await _fetchStd(url);
-    //final jsonData = jsonDecode(response.toString());
+    for (int i = 0; i < data.length; i++) {
+      final url = 'https://finance.yahoo.co.jp/quote/${data[i][0]}.T';
+      final bodyresponse = await _fetchStd(url);
 
-    final body = parser.parse(bodyresponse);
+      final body = parser.parse(bodyresponse);
 
-    final h1Elements = body.querySelectorAll('h1');
-    final h1Texts = h1Elements.map((h1Element) => h1Element.text).toList();
+      final h1Elements = body.querySelectorAll('h1');
+      final h1Texts = h1Elements.map((h1Element) => h1Element.text).toList();
 
-    final spanElements = body.querySelectorAll('span');
-    final spanTexts =
-        spanElements.map((spanElement) => spanElement.text).toList();
+      final spanElements = body.querySelectorAll('span');
+      final spanTexts =
+          spanElements.map((spanElement) => spanElement.text).toList();
 
-    String polarity = spanTexts[28][0] == '-' ? '-' : '+';
+      // ddタグの階下のspanタグを検出
+      final ddspanElements = body.querySelectorAll('dd > span');
 
-    int intHolding = data[0][1];
+      String polarity = spanTexts[28] == '-' ? '-' : '+';
 
-    int intPrice = spanTexts[21] == '---'
-        ? 0
-        : int.parse(spanTexts[21].replaceAll(',', ''));
+      int intHolding = data[i][1];
 
-    num banefits = intPrice - data[0][2];
-    String bBanefits = formatter.format(banefits); //banefits.toString();
+      int intPrice = spanTexts[21] == '---'
+          ? 0
+          : int.parse(spanTexts[21].replaceAll(',', ''));
 
-    int evaluation = intHolding * intPrice;
-    String eEvaluation = formatter.format(evaluation); //evaluation.toString();
+      num banefits = intPrice - data[i][2];
+      String bBanefits = formatter.format(banefits); //banefits.toString();
 
-    Map<String, dynamic> mapString = {
-      "Code": data[0][0],
-      "Name": h1Texts[1],
-      "Price": spanTexts[21],
-      "Reshio": spanTexts[28],
-      "Percent": spanTexts[31],
+      int evaluation = intHolding * intPrice;
+      String eEvaluation =
+          formatter.format(evaluation); //evaluation.toString();
+
+      Map<String, dynamic> mapString = {
+        "Code": data[i][0],
+        "Name": h1Texts[1],
+        "Price": spanTexts[21],
+        "Reshio": spanTexts[29],
+        "Percent": spanTexts[31],
+        "Polarity": polarity,
+        "Banefits": bBanefits,
+        "Evaluation": eEvaluation
+      };
+
+      // オブジェクトをリストに追加
+      dataList.add(mapString);
+      //print(dataList);
+    }
+    return dataList;
+  }
+
+  Map<String, String> getAsset(List<Map<String, dynamic>> anystock) {
+    num intinvestment = 0; //投資額
+    int intEvaluation = 0;
+    final formatter = NumberFormat('#,###');
+
+    for (var i = 0; i < anystock.length; i++) {
+      intinvestment = intinvestment + (data[i][1] * data[i][2]);
+    }
+
+    String investment = formatter.format(intinvestment);
+
+    for (int i = 0; i < anystock.length; i++) {
+      intEvaluation = intEvaluation +
+          int.parse(anystock[i]['Evaluation']!.replaceAll(',', ''));
+    }
+    String evaluation = formatter.format(intEvaluation);
+    String profit = formatter.format(intEvaluation - intinvestment);
+    String polarity = (intEvaluation - intinvestment) >= 0 ? "+" : "-";
+
+    Map<String, String> mapString = {
+      "Market": evaluation,
+      "Invest": investment,
+      "Profit": profit,
       "Polarity": polarity,
-      "Banefits": bBanefits,
-      "Evaluation": eEvaluation
     };
 
-    // オブジェクトをリストに追加
-    //dataList = Future.value(mapString);
-    dataList.add(mapString);
-    print(dataList);
-    Map<String, List<Map<String, dynamic>>> retdata = {
-      'stdData': dataList,
-    };
-
-    return retdata;
+    return mapString;
   }
 
   Future<Map<String, dynamic>> _fetchStockTv() async {
@@ -419,7 +444,7 @@ class _MyHomePageState extends State<_MyHomePage> {
               children: <Widget>[
                 CircleAvatar(
                   maxRadius: 5.0,
-                  backgroundColor: asset[0]["Polarity"] == "+"
+                  backgroundColor: asset["Polarity"] == "+"
                       ? Colors.orange
                       : Colors.green, //Colors.green,
                 ),
@@ -436,10 +461,10 @@ class _MyHomePageState extends State<_MyHomePage> {
                   text: TextSpan(
                     children: [
                       TextSpan(
-                        text: '${asset[0]["Market"]}',
+                        text: '${asset["Market"]}',
                         style: TextStyle(
                           fontSize: 24.0,
-                          color: asset[0]["Polarity"] == "+"
+                          color: asset["Polarity"] == "+"
                               ? Colors.orange
                               : Colors.green,
                           fontWeight: FontWeight.bold,
@@ -453,9 +478,6 @@ class _MyHomePageState extends State<_MyHomePage> {
             Row(
               children: <Widget>[
                 const SizedBox(width: 10),
-                //Text("The day before ratio",
-                //  style: TextStyle(fontSize: 10.0, color: Colors.white),
-                //),
                 const Text(
                   "Profit(Gains)", //"Gain or loss", //"Market price",
                   style: TextStyle(fontSize: 15.0, color: Colors.white),
@@ -468,7 +490,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                         style: TextStyle(fontSize: 15.0, color: Colors.white),
                       ),
                       TextSpan(
-                        text: '${asset[0]["Profit"]}',
+                        text: '${asset["Profit"]}',
                         style: const TextStyle(
                             fontSize: 15.0,
                             fontWeight: FontWeight.bold,
@@ -490,7 +512,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                         style: TextStyle(fontSize: 15.0, color: Colors.white),
                       ),
                       TextSpan(
-                        text: '${asset[0]["Invest"]}',
+                        text: '${asset["Invest"]}',
                         style: const TextStyle(
                             fontSize: 15.0,
                             fontWeight: FontWeight.bold,
@@ -507,8 +529,7 @@ class _MyHomePageState extends State<_MyHomePage> {
 
   ListView listView(dynamic anystock) => ListView.builder(
       scrollDirection: Axis.vertical,
-      itemCount: anystock.length, //+20,//<-- setState()
-      //gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 1),
+      itemCount: anystock.length,
       itemBuilder: (BuildContext context, int index) {
         return GestureDetector(
           child: Container(
@@ -638,13 +659,10 @@ class _MyHomePageState extends State<_MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //appBar: AppBar(
-      //  title: const Text('Stock Data'),
-      //),
       body: Center(
-        child: FutureBuilder<Map<String, List<Map<String, dynamic>>>>(
-          future: returnMap, //webfetch(),//dataList,//_data, //  _fetchStockData(), //_futureStockData,
-          builder:(context, AsyncSnapshot snapshot) {
+        child: FutureBuilder<List<Map<String, dynamic>>>(
+          future: returnMap,
+          builder: (context, AsyncSnapshot snapshot) {
             if (!snapshot.hasData) {
               return const Center(
                 child: CircularProgressIndicator(),
@@ -652,12 +670,11 @@ class _MyHomePageState extends State<_MyHomePage> {
             } else if (snapshot.hasError) {
               return Text('${snapshot.error}');
             }
-            Map<String, List<Map<String, dynamic>>> stockDataList = snapshot.data!;
-            print(stockDataList);
-            var stdstock = stockDataList[0];
-            var anystock = stockDataList[1];
-            var asset = stockDataList[2];
-            //anystock = stockDataList.sublist(2, stockDataList.length);
+            List<Map<String, dynamic>> stockDataList = snapshot.data!;
+
+            var stdstock = stockDataList;
+            var anystock = stockDataList.sublist(2);
+            var asset = getAsset(anystock);
             return Stack(
               children: <Widget>[
                 Container(
@@ -679,8 +696,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                         borderRadius: BorderRadius.circular(5),
                         color: Colors.black,
                       ),
-                      child: stackmarketView(
-                          stdstock), //marketView(asset), //listView(), //gridView1(),
+                      child: stackmarketView(stdstock),
                     ),
                     Container(
                       margin: stdmargin,
@@ -690,8 +706,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                         borderRadius: BorderRadius.circular(5),
                         color: Colors.black,
                       ),
-                      child: stackAssetView(
-                          asset), //marketView(asset), //listView(), //gridView1(),
+                      child: stackAssetView(asset),
                     ),
                     Container(
                       margin: stdmargin,
@@ -701,7 +716,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                         borderRadius: BorderRadius.circular(5),
                         color: Colors.black,
                       ),
-                      child: listView(anystock), //listView(), //gridView1(),
+                      child: listView(anystock),
                     ),
                   ]),
                 )
