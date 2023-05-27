@@ -1,12 +1,29 @@
 {
     // See https://go.microsoft.com/fwlink/?LinkId=733558
     // for the documentation about the tasks.json format
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "./RUN.sh",
+    
+        "version": "2.0.0",
+        "tasks": [
+          {
+            "label": "Run body.dart",
             "type": "shell",
-            "command": "flutter run -d web-server --web-hostname 0.0.0.0 --web-port 8080"
-        }
-    ]
+            "command": "dart",
+            "args": ["run", "bin/body.dart"],
+            "group": {
+              "kind": "build",
+              "isDefault": true
+            },
+            "presentation": {
+              "echo": true,
+              "reveal": "always",
+              "focus": false,
+              "panel": "shared"
+            },
+            "runOptions": {
+              "runOn": "folderOpen"
+            }
+          }
+        ]
+      
+      
 }

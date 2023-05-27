@@ -87,8 +87,8 @@ class _MyHomePageState extends State<_MyHomePage> {
     final djispanTexts =
         djispanElements.map((spanElement) => spanElement.text).toList();
 
-    String firstChar = djispanTexts[25].substring(0, 1);
-    String djipolarity = firstChar == '-' ? '-' : '+';
+    String djifirstChar = djispanTexts[23].substring(0, 1);
+    String djipolarity = djifirstChar == '-' ? '-' : '+';
 
     Map<String, dynamic> djimapString = {
       "Code": "^DJI",
@@ -113,7 +113,8 @@ class _MyHomePageState extends State<_MyHomePage> {
     final nkspanTexts =
         nkspanElements.map((spanElement) => spanElement.text).toList();
 
-    String nkpolarity = nkspanTexts[28] == '-' ? '-' : '+';
+    String nkfirstChar = nkspanTexts[23].substring(0, 1);
+    String nkpolarity = nkfirstChar == '-' ? '-' : '+';
 
     Map<String, dynamic> nkmapString = {
       "Code": "NIKKEI",
@@ -141,10 +142,15 @@ class _MyHomePageState extends State<_MyHomePage> {
       final spanTexts =
           spanElements.map((spanElement) => spanElement.text).toList();
 
-      // ddタグの階下のspanタグを検出
-      final ddspanElements = body.querySelectorAll('dd > span');
+      // <dd>タグの3階層下にある<span>タグを検出 Reshio
+      final ddTags = body.querySelectorAll('dd');
+      final ddElements = ddTags.map((ddElement) => ddElement.text).toList();
+      int delimiterIndex = ddElements[0].indexOf("(");
+      final ddElement = ddElements[0].substring(0, delimiterIndex);
+     
 
-      String polarity = spanTexts[28] == '-' ? '-' : '+';
+      String anyfirstChar = nkspanTexts[23].substring(0, 1);
+      String anypolarity = anyfirstChar == '-' ? '-' : '+';
 
       int intHolding = data[i][1];
 
@@ -163,9 +169,9 @@ class _MyHomePageState extends State<_MyHomePage> {
         "Code": spanTexts[24],
         "Name": h1Texts[1],
         "Price": spanTexts[21],
-        "Reshio": spanTexts[29],
+        "Reshio": ddElement,// spanTexts[29],
         "Percent": spanTexts[31],
-        "Polarity": polarity,
+        "Polarity": anypolarity,
         "Banefits": bBanefits,
         "Evaluation": eEvaluation
       };
@@ -279,9 +285,8 @@ class _MyHomePageState extends State<_MyHomePage> {
             children: <Widget>[
               CircleAvatar(
                 maxRadius: 5.0,
-                backgroundColor: stdstock[0]['Polarity'] == 'true'
-                    ? Colors.red
-                    : Colors.green,
+                backgroundColor:
+                    stdstock[0]['Polarity'] == '+' ? Colors.red : Colors.green,
               ),
               const Text(
                 "Dow Price: \$ ",
