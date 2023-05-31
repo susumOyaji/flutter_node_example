@@ -73,12 +73,12 @@ class _MyHomePageState extends State<_MyHomePage> {
     // テレビ番組のスケジュールを取得するURLを設定します。
     final url =
         'https://www.tvkingdom.jp/schedulesBySearch.action?stationPlatformId=0&condition.keyword=$encodedString&submit=%E6%A4%9C%E7%B4%A2'; //←ここに表示させたいURLを入力する
-
+        //https://bangumi.org/search?q=HiHi+jets&area_code=23
     // URLから応答を取得します。
     final tvresponse = await _fetchStd(url);
     final tvbody = parser.parse(tvresponse);
 
-    final tvspanElements = tvbody.querySelectorAll('h2').take(12).toList();
+    final tvspanElements = tvbody.querySelectorAll('h2').take(9).toList();
     final tvspanTexts =
         tvspanElements.map((spanElement) => spanElement.text).toList();
 
@@ -120,7 +120,7 @@ class _MyHomePageState extends State<_MyHomePage> {
     super.initState();
     //_data = _fetchStockData();
     //_data = _fetchStockTv();
-    returnMap = _fetchStockTv(idoldata[2][0]);
+    returnMap = _fetchStockTv(idoldata[0][0]);
   }
 
   void _refreshData() {
