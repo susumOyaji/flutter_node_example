@@ -39,10 +39,10 @@ class _MyHomePageState extends State<_MyHomePage> {
 
   Future<List<Map<String, dynamic>>>? returnMap;
 
-  String marktprice = "";
-  String inVestment = "";
-  String profit = "";
-  String marktpolarity = "";
+  //String marktprice = "";
+  //String inVestment = "";
+  //String profit = "";
+  //String marktpolarity = "";
 
   static List<List<dynamic>> idoldata = [
     ["HiHi jets", 200, 1665],
@@ -65,6 +65,7 @@ class _MyHomePageState extends State<_MyHomePage> {
   }
 
   Future<List<Map<String, dynamic>>> _fetchStockTv(String idol) async {
+    int count = 11;
     List<Map<String, dynamic>> dataList = [];
 
     String originalString = idol;
@@ -73,12 +74,18 @@ class _MyHomePageState extends State<_MyHomePage> {
     // テレビ番組のスケジュールを取得するURLを設定します。
     final url =
         'https://www.tvkingdom.jp/schedulesBySearch.action?stationPlatformId=0&condition.keyword=$encodedString&submit=%E6%A4%9C%E7%B4%A2'; //←ここに表示させたいURLを入力する
-        //https://bangumi.org/search?q=HiHi+jets&area_code=23
+    //https://bangumi.org/search?q=HiHi+jets&area_code=23
     // URLから応答を取得します。
     final tvresponse = await _fetchStd(url);
     final tvbody = parser.parse(tvresponse);
 
-    final tvspanElements = tvbody.querySelectorAll('h2').take(9).toList();
+    final tvspanElements = tvbody.querySelectorAll('h2').toList();
+    if (tvspanElements.length < count) {
+      count = (tvspanElements.length) - 1;
+    }
+
+    final limitedElements = tvspanElements.sublist(0, count); // 最初のcount要素のみを取得
+
     final tvspanTexts =
         tvspanElements.map((spanElement) => spanElement.text).toList();
 
@@ -88,7 +95,7 @@ class _MyHomePageState extends State<_MyHomePage> {
     List<String> codeArray = [];
     int index = 0; // カウンタ変数
 
-    for (final element in tvspanElements) {
+    for (final element in limitedElements) {
       final nextElement = element.nextElementSibling;
       if (nextElement != null) {
         nextText = nextElement.text;
@@ -142,10 +149,7 @@ class _MyHomePageState extends State<_MyHomePage> {
         borderRadius: BorderRadius.circular(10),
         color: const Color.fromARGB(255, 56, 50, 50),
       ),
-      child: GridView.count(
-        crossAxisCount: 5, // 横方向に表示するボタンの数
-        mainAxisSpacing: 8.0, // ボタン間のスペース
-        crossAxisSpacing: 8.0, // ボタン列間のスペース
+      child: Row(
         children: [
           ElevatedButton(
             style: const ButtonStyle(
@@ -190,7 +194,7 @@ class _MyHomePageState extends State<_MyHomePage> {
               style: TextStyle(color: Colors.black, fontSize: 20),
             ),
             onPressed: () => _refreshData(), //_opneUrl(),
-          ), 
+          ),
           // 右端のアイコン
           // 追加のボタンをここに追記
         ],

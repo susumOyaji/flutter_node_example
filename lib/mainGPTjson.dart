@@ -149,7 +149,7 @@ class _MyHomePageState extends State<_MyHomePage> {
       final ddElement = ddElements[0].substring(0, delimiterIndex);
      
 
-      String anyfirstChar = nkspanTexts[23].substring(0, 1);
+      String anyfirstChar = spanTexts[29].substring(0, 1);
       String anypolarity = anyfirstChar == '-' ? '-' : '+';
 
       int intHolding = data[i][1];
